@@ -15,13 +15,13 @@
  * one input param int         void f (int a);            DECLARE_FUNC_VOID_1(f, IN, int);
  * one input param int ptr     void f (int *a);           DECLARE_FUNC_VOID_1(f, IN, int*);
  * one byref param int ptr     void f (int *a);           DECLARE_FUNC_VOID_1(f, OUT, int*);
- * bytef out and input params  void f (int a, char* b);   DECLARE_FUNC_VOID_1(f, IN, int, 
+ * bytef out and input params  void f (int a, char* b);   DECLARE_FUNC_VOID_1(f, IN, int,
  *                                                                               OUT, * char*);
  * no param input              int f ();                  DECLARE_FUNC_VOID_0(int, f);
  * one input param int         int f (int a);             DECLARE_FUNC_VOID_1(int, f, IN, int);
  * one input param int ptr     int f (int *a);            DECLARE_FUNC_VOID_1(int, f, IN, int*);
  * one byref param int ptr     int f (int *a);            DECLARE_FUNC_VOID_1(int, f, OUT, int*);
- * bytef out and input params  int f (int a, char* b);    DECLARE_FUNC_VOID_1(int, f, IN, int, 
+ * bytef out and input params  int f (int a, char* b);    DECLARE_FUNC_VOID_1(int, f, IN, int,
  *                                                                            OUT, * char*);
  * ------------------------------------------------------------------------------------------------
  */
@@ -54,8 +54,8 @@
 // ---------------------------------------------------------------------------------------
 // Macros to craete fake function declarations
 // ---------------------------------------------------------------------------------------
-#define FK_DEFINE_FUNC_BODY_0(rt, f)           rt f() 
-#define FK_DEFINE_FUNC_BODY_1(rt, f, pt1)      rt f(pt1 a) 
+#define FK_DEFINE_FUNC_BODY_0(rt, f)           rt f()
+#define FK_DEFINE_FUNC_BODY_1(rt, f, pt1)      rt f(pt1 a)
 #define FK_DEFINE_FUNC_BODY_2(rt, f, pt1, pt2) rt f(pt1 a, pt2 b)
 // ---------------------------------------------------------------------------------------
 // Helper Macros
