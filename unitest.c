@@ -7,22 +7,27 @@
  * ----------------------------------------------------------------------------
  */
 #include "unittest.h"
+#include <stdint.h>
 
-int ut_equal_string (char *a, char *b, int *i)
+typedef uint8_t byte;
+
+int ut_equal_string (const char *a, const char *b, int *i)
 {
     *i = 0;
     while (*a && *b && *a == *b) {
-        a++; b++; (*i)++;
+        a++;
+        b++;
+        (*i)++;
     }
 
     return *a == *b;
 }
 
-int ut_equal_mem (void *a, void *b, size_t size, int *i)
+int ut_equal_mem (const void *a, const void *b, size_t size, int *i)
 {
     *i = 0;
-    while (size-- && *(char *)a++ == *(char *)b++)
+    while (size-- && *(byte *)a++ == *(byte *)b++)
         (*i)++ ;
 
-    return *(char *)--a == *(char *)--b;
+    return *(byte *)--a == *(byte *)--b;
 }

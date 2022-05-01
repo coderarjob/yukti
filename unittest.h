@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include "fake.h"
 
-int ut_equal_mem (void *a, void *b, size_t size, int *i);
-int ut_equal_string (char *a, char *b, int *i);
+int ut_equal_mem (const void *a, const void *b, size_t size, int *i);
+int ut_equal_string (const char *a, const char *b, int *i);
 
 #define COL_RED   "\x1b[31m"
 #define COL_GREEN "\x1b[32m"
