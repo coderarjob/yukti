@@ -23,7 +23,7 @@ int ut_equal_string (const char *a, const char *b, int *i)
     return *a == *b;
 }
 
-int ut_equal_mem (const void *a, const void *b, size_t size, int *i)
+int ut_equal_mem (const void *a, const void *b, unsigned long size, int *i)
 {
     *i = 0;
     while (size-- && *(byte *)a++ == *(byte *)b++)
