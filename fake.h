@@ -15,19 +15,24 @@
  * one input param int         void f (int a);            DECLARE_FUNC_VOID_1(f, IN, int);
  * one input param int ptr     void f (int *a);           DECLARE_FUNC_VOID_1(f, IN, int*);
  * one byref param int ptr     void f (int *a);           DECLARE_FUNC_VOID_1(f, OUT, int*);
- * bytef out and input params  void f (int a, char* b);   DECLARE_FUNC_VOID_1(f, IN, int,
- *                                                                               OUT, * char*);
- * no param input              int f ();                  DECLARE_FUNC_VOID_0(int, f);
- * one input param int         int f (int a);             DECLARE_FUNC_VOID_1(int, f, IN, int);
- * one input param int ptr     int f (int *a);            DECLARE_FUNC_VOID_1(int, f, IN, int*);
- * one byref param int ptr     int f (int *a);            DECLARE_FUNC_VOID_1(int, f, OUT, int*);
- * bytef out and input params  int f (int a, char* b);    DECLARE_FUNC_VOID_1(int, f, IN, int,
- *                                                                            OUT, * char*);
+ * byref out and input params  void f (int a, char* b);   DECLARE_FUNC_VOID_2(f, IN, int,
+ *                                                                               OUT, char*);
+ * no param input              int f ();                  DECLARE_FUNC_0(int, f);
+ * one input param int         int f (int a);             DECLARE_FUNC_1(int, f, IN, int);
+ * one input param int ptr     int f (int *a);            DECLARE_FUNC_1(int, f, IN, int*);
+ * one byref param int ptr     int f (int *a);            DECLARE_FUNC_1(int, f, OUT, int*);
+ * byref out and input params  int f (int a, char* b);    DECLARE_FUNC_2(int, f, IN, int,
+ *                                                                               OUT, char*);
  * ------------------------------------------------------------------------------------------------
  */
 
 #ifndef UNITTESTS_FAKE
 #define UNITTESTS_FAKE
+
+typedef enum FK_FUNC_OUTPUT_TYPE_TAG {
+    STATIC = 0,         // Output does not vary with each invocation. Output is always the same.
+    DYNAMIC             // Output may varies with each invocation. Output may not be the same.
+} FK_FUNC_OUTPUT_TYPE;
 
 /*
  * -------------------------------------
@@ -45,7 +50,7 @@
 // ---------------------------------------------------------------------------------------
 // Common Helper macros used by both declaration and defination macros.
 // ---------------------------------------------------------------------------------------
-#define FAKE_STRUCT_TAG(f) f ## _fake_t
+#define FAKE_STRUCT_TAG(f) f ## _fake_tag
 #define FAKE_STRUCT_VAR(f) f ## _fake
 #define OUT   OUT
 #define IN    IN
@@ -63,12 +68,16 @@
 #define FK_DEFINE_FUNC_STRUCT(f)      FAKE_STRUCT_TAG(f) FAKE_STRUCT_VAR(f) = {}
 #define FK_INCREMENT_INVOKE_COUNT(f)  FAKE_STRUCT_VAR(f).invoke_count++;
 // ------
-#define FK_PARAM_OUT_SET(f, p) *p = FAKE_STRUCT_VAR(f).p[FAKE_STRUCT_VAR(f).invoke_count]
+#define FK_PARAM_OUT_SET(f, p) *p = (FAKE_STRUCT_VAR(f).type == STATIC) \
+                                    ? FAKE_STRUCT_VAR(f).p[0]  /* Output the first element. */ \
+                                    : FAKE_STRUCT_VAR(f).p[FAKE_STRUCT_VAR(f).invoke_count]
 #define FK_PARAM_IN_SET(f, p)  /* No need for a field for input param */
 
 #define FK_PARAM_SET(f, pd, p) FK_PARAM_ ## pd ## _SET(f, p)
 // ------
-#define FK_RETURN(f) return FAKE_STRUCT_VAR(f).ret[FAKE_STRUCT_VAR(f).invoke_count - 1]
+#define FK_RETURN(f) return (FAKE_STRUCT_VAR(f).type == STATIC) \
+                            ? FAKE_STRUCT_VAR(f).ret[0]  /* Output the first element. */ \
+                            : FAKE_STRUCT_VAR(f).ret[FAKE_STRUCT_VAR(f).invoke_count - 1]
 // ---------------------------------------------------------------------------------------
 // Complete fake function definations
 // ---------------------------------------------------------------------------------------
@@ -121,7 +130,9 @@
 // Helper macros
 // ---------------------------------------------------------------------------------------
 #define FK_DECLARE_STRUCT_START(f)  typedef struct FAKE_STRUCT_TAG(f) { \
-                                        int invoke_count
+                                        int invoke_count;               \
+                                        FK_FUNC_OUTPUT_TYPE type
+
 // -----
 #define FK_DECLARE_STRUCT_END(f)  } FAKE_STRUCT_TAG(f);                 \
                                    extern FAKE_STRUCT_TAG(f) FAKE_STRUCT_VAR(f)
