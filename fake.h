@@ -1,5 +1,4 @@
 /*
- * ----------------------------------------------------------------------------
  * Fake function macros for Unittesting parts of a program.
  * These macros make it easy to create fake/mock functions, with support for
  * return and byref parameters.
@@ -27,11 +26,14 @@
 
 #ifndef UNITTESTS_FAKE
 #define UNITTESTS_FAKE
+#include <string.h>
 
 typedef enum FK_FUNC_OUTPUT_TYPE_TAG {
     STATIC = 0,         // Output does not vary with each invocation.
     DYNAMIC             // Output may varies with each invocation.
 } FK_FUNC_OUTPUT_TYPE;
+
+void reset();          // MUST BE DEFINED BY THE USER OF fake.h
 
 /*
  * -------------------------------------
@@ -150,6 +152,11 @@ typedef enum FK_FUNC_OUTPUT_TYPE_TAG {
 #define FK_STRUCT_IN_FIELD(pt, p) /* No need for a field for input param */
 
 #define FK_STRUCT_FIELD(pd, pt, p) FK_STRUCT_## pd ## _FIELD(pt, p)
+// ----------------------------------------------------------------------------
+// Reset function structure
+// ----------------------------------------------------------------------------
+#define RESET_FAKE(f) memset(&FK_STRUCT_VAR(f), 0, sizeof(FK_STRUCT_VAR(f)))
+
 // ----------------------------------------------------------------------------
 // Macros to define fake function structure for output and return parameters.
 // ----------------------------------------------------------------------------
