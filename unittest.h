@@ -18,11 +18,11 @@ int ut_equal_string (const char *a, const char *b, int *i);
 #define COL_GREEN "\x1b[32m"
 #define COL_RESET "\x1b[0m"
 
-#define UT_PASSED(t) printf ("\n  %-20s: %sPASS%s", #t, COL_GREEN, COL_RESET)
+#define UT_PASSED(t) printf ("\n  %sPass%s: %-20s", COL_GREEN, COL_RESET, #t)
 
 #define UT_FAILED(t, fnt, ...)                                                \
     do {                                                                      \
-         printf ("\n  %-20s: %sFAIL%s ", #t, COL_RED, COL_RESET);             \
+         printf ("\n  %sFAIL%s: %-20s: ", COL_RED, COL_RESET, #t);            \
          printf(fnt, __VA_ARGS__);                                            \
         } while(0)
 
@@ -59,6 +59,6 @@ int ut_equal_string (const char *a, const char *b, int *i);
 
 #define TEST(tf, fn) static void fn () {                                      \
                         reset();                                              \
-                        printf ("\n[TEST (%s)] %s", #tf, #fn); do
-#define END()       } while(0);
+                        printf ("TEST (%s) %s", #tf, #fn); do
+#define END()       } while(0); printf("\n")
 #endif // UNITTEST_H
