@@ -63,11 +63,7 @@ typedef struct CallRecord {
         CALL_RECORD_TYPE_GLOBAL_EXCEPTION,
         CALL_RECORD_TYPE_ACTUAL_CALL
     } type;
-    union {
-        ListNode orderedExceptationListNode;
-        ListNode globalExceptationListNode;
-        ListNode actualCallListNode;
-    } listnodes;
+    ListNode listNode;
 } CallRecord;
 
 static bool match_call_strings (const char* exp, const char* actual);
@@ -148,15 +144,7 @@ static void call_record_free (CallRecord* node)
     // Expectation: Input pointers are not NULL. They are not user facing!
     assert (node != NULL);
 
-    if (node->type == CALL_RECORD_TYPE_ORDERED_EXCEPTION) {
-        list_remove (&node->listnodes.orderedExceptationListNode);
-    } else if (node->type == CALL_RECORD_TYPE_GLOBAL_EXCEPTION) {
-        list_remove (&node->listnodes.globalExceptationListNode);
-    } else if (node->type == CALL_RECORD_TYPE_ACTUAL_CALL) {
-        list_remove (&node->listnodes.actualCallListNode);
-    } else {
-        PANIC ("Invalid list");
-    }
+    list_remove (&node->listNode);
     free (node);
 }
 
@@ -200,20 +188,16 @@ void add_call_record_to_list (ListNode* head, int n, const char* const fn, ...)
 
     if (head == &orderedExceptationListHead) {
         newrec->type = CALL_RECORD_TYPE_ORDERED_EXCEPTION;
-        list_init (&newrec->listnodes.orderedExceptationListNode);
-        list_add_before (head, &newrec->listnodes.orderedExceptationListNode);
     } else if (head == &globalExceptationListHead) {
         newrec->type = CALL_RECORD_TYPE_GLOBAL_EXCEPTION;
-        list_init (&newrec->listnodes.globalExceptationListNode);
-        list_add_before (head, &newrec->listnodes.globalExceptationListNode);
     } else if (head == &actualCallListHead) {
         newrec->type = CALL_RECORD_TYPE_ACTUAL_CALL;
-        list_init (&newrec->listnodes.actualCallListNode);
-        list_add_before (head, &newrec->listnodes.actualCallListNode);
     } else {
         PANIC ("Invalid list");
     }
 
+    list_init (&newrec->listNode);
+    list_add_before (head, &newrec->listNode);
     newrec->callString[0] = '\0';
 
     va_list l;
@@ -234,21 +218,21 @@ static void print_expectations (void)
     printf ("Global Expectation List (First to last)\n");
     list_for_each (&globalExceptationListHead, node)
     {
-        CallRecord* item = LIST_ITEM (node, CallRecord, listnodes.globalExceptationListNode);
+        CallRecord* item = LIST_ITEM (node, CallRecord, listNode);
         printf ("    %s\n", item->callString);
     }
     printf ("-----------------\n");
     printf ("Ordered Expectation List (First to last)\n");
     list_for_each (&orderedExceptationListHead, node)
     {
-        CallRecord* item = LIST_ITEM (node, CallRecord, listnodes.orderedExceptationListNode);
+        CallRecord* item = LIST_ITEM (node, CallRecord, listNode);
         printf ("    %s\n", item->callString);
     }
     printf ("-----------------\n");
     printf ("Actual call List (First to last)\n");
     list_for_each (&actualCallListHead, node)
     {
-        CallRecord* item = LIST_ITEM (node, CallRecord, listnodes.actualCallListNode);
+        CallRecord* item = LIST_ITEM (node, CallRecord, listNode);
         printf ("    %s\n", item->callString);
     }
     printf ("-----------------\n");
@@ -263,7 +247,11 @@ void print_unmet_expectations()
     printf ("DEBUG: Functions calls in the order they happened:\n");
     list_for_each (&actualCallListHead, node)
     {
-        CallRecord* item = LIST_ITEM (node, CallRecord, listnodes.actualCallListNode);
+        CallRecord* item = LIST_ITEM (node, CallRecord, listNode);
+
+        // Actual List must contain only call records of actual calls
+        assert (item->type == CALL_RECORD_TYPE_ACTUAL_CALL);
+
         printf ("* %s\n", item->callString);
     }
 #endif
@@ -272,7 +260,11 @@ void print_unmet_expectations()
         printf ("To be called once anytime in any order (was not called):\n");
         list_for_each (&globalExceptationListHead, node)
         {
-            CallRecord* item = LIST_ITEM (node, CallRecord, listnodes.globalExceptationListNode);
+            CallRecord* item = LIST_ITEM (node, CallRecord, listNode);
+
+            // Global List must contain only call records of global/unordered call expectations
+            assert (item->type == CALL_RECORD_TYPE_GLOBAL_EXCEPTION);
+
             printf ("* %s\n", item->callString);
         }
     }
@@ -281,7 +273,11 @@ void print_unmet_expectations()
         printf ("To be called once in an order (was not called):\n");
         list_for_each (&orderedExceptationListHead, node)
         {
-            CallRecord* item = LIST_ITEM (node, CallRecord, listnodes.orderedExceptationListNode);
+            CallRecord* item = LIST_ITEM (node, CallRecord, listNode);
+
+            // Ordered List must contain only call records of Ordered call expectations
+            assert (item->type == CALL_RECORD_TYPE_ORDERED_EXCEPTION);
+
             printf ("* %s\n", item->callString);
         }
     }
@@ -293,11 +289,17 @@ bool validate_expectations()
     ListNode* actCallNode;
     list_for_each (&actualCallListHead, actCallNode)
     {
-        CallRecord* item = LIST_ITEM (actCallNode, CallRecord, listnodes.actualCallListNode);
+        CallRecord* item = LIST_ITEM (actCallNode, CallRecord, listNode);
+
+        // Actual List must contain only call records of actual calls
+        assert (item->type == CALL_RECORD_TYPE_ACTUAL_CALL);
 
         if (!list_is_empty (&orderedExceptationListHead)) {
-            CallRecord* ordExp = LIST_ITEM (orderedExceptationListHead.next, CallRecord,
-                                            listnodes.orderedExceptationListNode);
+            CallRecord* ordExp = LIST_ITEM (orderedExceptationListHead.next, CallRecord, listNode);
+
+            // Ordered List must contain only call records of Ordered call expectations
+            assert (ordExp->type == CALL_RECORD_TYPE_ORDERED_EXCEPTION);
+
             if (match_call_strings (ordExp->callString, item->callString)) {
                 call_record_free (ordExp);
             }
@@ -306,8 +308,11 @@ bool validate_expectations()
         ListNode* globalCallNode;
         list_for_each (&globalExceptationListHead, globalCallNode)
         {
-            CallRecord* gloExp = LIST_ITEM (globalCallNode, CallRecord,
-                                            listnodes.globalExceptationListNode);
+            CallRecord* gloExp = LIST_ITEM (globalCallNode, CallRecord, listNode);
+
+            // Global List must contain only call records of global/unordered call expectations
+            assert (gloExp->type == CALL_RECORD_TYPE_GLOBAL_EXCEPTION);
+
             if (match_call_strings (gloExp->callString, item->callString)) {
                 call_record_free (gloExp);
                 break;
