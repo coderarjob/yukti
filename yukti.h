@@ -122,6 +122,10 @@ static inline void acl_list_remove (ACL_ListNode* item)
  * SECTION 1: MOCK FUNCTION CALL EXPECTATION MACROS
  * =================================================================================
  * */
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 #define YT_PRI_RECORD_CALL_X(n, ...)  YT_PRI_RECORD_CALL_##n (__VA_ARGS__)
 #define YT_PRI_RECORD_CALL_10(t, ...) YT_V (j), YT_PRI_RECORD_CALL_9 (__VA_ARGS__)
 #define YT_PRI_RECORD_CALL_9(t, ...)  YT_V (i), YT_PRI_RECORD_CALL_8 (__VA_ARGS__)
@@ -670,4 +674,5 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
 }
 #endif // YUKTI_TEST_IMPLEMENTATION
 
+#pragma GCC diagnostic pop
 #endif // YUKTI_TEST_H
