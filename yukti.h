@@ -98,8 +98,9 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT_PRI_FIFTEENTH_ELEMENT(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, \
                                  ...)                                                              \
     a15
-#define YT_PRI_COUNT_ARGS(...) \
-    YT_PRI_FIFTEENTH_ELEMENT (dummy, ##__VA_ARGS__, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+#define YT_PRI_COUNT_ARGS(...)                                                                     \
+    YT_PRI_FIFTEENTH_ELEMENT (dummy __VA_OPT__ (, ) __VA_ARGS__, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, \
+                              3, 2, 1, 0)
 
 // ----------------------------------------------------------------------------
 // Color template for printing
@@ -248,7 +249,7 @@ static void yt_pri_string_append (char* str, size_t size, const char* const fmt,
     // Expectation: Input pointers are not NULL and Buffer size > 0. They are not user facing!
     assert (str != NULL && fmt != NULL && size > 0);
 
-    size_t len = strnlen (str, size);
+    size_t len = strlen (str);
 
     // Expectation: Not possible for string in 'str' to be > size. Because of below check!
     assert (len <= size);
