@@ -121,19 +121,6 @@ static inline void acl_list_remove (ACL_ListNode* item)
  * SECTION 1: MOCK FUNCTION CALL EXPECTATION MACROS
  * =================================================================================
  * */
-
-#define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
-    do {                                                                                \
-        yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead,                      \
-                               YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
-    } while (0)
-
-#define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
-    do {                                                                                \
-        yt_pri_add_callrecord (&yt_pri_globalExceptationListHead,                       \
-                               YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
-    } while (0)
-
 #define YT_PRI_RECORD_CALL_X(n, ...)  YT_PRI_RECORD_CALL_##n (__VA_ARGS__)
 #define YT_PRI_RECORD_CALL_10(t, ...) YT_V (j), YT_PRI_RECORD_CALL_9 (__VA_ARGS__)
 #define YT_PRI_RECORD_CALL_9(t, ...)  YT_V (i), YT_PRI_RECORD_CALL_8 (__VA_ARGS__)
@@ -147,12 +134,6 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT_PRI_RECORD_CALL_1(t, ...)  YT_V (a)
 #define YT_PRI_RECORD_CALL_0(...)
 
-#define YT_PRI_RECORD_CALL(n, f, ...)                                                       \
-    do {                                                                                    \
-        yt_pri_add_callrecord (&yt_pri_actualCallListHead, YT_PRI_COUNT_ARGS (__VA_ARGS__), \
-                               #f __VA_OPT__ (, ) YT_PRI_RECORD_CALL_X (n, __VA_ARGS__));   \
-    } while (0)
-
 #define YT_V(v)                    \
     (YT_PRI_Arg)                   \
     {                              \
@@ -163,6 +144,34 @@ static inline void acl_list_remove (ACL_ListNode* item)
     {                           \
         .isOpt = true, .val = 0 \
     }
+
+#ifndef YUKTI_NO_MUST_CALL
+
+    #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
+        do {                                                                                \
+            yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead,                      \
+                                   YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
+        } while (0)
+
+    #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
+        do {                                                                                \
+            yt_pri_add_callrecord (&yt_pri_globalExceptationListHead,                       \
+                                   YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
+        } while (0)
+
+    #define YT_PRI_RECORD_CALL(n, f, ...)                                                       \
+        do {                                                                                    \
+            yt_pri_add_callrecord (&yt_pri_actualCallListHead, YT_PRI_COUNT_ARGS (__VA_ARGS__), \
+                                   #f __VA_OPT__ (, ) YT_PRI_RECORD_CALL_X (n, __VA_ARGS__));   \
+        } while (0)
+
+#else
+    // Compilation will fail since the these macros will expand to invalid C code.
+    #define YT_MUST_CALL_IN_ORDER(...)  Invalid when YUKTI_NO_MUST_CALL is defined
+    #define YT_MUST_CALL_ANY_ORDER(...) Invalid when YUKTI_NO_MUST_CALL is defined
+    #define YT_PRI_RECORD_CALL(...)     (void)0
+
+#endif /* YUKTI_NO_MUST_CALL */
 
 #define YT_PRI_MAX_STRING_SIZE    250
 #define YT_PRI_ARG_OPTIONAL_CHAR  '!'
