@@ -105,9 +105,11 @@ static inline void acl_list_remove (ACL_ListNode* item)
 // ----------------------------------------------------------------------------
 // Color template for printing
 // ----------------------------------------------------------------------------
-#define YT_PRI_COL_RED   "\x1b[31m"
-#define YT_PRI_COL_GREEN "\x1b[32m"
-#define YT_PRI_COL_RESET "\x1b[0m"
+#define YT_PRI_COL_GRAY      "\x1b[90m"
+#define YT_PRI_COL_RED       "\x1b[31m"
+#define YT_PRI_COL_GREEN     "\x1b[32m"
+#define YT_PRI_COL_HIGHLIGHT "\x1b[97;100m"
+#define YT_PRI_COL_RESET     "\x1b[0m"
 
 #define YT_PRI_PASSED(t) printf ("\n  %sPass%s: %-20s", YT_PRI_COL_GREEN, YT_PRI_COL_RESET, #t)
 
@@ -636,12 +638,12 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
 #define YT_EQ_STRING(a, b)  YT_PRI_TEST_STRING (a, ==, b)
 #define YT_NEQ_STRING(a, b) YT_PRI_TEST_STRING (a, !=, b)
 
-#define YT_TEST(tf, fn)                    \
-    static void fn()                       \
-    {                                      \
-        reset();                           \
-        yt_pri_ec_init();                  \
-        printf ("TEST (%s) %s", #tf, #fn); \
+#define YT_TEST(tf, fn)                                                                  \
+    static void fn()                                                                     \
+    {                                                                                    \
+        reset();                                                                         \
+        yt_pri_ec_init();                                                                \
+        printf ("%s[%20s - %-20s]%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
         do
 
 #define YT_END()                    \
