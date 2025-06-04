@@ -269,11 +269,11 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
     // Expectation: Input pointers are not NULL and Buffer size > 0. They are not user facing!
     assert (buffer != NULL && fn != NULL && buffer_size > 0);
 
-    yt_pri_string_append (buffer, buffer_size, "%s", fn);
+    yt_pri_string_append (buffer, buffer_size, "%s(", fn);
 
     for (int i = 0; i < n; i++) {
         YT_PRI_Arg item = va_arg (l, YT_PRI_Arg);
-        char separator  = (i == 0) ? '(' : YT_PRI_ARG_SEPARATOR_CHAR;
+        char separator  = (i == 0) ? ' ' : YT_PRI_ARG_SEPARATOR_CHAR;
 
         if (item.isOpt) {
     #ifdef YUKTI_DEBUG
