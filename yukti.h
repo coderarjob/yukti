@@ -375,7 +375,6 @@ static void yt_pri_print_expectations (void)
 void yt_pri_print_unmet_expectations()
 {
     ACL_ListNode* node;
-    // printf ("\n-----[Call expectations not met]-----\n");
     #ifdef YUKTI_DEBUG
     printf ("\nYUKTI_DEBUG: Actual order of functions calls:\n");
     acl_list_for_each (&yt_pri_actualCallListHead, node)
@@ -411,7 +410,6 @@ void yt_pri_print_unmet_expectations()
                            item->callString);
         }
     }
-    // printf ("\n-----------------");
 }
 
 void yt_pri_validate_expectations()
