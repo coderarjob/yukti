@@ -375,18 +375,6 @@ static void yt_pri_print_expectations (void)
 void yt_pri_print_unmet_expectations()
 {
     ACL_ListNode* node;
-    #ifdef YUKTI_DEBUG
-    printf ("\nYUKTI_DEBUG: Actual order of functions calls:\n");
-    acl_list_for_each (&yt_pri_actualCallListHead, node)
-    {
-        YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
-
-        // Actual List must contain only call records of actual calls
-        assert (item->type == YT_CALLRECORD_TYPE_ACTUALCALL);
-
-        printf ("* %s\n", item->callString);
-    }
-    #endif
     if (!acl_list_is_empty (&yt_pri_globalExceptationListHead)) {
         acl_list_for_each (&yt_pri_globalExceptationListHead, node)
         {
@@ -409,6 +397,17 @@ void yt_pri_print_unmet_expectations()
             YT_PRI_FAILED (Expectation not met, "Was never called/called out of order: %s",
                            item->callString);
         }
+    }
+
+    printf ("\n  Actual order of functions calls was the following:\n");
+    acl_list_for_each (&yt_pri_actualCallListHead, node)
+    {
+        YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
+
+        // Actual List must contain only call records of actual calls
+        assert (item->type == YT_CALLRECORD_TYPE_ACTUALCALL);
+
+        printf ("    * %s\n", item->callString);
     }
 }
 
