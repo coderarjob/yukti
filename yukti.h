@@ -152,7 +152,7 @@ static inline void acl_list_remove (ACL_ListNode* item)
         .isOpt = true, .val = 0 \
     }
 
-#ifndef YUKTI_NO_MUST_CALL
+#ifndef YUKTI_TEST_NO_MUST_CALL
 
     #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
         do {                                                                                \
@@ -174,11 +174,11 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
 #else
     // Compilation will fail since the these macros will expand to invalid C code.
-    #define YT_MUST_CALL_IN_ORDER(...)  Invalid when YUKTI_NO_MUST_CALL is defined
-    #define YT_MUST_CALL_ANY_ORDER(...) Invalid when YUKTI_NO_MUST_CALL is defined
+    #define YT_MUST_CALL_IN_ORDER(...)  Invalid when YUKTI_TEST_NO_MUST_CALL is defined
+    #define YT_MUST_CALL_ANY_ORDER(...) Invalid when YUKTI_TEST_NO_MUST_CALL is defined
     #define YT_PRI_RECORD_CALL(...)     (void)0
 
-#endif /* YUKTI_NO_MUST_CALL */
+#endif /* YUKTI_TEST_NO_MUST_CALL */
 
 #define YT_PRI_MAX_STRING_SIZE    250
 #define YT_PRI_ARG_OPTIONAL_CHAR  '!'
