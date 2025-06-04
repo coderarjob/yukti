@@ -278,7 +278,7 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
         if (item.isOpt) {
     #ifdef YUKTI_DEBUG
             // Expectation: Actual call list must not have optional arguments
-            assert (head != &actualCallListHead);
+            assert (head != &yt_pri_actualCallListHead);
     #endif
             yt_pri_string_append (buffer, buffer_size, "%c%c", separator, YT_PRI_ARG_OPTIONAL_CHAR);
         } else {
@@ -324,23 +324,23 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...
 static void yt_pri_print_expectations (void)
 {
     ACL_ListNode* node;
-    printf ("-----------------\n");
+    printf ("\n-----------------\n");
     printf ("Global Expectation List (First to last)\n");
-    acl_list_for_each (&globalExceptationListHead, node)
+    acl_list_for_each (&yt_pri_globalExceptationListHead, node)
     {
         YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
         printf ("    %s\n", item->callString);
     }
     printf ("-----------------\n");
     printf ("Ordered Expectation List (First to last)\n");
-    acl_list_for_each (&orderedExceptationListHead, node)
+    acl_list_for_each (&yt_pri_orderedExceptationListHead, node)
     {
         YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
         printf ("    %s\n", item->callString);
     }
     printf ("-----------------\n");
     printf ("Actual call List (First to last)\n");
-    acl_list_for_each (&actualCallListHead, node)
+    acl_list_for_each (&yt_pri_actualCallListHead, node)
     {
         YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
         printf ("    %s\n", item->callString);
@@ -352,10 +352,10 @@ static void yt_pri_print_expectations (void)
 void yt_pri_print_unmet_expectations()
 {
     ACL_ListNode* node;
-    printf ("-----------------\n");
+    printf ("\n-----------------\n");
     #ifdef YUKTI_DEBUG
     printf ("YUKTI_DEBUG: Functions calls in the order they happened:\n");
-    acl_list_for_each (&actualCallListHead, node)
+    acl_list_for_each (&yt_pri_actualCallListHead, node)
     {
         YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
 
