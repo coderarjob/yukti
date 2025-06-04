@@ -203,7 +203,7 @@ typedef struct YT_PRI_CallRecord {
 static bool yt_pri_match_call_strings (const char* exp, const char* actual);
 static void yt_pri_string_append (char* str, size_t size, const char* const fmt, ...);
 static void yt_pri_call_record_free (YT_PRI_CallRecord* node);
-#ifdef YUKTI_DEBUG
+#ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
 static void yt_pri_print_expectations (void);
@@ -282,7 +282,7 @@ static void yt_pri_call_record_free (YT_PRI_CallRecord* node)
     free (node);
 }
 
-    #ifdef YUKTI_DEBUG
+    #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l)
     #else
@@ -300,7 +300,7 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
         char separator  = (i == 0) ? ' ' : YT_PRI_ARG_SEPARATOR_CHAR;
 
         if (item.isOpt) {
-    #ifdef YUKTI_DEBUG
+    #ifdef YUKTI_TEST_DEBUG
             // Expectation: Actual call list must not have optional arguments
             assert (head != &yt_pri_actualCallListHead);
     #endif
@@ -336,7 +336,7 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...
 
     va_list l;
     va_start (l, fn);
-    #ifdef YUKTI_DEBUG
+    #ifdef YUKTI_TEST_DEBUG
     yt_pri_create_call_string (head, newrec->callString, sizeof (newrec->callString), n, fn, l);
     #else
     yt_pri_create_call_string (newrec->callString, sizeof (newrec->callString), n, fn, l);
@@ -344,7 +344,7 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...
     va_end (l);
 }
 
-    #ifdef YUKTI_DEBUG
+    #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_print_expectations (void)
 {
     ACL_ListNode* node;
@@ -371,7 +371,7 @@ static void yt_pri_print_expectations (void)
     }
     printf ("-----------------\n");
 }
-    #endif // YUKTI_DEBUG
+    #endif // YUKTI_TEST_DEBUG
 
 void yt_pri_print_unmet_expectations()
 {
@@ -569,7 +569,7 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
     YT_PRI_DECLARE_STRUCT_END (f)
 
 #define YT_PRI_DECLARE_STRUCT_START(f) typedef struct YT_PRI_STRUCT_TAG (f) {
-#define YT_PRI_STRUCT_FIELD(pt, p)     pt p;
+#define YT_PRI_STRUCT_FIELD(pt, p)     pt p
 #define YT_PRI_DECLARE_STRUCT_END(f) \
     }                                \
     YT_PRI_STRUCT_TAG (f);           \
