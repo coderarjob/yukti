@@ -2,7 +2,7 @@
  * Yukti Single Header Unittest and Mocking framework
  *
  * Author: Arjob Mukherjee (arjobmukherjee@gmail.com)
- * Version: 0.0.1-dev
+ * Version: 0.1.0
  *
  * Mock/Fake function macros for Unit testing parts of a program. These macros make it easy to
  * create fake/mock functions, with support for return and byref parameters.
@@ -464,7 +464,7 @@ void yt_pri_ec_init()
  * =================================================================================
  * */
 
-void reset(); // MUST BE DEFINED BY THE USER OF fake.h
+void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
 // ----------------------------------------------------------------------------
 // Common Helper macros used by both declaration and defination macros.
@@ -473,7 +473,7 @@ void reset(); // MUST BE DEFINED BY THE USER OF fake.h
 #define YT_PRI_STRUCT_VAR(f)     f##_fake
 #define YT_PRI_STRUCT_HANDLER(f) f##_fake_handler
 
-// ---------------------FAKE FUNCTION DEFINITION ]-----------------------------
+// ---------------------[ FAKE FUNCTION DEFINITION ]-----------------------------
 #define YT_DEFINE_FUNC_VOID(f, ...) \
     YT_PRI_DEFINE_FUNC_STRUCT (f);  \
     YT_PRI_DEFINE_FUNC_BODY_VOID (YT_PRI_COUNT_ARGS (__VA_ARGS__), f, __VA_ARGS__)
@@ -556,8 +556,8 @@ void reset(); // MUST BE DEFINED BY THE USER OF fake.h
     YT_PRI_STRUCT_TAG (f);           \
     extern YT_PRI_STRUCT_TAG (f) YT_PRI_STRUCT_VAR (f)
 
-// -----------------------[ RESET FAKE ]------------------------
-#define YT_RESET_FAKE(f) memset (&YT_PRI_STRUCT_VAR (f), 0, sizeof (YT_PRI_STRUCT_VAR (f)))
+// -----------------------[ RESET MOCK ]------------------------
+#define YT_RESET_MOCK(f) memset (&YT_PRI_STRUCT_VAR (f), 0, sizeof (YT_PRI_STRUCT_VAR (f)))
 
 /*
  * =================================================================================
