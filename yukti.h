@@ -516,17 +516,29 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
     return (YT_PRI_STRUCT_VAR (f).handler) ? YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n()) \
                                            : YT_PRI_STRUCT_VAR (f).ret
 
-#define YT_PRI_FUNC_PARAMS_X(n, ...) YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_4(t, ...) t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_3(t, ...) t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_2(t, ...) t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_1(t, ...) t a
+#define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_8(t, ...)  t h, YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_7(t, ...)  t g, YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_6(t, ...)  t f, YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_5(t, ...)  t e, YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_4(t, ...)  t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_3(t, ...)  t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
 #define YT_PRI_FUNC_PARAMS_0(...)
 
-#define YT_PRI_FUNC_ARG_4() d, YT_PRI_FUNC_PARAMS_3()
-#define YT_PRI_FUNC_ARG_3() c, YT_PRI_FUNC_PARAMS_2()
-#define YT_PRI_FUNC_ARG_2() b, YT_PRI_FUNC_PARAMS_1()
-#define YT_PRI_FUNC_ARG_1() a
+#define YT_PRI_FUNC_ARG_10() j, YT_PRI_FUNC_PARAMS_9()
+#define YT_PRI_FUNC_ARG_9()  i, YT_PRI_FUNC_PARAMS_8()
+#define YT_PRI_FUNC_ARG_8()  h, YT_PRI_FUNC_PARAMS_7()
+#define YT_PRI_FUNC_ARG_7()  g, YT_PRI_FUNC_PARAMS_6()
+#define YT_PRI_FUNC_ARG_6()  f, YT_PRI_FUNC_PARAMS_5()
+#define YT_PRI_FUNC_ARG_5()  e, YT_PRI_FUNC_PARAMS_4()
+#define YT_PRI_FUNC_ARG_4()  d, YT_PRI_FUNC_PARAMS_3()
+#define YT_PRI_FUNC_ARG_3()  c, YT_PRI_FUNC_PARAMS_2()
+#define YT_PRI_FUNC_ARG_2()  b, YT_PRI_FUNC_PARAMS_1()
+#define YT_PRI_FUNC_ARG_1()  a
 #define YT_PRI_FUNC_ARG_0()
 
 // -----------------------[ FAKE FUNCTION DECLARATION ]------------------------
