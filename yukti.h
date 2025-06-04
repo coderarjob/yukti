@@ -119,10 +119,23 @@ static inline void acl_list_remove (ACL_ListNode* item)
                                YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
     } while (0)
 
-#define YT_PRI_RECORD_CALL(f, ...)                                                              \
-    do {                                                                                        \
-        yt_pri_add_callrecord (&yt_pri_actualCallListHead, YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, \
-                               #f, ##__VA_ARGS__);                                              \
+#define YT_PRI_RECORD_CALL_X(n, ...)  YT_PRI_RECORD_CALL_##n (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_10(t, ...) YT_V (t), YT_PRI_RECORD_CALL_9 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_9(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_8 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_8(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_7 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_7(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_6 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_6(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_5 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_5(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_4 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_4(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_3 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_3(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_2 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_2(t, ...)  YT_V (t), YT_PRI_RECORD_CALL_1 (__VA_ARGS__)
+#define YT_PRI_RECORD_CALL_1(t, ...)  YT_V (t)
+#define YT_PRI_RECORD_CALL_0(...)
+
+#define YT_PRI_RECORD_CALL(n, f, ...)                                                       \
+    do {                                                                                    \
+        yt_pri_add_callrecord (&yt_pri_actualCallListHead, YT_PRI_COUNT_ARGS (__VA_ARGS__), \
+                               #f __VA_OPT__ (, ) YT_PRI_RECORD_CALL_X (n, __VA_ARGS__));   \
     } while (0)
 
 #define YT_V(v)                    \
@@ -177,7 +190,7 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
 
 static void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...);
 static void yt_pri_print_unmet_expectations();
-static bool yt_validate_expectations();
+static bool yt_pri_validate_expectations();
 static void yt_pri_ec_init();
 
 static ACL_ListNode yt_pri_orderedExceptationListHead;
@@ -381,7 +394,7 @@ void yt_pri_print_unmet_expectations()
     printf ("-----------------\n");
 }
 
-bool yt_validate_expectations()
+bool yt_pri_validate_expectations()
 {
     ACL_ListNode* actCallNode;
     acl_list_for_each (&yt_pri_actualCallListHead, actCallNode)
@@ -461,6 +474,7 @@ void reset(); // MUST BE DEFINED BY THE USER OF fake.h
 #define YT_PRI_DEFINE_FUNC_BODY_VOID(n, f, ...)    \
     void f (YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__)) \
     {                                              \
+        YT_PRI_RECORD_CALL (n, f, __VA_ARGS__);    \
         YT_PRI_STRUCT_VAR (f).invokeCount++;       \
         YT_PRI_RETURN_VOID (n, f, __VA_ARGS__);    \
     }
@@ -468,6 +482,7 @@ void reset(); // MUST BE DEFINED BY THE USER OF fake.h
 #define YT_PRI_DEFINE_FUNC_BODY(n, rt, f, ...)   \
     rt f (YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__)) \
     {                                            \
+        YT_PRI_RECORD_CALL (n, f, __VA_ARGS__);  \
         YT_PRI_STRUCT_VAR (f).invokeCount++;     \
         YT_PRI_RETURN (n, f, __VA_ARGS__);       \
     }
@@ -603,10 +618,12 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         printf ("TEST (%s) %s", #tf, #fn); \
         do
 
-#define YT_END() \
-    }            \
-    while (0)    \
-        ;        \
+#define YT_END()                       \
+    yt_pri_validate_expectations();    \
+    yt_pri_print_unmet_expectations(); \
+    }                                  \
+    while (0)                          \
+        ;                              \
     printf ("\n")
 
 #ifdef YUKTI_TEST_IMPLEMENTATION
