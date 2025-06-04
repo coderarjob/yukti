@@ -101,6 +101,21 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT_PRI_COUNT_ARGS(...) \
     YT_PRI_FIFTEENTH_ELEMENT (dummy, ##__VA_ARGS__, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 
+// ----------------------------------------------------------------------------
+// Color template for printing
+// ----------------------------------------------------------------------------
+#define YT_PRI_COL_RED   "\x1b[31m"
+#define YT_PRI_COL_GREEN "\x1b[32m"
+#define YT_PRI_COL_RESET "\x1b[0m"
+
+#define YT_PRI_PASSED(t) printf ("\n  %sPass%s: %-20s", YT_PRI_COL_GREEN, YT_PRI_COL_RESET, #t)
+
+#define YT_PRI_FAILED(t, fnt, ...)                                                     \
+    do {                                                                               \
+        printf ("\n  %s** FAIL ** %s: %-20s: ", YT_PRI_COL_RED, YT_PRI_COL_RESET, #t); \
+        printf (fnt, ##__VA_ARGS__);                                                   \
+    } while (0)
+
 /*
  * =================================================================================
  * SECTION 1: MOCK FUNCTION CALL EXPECTATION MACROS
@@ -185,12 +200,11 @@ static void yt_pri_print_expectations (void);
 #else
 static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-    #define yt_pri_print_expectations(...) (void)0
 #endif
 
 static void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...);
 static void yt_pri_print_unmet_expectations();
-static bool yt_pri_validate_expectations();
+static void yt_pri_validate_expectations();
 static void yt_pri_ec_init();
 
 static ACL_ListNode yt_pri_orderedExceptationListHead;
@@ -352,9 +366,9 @@ static void yt_pri_print_expectations (void)
 void yt_pri_print_unmet_expectations()
 {
     ACL_ListNode* node;
-    printf ("\n-----------------\n");
+    // printf ("\n-----[Call expectations not met]-----\n");
     #ifdef YUKTI_DEBUG
-    printf ("YUKTI_DEBUG: Functions calls in the order they happened:\n");
+    printf ("\nYUKTI_DEBUG: Actual order of functions calls:\n");
     acl_list_for_each (&yt_pri_actualCallListHead, node)
     {
         YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
@@ -366,8 +380,6 @@ void yt_pri_print_unmet_expectations()
     }
     #endif
     if (!acl_list_is_empty (&yt_pri_globalExceptationListHead)) {
-        printf ("-----------------\n");
-        printf ("To be called once anytime in any order (was not called):\n");
         acl_list_for_each (&yt_pri_globalExceptationListHead, node)
         {
             YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
@@ -375,12 +387,10 @@ void yt_pri_print_unmet_expectations()
             // Global List must contain only call records of global/unordered call expectations
             assert (item->type == YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION);
 
-            printf ("* %s\n", item->callString);
+            YT_PRI_FAILED (Expectation not met, "Was never called: %s", item->callString);
         }
     }
     if (!acl_list_is_empty (&yt_pri_orderedExceptationListHead)) {
-        printf ("-----------------\n");
-        printf ("To be called once in an order (was not called):\n");
         acl_list_for_each (&yt_pri_orderedExceptationListHead, node)
         {
             YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
@@ -388,13 +398,14 @@ void yt_pri_print_unmet_expectations()
             // Ordered List must contain only call records of Ordered call expectations
             assert (item->type == YT_CALLRECORD_TYPE_ORDERED_EXPECTATION);
 
-            printf ("* %s\n", item->callString);
+            YT_PRI_FAILED (Expectation not met, "Was never called/called out of order: %s",
+                           item->callString);
         }
     }
-    printf ("-----------------\n");
+    // printf ("\n-----------------");
 }
 
-bool yt_pri_validate_expectations()
+void yt_pri_validate_expectations()
 {
     ACL_ListNode* actCallNode;
     acl_list_for_each (&yt_pri_actualCallListHead, actCallNode)
@@ -431,8 +442,12 @@ bool yt_pri_validate_expectations()
         }
     }
 
-    return acl_list_is_empty (&yt_pri_orderedExceptationListHead) &&
-           acl_list_is_empty (&yt_pri_globalExceptationListHead);
+    bool success = acl_list_is_empty (&yt_pri_orderedExceptationListHead) &&
+                   acl_list_is_empty (&yt_pri_globalExceptationListHead);
+
+    if (!success) {
+        yt_pri_print_unmet_expectations();
+    }
 }
 
 void yt_pri_ec_init()
@@ -553,18 +568,6 @@ void reset(); // MUST BE DEFINED BY THE USER OF fake.h
 static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, int* i);
 static int yt_pri_equal_string (const char* a, const char* b, int* i);
 
-#define YT_PRI_COL_RED   "\x1b[31m"
-#define YT_PRI_COL_GREEN "\x1b[32m"
-#define YT_PRI_COL_RESET "\x1b[0m"
-
-#define YT_PRI_PASSED(t) printf ("\n  %sPass%s: %-20s", YT_PRI_COL_GREEN, YT_PRI_COL_RESET, #t)
-
-#define YT_PRI_FAILED(t, fnt, ...)                                                     \
-    do {                                                                               \
-        printf ("\n  %s** FAIL ** %s: %-20s: ", YT_PRI_COL_RED, YT_PRI_COL_RESET, #t); \
-        printf (fnt, __VA_ARGS__);                                                     \
-    } while (0)
-
 #define YT_PRI_TEST_SCALAR(a, o, b)                               \
     do {                                                          \
         __auto_type ut_a = (a);                                   \
@@ -618,12 +621,11 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         printf ("TEST (%s) %s", #tf, #fn); \
         do
 
-#define YT_END()                       \
-    yt_pri_validate_expectations();    \
-    yt_pri_print_unmet_expectations(); \
-    }                                  \
-    while (0)                          \
-        ;                              \
+#define YT_END()                    \
+    yt_pri_validate_expectations(); \
+    }                               \
+    while (0)                       \
+        ;                           \
     printf ("\n")
 
 #ifdef YUKTI_TEST_IMPLEMENTATION
