@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "../../fake.h"
-#include "../../unittest.h"
+#define YUKTI_TEST_IMPLEMENTATION
+#include "../../yukti.h"
 
 /* Fake function defination and declaration */
-DECLARE_FUNC (bool, isSpaceAvailable);
-DEFINE_FUNC (bool, isSpaceAvailable);
+YT_DECLARE_FUNC (bool, isSpaceAvailable);
+YT_DEFINE_FUNC (bool, isSpaceAvailable);
 
 /* Function under test */
 #define LOOP_COUNT 10
@@ -21,12 +21,12 @@ bool installation()
 }
 
 /* Tests to test the `function under test` */
-TEST (Installation, Success_Complete)
+YT_TEST (Installation, Success_Complete)
 {
     isSpaceAvailable_fake.ret = true;
-    EQ_SCALAR (installation(), true);
-    EQ_SCALAR (isSpaceAvailable_fake.invokeCount, LOOP_COUNT);
-    END();
+    YT_EQ_SCALAR (installation(), true);
+    YT_EQ_SCALAR (isSpaceAvailable_fake.invokeCount, LOOP_COUNT);
+    YT_END();
 }
 
 bool isSpaceAvailable_handler()
@@ -35,19 +35,19 @@ bool isSpaceAvailable_handler()
     return (isSpaceAvailable_fake.invokeCount == failAfter) ? false : true;
 }
 
-TEST (Installation, Fail_Afterwards)
+YT_TEST (Installation, Fail_Afterwards)
 {
     int failAfter                   = 2; // Loop iterations.
     isSpaceAvailable_fake.resources = &failAfter;
     isSpaceAvailable_fake.handler   = isSpaceAvailable_handler;
-    EQ_SCALAR (installation(), false);
-    EQ_SCALAR (isSpaceAvailable_fake.invokeCount, failAfter);
-    END();
+    YT_EQ_SCALAR (installation(), false);
+    YT_EQ_SCALAR (isSpaceAvailable_fake.invokeCount, failAfter);
+    YT_END();
 }
 
 void reset()
 {
-    RESET_FAKE (isSpaceAvailable);
+    YT_RESET_MOCK (isSpaceAvailable);
 }
 
 int main()
