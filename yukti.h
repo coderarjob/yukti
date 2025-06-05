@@ -166,6 +166,11 @@ static inline void acl_list_remove (ACL_ListNode* item)
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
 
+    #define YT_MUST_CALL_ANY_ORDER_EXACT_TIMES(n, f, ...) \
+        for (int i = n; i; i--) {                         \
+            YT_MUST_CALL_ANY_ORDER (f, __VA_ARGS__);      \
+        }
+
     #define YT_PRI_RECORD_CALL(n, f, ...)                                                     \
         do {                                                                                  \
             yt_pri_add_callrecord (&yt_pri_actualCallListHead, __LINE__, __FILE__,            \
