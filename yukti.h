@@ -156,20 +156,21 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
     #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
         do {                                                                                \
-            yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead,                      \
+            yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead, __LINE__, __FILE__,  \
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
 
     #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
         do {                                                                                \
-            yt_pri_add_callrecord (&yt_pri_globalExceptationListHead,                       \
+            yt_pri_add_callrecord (&yt_pri_globalExceptationListHead, __LINE__, __FILE__,   \
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
 
-    #define YT_PRI_RECORD_CALL(n, f, ...)                                                       \
-        do {                                                                                    \
-            yt_pri_add_callrecord (&yt_pri_actualCallListHead, YT_PRI_COUNT_ARGS (__VA_ARGS__), \
-                                   #f __VA_OPT__ (, ) YT_PRI_RECORD_CALL_X (n, __VA_ARGS__));   \
+    #define YT_PRI_RECORD_CALL(n, f, ...)                                                     \
+        do {                                                                                  \
+            yt_pri_add_callrecord (&yt_pri_actualCallListHead, __LINE__, __FILE__,            \
+                                   YT_PRI_COUNT_ARGS (__VA_ARGS__),                           \
+                                   #f __VA_OPT__ (, ) YT_PRI_RECORD_CALL_X (n, __VA_ARGS__)); \
         } while (0)
 
 #else
@@ -180,9 +181,10 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
 #endif /* YUKTI_TEST_NO_MUST_CALL */
 
-#define YT_PRI_MAX_STRING_SIZE    250
-#define YT_PRI_ARG_OPTIONAL_CHAR  '!'
-#define YT_PRI_ARG_SEPARATOR_CHAR ','
+#define YT_PRI_MAX_STRING_SIZE          250
+#define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
+#define YT_PRI_ARG_OPTIONAL_CHAR        '!'
+#define YT_PRI_ARG_SEPARATOR_CHAR       ','
 
 #define YT_PRI_PANIC(str)                                            \
     do {                                                             \
@@ -203,6 +205,8 @@ typedef struct YT_PRI_CallRecord {
         YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION,
         YT_CALLRECORD_TYPE_ACTUALCALL
     } type;
+    int sourceLineNumber;
+    char* sourceFileName;
     ACL_ListNode listNode;
 } YT_PRI_CallRecord;
 
@@ -218,7 +222,9 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
 #endif
 
-static void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...);
+static void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
+                                   const char* const sourceFileName, int n, const char* const fn,
+                                   ...);
 static void yt_pri_print_unmet_expectations();
 static void yt_pri_validate_expectations();
 static void yt_pri_ec_init();
@@ -285,6 +291,7 @@ static void yt_pri_call_record_free (YT_PRI_CallRecord* node)
     assert (node != NULL);
 
     acl_list_remove (&node->listNode);
+    free (node->sourceFileName);
     free (node);
 }
 
@@ -319,10 +326,14 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
     va_end (l);
 }
 
-void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...)
+void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
+                            const char* const sourceFileName, int n, const char* const fn, ...)
 {
     YT_PRI_CallRecord* newrec = NULL;
     if (!(newrec = malloc (sizeof (YT_PRI_CallRecord)))) {
+        YT_PRI_PANIC (NULL);
+    }
+    if (!(newrec->sourceFileName = malloc (sizeof (char) * YT_PRI_MAX_SOURCE_FILE_NAME_LEN))) {
         YT_PRI_PANIC (NULL);
     }
 
@@ -338,7 +349,9 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int n, const char* const fn, ...
 
     acl_list_init (&newrec->listNode);
     acl_list_add_before (head, &newrec->listNode);
-    newrec->callString[0] = '\0';
+    newrec->callString[0]    = '\0';
+    newrec->sourceLineNumber = sourceLineNumber;
+    strncpy (newrec->sourceFileName, sourceFileName, YT_PRI_MAX_SOURCE_FILE_NAME_LEN);
 
     va_list l;
     va_start (l, fn);
@@ -390,7 +403,8 @@ void yt_pri_print_unmet_expectations()
             // Global List must contain only call records of global/unordered call expectations
             assert (item->type == YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION);
 
-            YT_PRI_FAILED (Expectation not met, "Was never called: %s", item->callString);
+            YT_PRI_FAILED (Expectation not met, "Never called: %s\n\tAt: %s:%d", item->callString,
+                           item->sourceFileName, item->sourceLineNumber);
         }
     }
     if (!acl_list_is_empty (&yt_pri_orderedExceptationListHead)) {
@@ -401,8 +415,8 @@ void yt_pri_print_unmet_expectations()
             // Ordered List must contain only call records of Ordered call expectations
             assert (item->type == YT_CALLRECORD_TYPE_ORDERED_EXPECTATION);
 
-            YT_PRI_FAILED (Expectation not met, "Was never called/called out of order: %s",
-                           item->callString);
+            YT_PRI_FAILED (Expectation not met, "Never called/called out of order: %s\n\tAt %s:%d",
+                           item->callString, item->sourceFileName, item->sourceLineNumber);
         }
     }
 
