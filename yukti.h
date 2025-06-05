@@ -406,6 +406,7 @@ void yt_pri_print_unmet_expectations()
         }
     }
 
+    #ifdef YUKTI_TEST_DEBUG
     printf ("\n  Actual order of functions calls was the following:\n");
     acl_list_for_each (&yt_pri_actualCallListHead, node)
     {
@@ -416,6 +417,7 @@ void yt_pri_print_unmet_expectations()
 
         printf ("    * %s\n", item->callString);
     }
+    #endif /* YUKTI_TEST_DEBUG */
 }
 
 void yt_pri_validate_expectations()
