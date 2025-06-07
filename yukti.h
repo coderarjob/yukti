@@ -469,18 +469,6 @@ void yt_pri_validate_expectations()
         // Actual List must contain only call records of actual calls
         assert (item->type == YT_CALLRECORD_TYPE_ACTUALCALL);
 
-        if (!acl_list_is_empty (&yt_pri_orderedExceptationListHead)) {
-            YT_PRI_CallRecord* ordExp = ACL_LIST_ITEM (yt_pri_orderedExceptationListHead.next,
-                                                       YT_PRI_CallRecord, listNode);
-
-            // Ordered List must contain only call records of Ordered call expectations
-            assert (ordExp->type == YT_CALLRECORD_TYPE_ORDERED_EXPECTATION);
-
-            if (yt_pri_match_call_strings (ordExp->callString, item->callString)) {
-                yt_pri_call_record_free (ordExp);
-            }
-        }
-
         ACL_ListNode* neverCallNode;
         acl_list_for_each (&yt_pri_neverCallExceptationsListHead, neverCallNode)
         {
@@ -498,6 +486,7 @@ void yt_pri_validate_expectations()
         }
 
         ACL_ListNode* globalCallNode;
+        bool globalExpectationMet = false;
         acl_list_for_each (&yt_pri_globalExceptationListHead, globalCallNode)
         {
             YT_PRI_CallRecord* gloExp = ACL_LIST_ITEM (globalCallNode, YT_PRI_CallRecord, listNode);
@@ -506,8 +495,21 @@ void yt_pri_validate_expectations()
             assert (gloExp->type == YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION);
 
             if (yt_pri_match_call_strings (gloExp->callString, item->callString)) {
+                globalExpectationMet = true;
                 yt_pri_call_record_free (gloExp);
                 break;
+            }
+        }
+
+        if (!globalExpectationMet && !acl_list_is_empty (&yt_pri_orderedExceptationListHead)) {
+            YT_PRI_CallRecord* ordExp = ACL_LIST_ITEM (yt_pri_orderedExceptationListHead.next,
+                                                       YT_PRI_CallRecord, listNode);
+
+            // Ordered List must contain only call records of Ordered call expectations
+            assert (ordExp->type == YT_CALLRECORD_TYPE_ORDERED_EXPECTATION);
+
+            if (yt_pri_match_call_strings (ordExp->callString, item->callString)) {
+                yt_pri_call_record_free (ordExp);
             }
         }
     }
