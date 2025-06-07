@@ -168,7 +168,7 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
     #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(n, f, ...) \
         for (int i = n; i; i--) {                          \
-            YT_MUST_CALL_IN_ORDER (f, __VA_ARGS__);        \
+            YT_MUST_CALL_IN_ORDER (f, ##__VA_ARGS__);      \
         }
 
     #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
@@ -179,7 +179,7 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
     #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...) \
         for (int i = n; i; i--) {                           \
-            YT_MUST_CALL_ANY_ORDER (f, __VA_ARGS__);        \
+            YT_MUST_CALL_ANY_ORDER (f, ##__VA_ARGS__);      \
         }
 
     #define YT_PRI_RECORD_CALL(n, f, ...)                                                     \
