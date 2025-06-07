@@ -160,6 +160,11 @@ static inline void acl_list_remove (ACL_ListNode* item)
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
 
+    #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(n, f, ...) \
+        for (int i = n; i; i--) {                          \
+            YT_MUST_CALL_IN_ORDER (f, __VA_ARGS__);        \
+        }
+
     #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
         do {                                                                                \
             yt_pri_add_callrecord (&yt_pri_globalExceptationListHead, __LINE__, __FILE__,   \
@@ -183,6 +188,7 @@ static inline void acl_list_remove (ACL_ListNode* item)
     #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
 
     #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
+    #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
     #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
     #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
     #define YT_PRI_RECORD_CALL(...)                   (void)0
