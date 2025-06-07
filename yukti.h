@@ -154,6 +154,12 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
 #ifndef YUKTI_TEST_NO_MUST_CALL
 
+    #define YT_MUST_NEVER_CALL(f, ...)                                                        \
+        do {                                                                                  \
+            yt_pri_add_callrecord (&yt_pri_neverCallExceptationsListHead, __LINE__, __FILE__, \
+                                   YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__);   \
+        } while (0)
+
     #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
         do {                                                                                \
             yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead, __LINE__, __FILE__,  \
@@ -217,7 +223,8 @@ typedef struct YT_PRI_CallRecord {
     enum {
         YT_CALLRECORD_TYPE_ORDERED_EXPECTATION,
         YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION,
-        YT_CALLRECORD_TYPE_ACTUALCALL
+        YT_CALLRECORD_TYPE_ACTUALCALL,
+        YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION,
     } type;
     int sourceLineNumber;
     char* sourceFileName;
@@ -227,6 +234,7 @@ typedef struct YT_PRI_CallRecord {
 static bool yt_pri_match_call_strings (const char* exp, const char* actual);
 static void yt_pri_string_append (char* str, size_t size, const char* const fmt, ...);
 static void yt_pri_call_record_free (YT_PRI_CallRecord* node);
+static void yt_pri_free_call_list (ACL_ListNode* head);
 #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
@@ -243,6 +251,7 @@ static void yt_pri_print_unmet_expectations();
 static void yt_pri_validate_expectations();
 static void yt_pri_ec_init();
 
+static ACL_ListNode yt_pri_neverCallExceptationsListHead;
 static ACL_ListNode yt_pri_orderedExceptationListHead;
 static ACL_ListNode yt_pri_globalExceptationListHead;
 static ACL_ListNode yt_pri_actualCallListHead;
@@ -297,6 +306,17 @@ static void yt_pri_string_append (char* str, size_t size, const char* const fmt,
     }
 
     va_end (l);
+}
+
+static void yt_pri_free_call_list (ACL_ListNode* head)
+{
+    // Expectation: Input pointers are not NULL. They are not user facing!
+    assert (head != NULL);
+
+    while (!acl_list_is_empty (head)) {
+        YT_PRI_CallRecord* item = ACL_LIST_ITEM (head->next, YT_PRI_CallRecord, listNode);
+        yt_pri_call_record_free (item);
+    }
 }
 
 static void yt_pri_call_record_free (YT_PRI_CallRecord* node)
@@ -357,6 +377,8 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
         newrec->type = YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION;
     } else if (head == &yt_pri_actualCallListHead) {
         newrec->type = YT_CALLRECORD_TYPE_ACTUALCALL;
+    } else if (head == &yt_pri_neverCallExceptationsListHead) {
+        newrec->type = YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION;
     } else {
         YT_PRI_PANIC ("Invalid list");
     }
@@ -406,9 +428,23 @@ static void yt_pri_print_expectations (void)
 }
     #endif // YUKTI_TEST_DEBUG
 
-void yt_pri_print_unmet_expectations()
+void yt_pri_print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListHead)
 {
     ACL_ListNode* node;
+    if (!acl_list_is_empty (neverCallExpectationFailedListHead)) {
+        acl_list_for_each (neverCallExpectationFailedListHead, node)
+        {
+            YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
+
+            // Never call List must contain only call records of never call expectations
+            assert (item->type == YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
+
+            YT_PRI_FAILED (Expectation not met,
+                           "Called, when should be never called: %s\n\tAt: %s:%d", item->callString,
+                           item->sourceFileName, item->sourceLineNumber);
+        }
+    }
+
     if (!acl_list_is_empty (&yt_pri_globalExceptationListHead)) {
         acl_list_for_each (&yt_pri_globalExceptationListHead, node)
         {
@@ -451,6 +487,10 @@ void yt_pri_print_unmet_expectations()
 void yt_pri_validate_expectations()
 {
     ACL_ListNode* actCallNode;
+
+    ACL_ListNode neverCallExpectationFailedListHead;
+    acl_list_init (&neverCallExpectationFailedListHead);
+
     acl_list_for_each (&yt_pri_actualCallListHead, actCallNode)
     {
         YT_PRI_CallRecord* item = ACL_LIST_ITEM (actCallNode, YT_PRI_CallRecord, listNode);
@@ -470,6 +510,22 @@ void yt_pri_validate_expectations()
             }
         }
 
+        ACL_ListNode* neverCallNode;
+        acl_list_for_each (&yt_pri_neverCallExceptationsListHead, neverCallNode)
+        {
+            YT_PRI_CallRecord* neverExp = ACL_LIST_ITEM (neverCallNode, YT_PRI_CallRecord,
+                                                         listNode);
+
+            // Never call List must contain only call records of never call expectations
+            assert (neverExp->type == YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
+
+            if (yt_pri_match_call_strings (neverExp->callString, item->callString)) {
+                acl_list_remove (&neverExp->listNode);
+                acl_list_add_before (&neverCallExpectationFailedListHead, &neverExp->listNode);
+                break;
+            }
+        }
+
         ACL_ListNode* globalCallNode;
         acl_list_for_each (&yt_pri_globalExceptationListHead, globalCallNode)
         {
@@ -486,15 +542,18 @@ void yt_pri_validate_expectations()
     }
 
     bool success = acl_list_is_empty (&yt_pri_orderedExceptationListHead) &&
-                   acl_list_is_empty (&yt_pri_globalExceptationListHead);
+                   acl_list_is_empty (&yt_pri_globalExceptationListHead) &&
+                   acl_list_is_empty (&neverCallExpectationFailedListHead);
 
     if (!success) {
-        yt_pri_print_unmet_expectations();
+        yt_pri_print_unmet_expectations (&neverCallExpectationFailedListHead);
+        yt_pri_free_call_list (&neverCallExpectationFailedListHead);
     }
 }
 
 void yt_pri_ec_init()
 {
+    acl_list_init (&yt_pri_neverCallExceptationsListHead);
     acl_list_init (&yt_pri_globalExceptationListHead);
     acl_list_init (&yt_pri_orderedExceptationListHead);
     acl_list_init (&yt_pri_actualCallListHead);
