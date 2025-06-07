@@ -238,7 +238,6 @@ static void yt_pri_free_call_list (ACL_ListNode* head);
 #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-static void yt_pri_print_expectations (void);
 #else
 static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
@@ -399,35 +398,6 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
     #endif
     va_end (l);
 }
-
-    #ifdef YUKTI_TEST_DEBUG
-static void yt_pri_print_expectations (void)
-{
-    ACL_ListNode* node;
-    printf ("\n-----------------\n");
-    printf ("Global Expectation List (First to last)\n");
-    acl_list_for_each (&yt_pri_globalExceptationListHead, node)
-    {
-        YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
-        printf ("    %s\n", item->callString);
-    }
-    printf ("-----------------\n");
-    printf ("Ordered Expectation List (First to last)\n");
-    acl_list_for_each (&yt_pri_orderedExceptationListHead, node)
-    {
-        YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
-        printf ("    %s\n", item->callString);
-    }
-    printf ("-----------------\n");
-    printf ("Actual call List (First to last)\n");
-    acl_list_for_each (&yt_pri_actualCallListHead, node)
-    {
-        YT_PRI_CallRecord* item = ACL_LIST_ITEM (node, YT_PRI_CallRecord, listNode);
-        printf ("    %s\n", item->callString);
-    }
-    printf ("-----------------\n");
-}
-    #endif // YUKTI_TEST_DEBUG
 
 void yt_pri_print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListHead)
 {
