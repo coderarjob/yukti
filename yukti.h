@@ -166,9 +166,9 @@ static inline void acl_list_remove (ACL_ListNode* item)
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
 
-    #define YT_MUST_CALL_ANY_ORDER_EXACT_TIMES(n, f, ...) \
-        for (int i = n; i; i--) {                         \
-            YT_MUST_CALL_ANY_ORDER (f, __VA_ARGS__);      \
+    #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...) \
+        for (int i = n; i; i--) {                           \
+            YT_MUST_CALL_ANY_ORDER (f, __VA_ARGS__);        \
         }
 
     #define YT_PRI_RECORD_CALL(n, f, ...)                                                     \
@@ -180,9 +180,12 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
 #else
     // Compilation will fail since the these macros will expand to invalid C code.
-    #define YT_MUST_CALL_IN_ORDER(...)  Invalid when YUKTI_TEST_NO_MUST_CALL is defined
-    #define YT_MUST_CALL_ANY_ORDER(...) Invalid when YUKTI_TEST_NO_MUST_CALL is defined
-    #define YT_PRI_RECORD_CALL(...)     (void)0
+    #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
+
+    #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
+    #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
+    #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
+    #define YT_PRI_RECORD_CALL(...)                   (void)0
 
 #endif /* YUKTI_TEST_NO_MUST_CALL */
 
