@@ -250,6 +250,7 @@ static void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
 static void yt_pri_print_unmet_expectations();
 static void yt_pri_validate_expectations();
 static void yt_pri_ec_init();
+static void yt_pri_teardown();
 
 static ACL_ListNode yt_pri_neverCallExceptationsListHead;
 static ACL_ListNode yt_pri_orderedExceptationListHead;
@@ -551,7 +552,15 @@ void yt_pri_validate_expectations()
     }
 }
 
-void yt_pri_ec_init()
+static void yt_pri_teardown()
+{
+    yt_pri_free_call_list (&yt_pri_neverCallExceptationsListHead);
+    yt_pri_free_call_list (&yt_pri_globalExceptationListHead);
+    yt_pri_free_call_list (&yt_pri_orderedExceptationListHead);
+    yt_pri_free_call_list (&yt_pri_actualCallListHead);
+}
+
+static void yt_pri_ec_init()
 {
     acl_list_init (&yt_pri_neverCallExceptationsListHead);
     acl_list_init (&yt_pri_globalExceptationListHead);
@@ -737,6 +746,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
 
 #define YT_END()                    \
     yt_pri_validate_expectations(); \
+    yt_pri_teardown();              \
     }                               \
     while (0)                       \
         ;                           \
