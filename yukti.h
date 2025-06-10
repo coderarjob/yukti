@@ -115,9 +115,30 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
 #define YT_PRI_FAILED(t, fnt, ...)                                                     \
     do {                                                                               \
+        yt_pri_failed_test_count++;                                                    \
         printf ("\n  %s** FAIL ** %s: %-20s: ", YT_PRI_COL_RED, YT_PRI_COL_RESET, #t); \
         printf (fnt, ##__VA_ARGS__);                                                   \
     } while (0)
+
+#define YT_RETURN_WITH_REPORT()                                                               \
+    do {                                                                                      \
+        if (yt_pri_failed_test_count == 0) {                                                  \
+            printf ("\n  %sAll tests passed [%d of %d failed]%s\n", YT_PRI_COL_GREEN,         \
+                    yt_pri_failed_test_count, yt_pri_total_test_count, YT_PRI_COL_RESET);     \
+        } else {                                                                              \
+            printf ("\n  %s** Not all tests passed ** [%d of %d failed]%s\n", YT_PRI_COL_RED, \
+                    yt_pri_failed_test_count, yt_pri_total_test_count, YT_PRI_COL_RESET);     \
+        }                                                                                     \
+        return yt_pri_failed_test_count;                                                      \
+    } while (0)
+/*
+ * =================================================================================
+ * SECTION 0: FILE LOCAL GLOBAL VARIABLES FOR YUKTI
+ * =================================================================================
+ * */
+
+uint32_t yt_pri_total_test_count  = 0;
+uint32_t yt_pri_failed_test_count = 0;
 
 /*
  * =================================================================================
@@ -156,12 +177,14 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
     #define YT_MUST_NEVER_CALL(f, ...)                                                        \
         do {                                                                                  \
+            yt_pri_total_test_count++;                                                        \
             yt_pri_add_callrecord (&yt_pri_neverCallExceptationsListHead, __LINE__, __FILE__, \
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__);   \
         } while (0)
 
     #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
         do {                                                                                \
+            yt_pri_total_test_count++;                                                      \
             yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead, __LINE__, __FILE__,  \
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
@@ -173,6 +196,7 @@ static inline void acl_list_remove (ACL_ListNode* item)
 
     #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
         do {                                                                                \
+            yt_pri_total_test_count++;                                                      \
             yt_pri_add_callrecord (&yt_pri_globalExceptationListHead, __LINE__, __FILE__,   \
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
         } while (0)
@@ -667,6 +691,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
     do {                                                          \
         __auto_type ut_a = (a);                                   \
         __auto_type ut_b = (b);                                   \
+        yt_pri_total_test_count++;                                \
         if (ut_a o ut_b)                                          \
             YT_PRI_PASSED (a o b);                                \
         else                                                      \
@@ -677,6 +702,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
     do {                                                                                \
         __auto_type ut_a = (a);                                                         \
         __auto_type ut_b = (b);                                                         \
+        yt_pri_total_test_count++;                                                      \
         int i;                                                                          \
         if (ut_equal_mem (ut_a, ut_b, sz, &i) o 1)                                      \
             YT_PRI_PASSED (a o b);                                                      \
@@ -688,6 +714,7 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
     do {                                                                                \
         __auto_type ut_a = (a);                                                         \
         __auto_type ut_b = (b);                                                         \
+        yt_pri_total_test_count++;                                                      \
         int i;                                                                          \
         if (ut_equal_string (ut_a, ut_b, &i) o 1)                                       \
             YT_PRI_PASSED (a o b);                                                      \

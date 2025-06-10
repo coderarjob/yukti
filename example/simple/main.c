@@ -88,5 +88,5 @@ int main()
 {
     branch_1_test();
     branch_2_test();
-    return 0;
+    YT_RETURN_WITH_REPORT();
 }

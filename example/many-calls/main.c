@@ -54,4 +54,5 @@ int main()
 {
     Success_Complete();
     Fail_Afterwards();
+    YT_RETURN_WITH_REPORT();
 }
