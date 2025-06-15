@@ -25,14 +25,14 @@ YT_TEST (Installation, Success_Complete)
 {
     isSpaceAvailable_fake.ret = true;
     YT_EQ_SCALAR (installation(), true);
-    YT_EQ_SCALAR (isSpaceAvailable_fake.invokeCount, LOOP_COUNT);
+    YT_EQ_SCALAR (isSpaceAvailable_fake.invokeCount, (unsigned)LOOP_COUNT);
     YT_END();
 }
 
 bool isSpaceAvailable_handler()
 {
     int failAfter = *(int*)isSpaceAvailable_fake.resources; // Loop iterations.
-    return (isSpaceAvailable_fake.invokeCount == failAfter) ? false : true;
+    return (isSpaceAvailable_fake.invokeCount == (unsigned)failAfter) ? false : true;
 }
 
 YT_TEST (Installation, Fail_Afterwards)
@@ -41,7 +41,7 @@ YT_TEST (Installation, Fail_Afterwards)
     isSpaceAvailable_fake.resources = &failAfter;
     isSpaceAvailable_fake.handler   = isSpaceAvailable_handler;
     YT_EQ_SCALAR (installation(), false);
-    YT_EQ_SCALAR (isSpaceAvailable_fake.invokeCount, failAfter);
+    YT_EQ_SCALAR (isSpaceAvailable_fake.invokeCount, (unsigned)failAfter);
     YT_END();
 }
 
