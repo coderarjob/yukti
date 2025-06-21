@@ -133,77 +133,51 @@ static inline void acl_list_remove (ACL_ListNode* item)
     } while (0)
 /*
  * =================================================================================
- * SECTION 0: FILE LOCAL GLOBAL VARIABLES FOR YUKTI
+ * FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
  * =================================================================================
- * */
-
-uint32_t yt_pri_total_test_count  = 0;
-uint32_t yt_pri_failed_test_count = 0;
-
-/*
- * =================================================================================
- * SECTION 1: MOCK FUNCTION CALL EXPECTATION MACROS
+ * SECTION 1: RECORD CALL MACROS
  * =================================================================================
  * */
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-#define YT_PRI_RECORD_CALL_X(n, ...)  YT_PRI_RECORD_CALL_##n (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_10(t, ...) YT_V (j), YT_PRI_RECORD_CALL_9 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_9(t, ...)  YT_V (i), YT_PRI_RECORD_CALL_8 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_8(t, ...)  YT_V (h), YT_PRI_RECORD_CALL_7 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_7(t, ...)  YT_V (g), YT_PRI_RECORD_CALL_6 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_6(t, ...)  YT_V (f), YT_PRI_RECORD_CALL_5 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_5(t, ...)  YT_V (e), YT_PRI_RECORD_CALL_4 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_4(t, ...)  YT_V (d), YT_PRI_RECORD_CALL_3 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_3(t, ...)  YT_V (c), YT_PRI_RECORD_CALL_2 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_2(t, ...)  YT_V (b), YT_PRI_RECORD_CALL_1 (__VA_ARGS__)
-#define YT_PRI_RECORD_CALL_1(t, ...)  YT_V (a)
-#define YT_PRI_RECORD_CALL_0(...)
-
-#define YT_V(v)                    \
-    (YT_PRI_Arg)                   \
-    {                              \
-        .isOpt = false, .val = (v) \
-    }
-#define _                       \
-    (YT_PRI_Arg)                \
-    {                           \
-        .isOpt = true, .val = 0 \
-    }
-
 #ifndef YUKTI_TEST_NO_MUST_CALL
+extern uint32_t yt_pri_total_test_count;
+extern uint32_t yt_pri_failed_test_count;
 
-    #define YT_MUST_NEVER_CALL(f, ...)                                                        \
-        do {                                                                                  \
-            yt_pri_total_test_count++;                                                        \
-            yt_pri_add_callrecord (&yt_pri_neverCallExceptationsListHead, __LINE__, __FILE__, \
-                                   YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__);   \
-        } while (0)
+void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
+                            const char* const sourceFileName, int n, const char* const fn, ...);
 
-    #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
-        do {                                                                                \
-            yt_pri_total_test_count++;                                                      \
-            yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead, __LINE__, __FILE__,  \
-                                   YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
-        } while (0)
+extern ACL_ListNode yt_pri_actualCallListHead;
 
-    #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(n, f, ...) \
-        for (int i = n; i; i--) {                          \
-            YT_MUST_CALL_IN_ORDER (f, ##__VA_ARGS__);      \
+typedef struct YT_PRI_Arg {
+    bool isOpt;
+    int val;
+} YT_PRI_Arg;
+
+    #define YT_PRI_RECORD_CALL_X(n, ...)  YT_PRI_RECORD_CALL_##n (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_10(t, ...) YT_V (j), YT_PRI_RECORD_CALL_9 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_9(t, ...)  YT_V (i), YT_PRI_RECORD_CALL_8 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_8(t, ...)  YT_V (h), YT_PRI_RECORD_CALL_7 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_7(t, ...)  YT_V (g), YT_PRI_RECORD_CALL_6 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_6(t, ...)  YT_V (f), YT_PRI_RECORD_CALL_5 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_5(t, ...)  YT_V (e), YT_PRI_RECORD_CALL_4 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_4(t, ...)  YT_V (d), YT_PRI_RECORD_CALL_3 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_3(t, ...)  YT_V (c), YT_PRI_RECORD_CALL_2 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_2(t, ...)  YT_V (b), YT_PRI_RECORD_CALL_1 (__VA_ARGS__)
+    #define YT_PRI_RECORD_CALL_1(t, ...)  YT_V (a)
+    #define YT_PRI_RECORD_CALL_0(...)
+
+    #define YT_V(v)                    \
+        (YT_PRI_Arg)                   \
+        {                              \
+            .isOpt = false, .val = (v) \
         }
-
-    #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
-        do {                                                                                \
-            yt_pri_total_test_count++;                                                      \
-            yt_pri_add_callrecord (&yt_pri_globalExceptationListHead, __LINE__, __FILE__,   \
-                                   YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
-        } while (0)
-
-    #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...) \
-        for (int i = n; i; i--) {                           \
-            YT_MUST_CALL_ANY_ORDER (f, ##__VA_ARGS__);      \
+    #define _                       \
+        (YT_PRI_Arg)                \
+        {                           \
+            .isOpt = true, .val = 0 \
         }
 
     #define YT_PRI_RECORD_CALL(n, f, ...)                                                     \
@@ -212,35 +186,190 @@ uint32_t yt_pri_failed_test_count = 0;
                                    YT_PRI_COUNT_ARGS (__VA_ARGS__),                           \
                                    #f __VA_OPT__ (, ) YT_PRI_RECORD_CALL_X (n, __VA_ARGS__)); \
         } while (0)
-
 #else
-    // Compilation will fail since the these macros will expand to invalid C code.
-    #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
-
-    #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
-    #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
-    #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
-    #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
-    #define YT_PRI_RECORD_CALL(...)                   (void)0
-
+    #define YT_PRI_RECORD_CALL(...) (void)0
 #endif /* YUKTI_TEST_NO_MUST_CALL */
 
-#define YT_PRI_MAX_STRING_SIZE          250
-#define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
-#define YT_PRI_ARG_OPTIONAL_CHAR        '!'
-#define YT_PRI_ARG_SEPARATOR_CHAR       ','
+/*
+ * =================================================================================
+ * FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
+ * =================================================================================
+ * SECTION 1.1: MOCKS TO CREATE FAKE/MOCK FUNCTION DEFINITIONS & DECLARATIONS
+ * =================================================================================
+ * */
+void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
-#define YT_PRI_PANIC(str)                                            \
-    do {                                                             \
-        printf ("YT_PRI_PANIC! %s.\n", (str) == NULL ? "" : str);    \
-        printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
-        exit (1);                                                    \
-    } while (0)
+// ----------------------------------------------------------------------------
+// Common Helper macros used by both declaration and defination macros.
+// ----------------------------------------------------------------------------
+#define YT_PRI_STRUCT_TAG(f)     f##_fake_tag
+#define YT_PRI_STRUCT_VAR(f)     f##_fake
+#define YT_PRI_STRUCT_HANDLER(f) f##_fake_handler
 
-typedef struct YT_PRI_Arg {
-    bool isOpt;
-    int val;
-} YT_PRI_Arg;
+// ---------------------[ FAKE FUNCTION DEFINITION ]-----------------------------
+#define YT_DEFINE_FUNC_VOID(f, ...) \
+    YT_PRI_DEFINE_FUNC_STRUCT (f);  \
+    YT_PRI_DEFINE_FUNC_BODY_VOID (YT_PRI_COUNT_ARGS (__VA_ARGS__), f, __VA_ARGS__)
+
+// ----
+#define YT_DEFINE_FUNC(rt, f, ...) \
+    YT_PRI_DEFINE_FUNC_STRUCT (f); \
+    YT_PRI_DEFINE_FUNC_BODY (YT_PRI_COUNT_ARGS (__VA_ARGS__), rt, f, __VA_ARGS__)
+
+// ----
+#define YT_PRI_DEFINE_FUNC_STRUCT(f) YT_PRI_STRUCT_TAG (f) YT_PRI_STRUCT_VAR (f) = { 0 }
+
+#define YT_PRI_DEFINE_FUNC_BODY_VOID(n, f, ...)    \
+    void f (YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__)) \
+    {                                              \
+        YT_PRI_RECORD_CALL (n, f, __VA_ARGS__);    \
+        YT_PRI_STRUCT_VAR (f).invokeCount++;       \
+        YT_PRI_RETURN_VOID (n, f, __VA_ARGS__);    \
+    }
+
+#define YT_PRI_DEFINE_FUNC_BODY(n, rt, f, ...)   \
+    rt f (YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__)) \
+    {                                            \
+        YT_PRI_RECORD_CALL (n, f, __VA_ARGS__);  \
+        YT_PRI_STRUCT_VAR (f).invokeCount++;     \
+        YT_PRI_RETURN (n, f, __VA_ARGS__);       \
+    }
+
+#define YT_PRI_RETURN_VOID(n, f, ...)  \
+    if (YT_PRI_STRUCT_VAR (f).handler) \
+    YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n())
+
+#define YT_PRI_RETURN(n, f, ...)                                                                   \
+    return (YT_PRI_STRUCT_VAR (f).handler) ? YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n()) \
+                                           : YT_PRI_STRUCT_VAR (f).ret
+
+#define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_8(t, ...)  t h, YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_7(t, ...)  t g, YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_6(t, ...)  t f, YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_5(t, ...)  t e, YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_4(t, ...)  t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_3(t, ...)  t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
+#define YT_PRI_FUNC_PARAMS_0(...)
+
+#define YT_PRI_FUNC_ARG_10() j, YT_PRI_FUNC_PARAMS_9()
+#define YT_PRI_FUNC_ARG_9()  i, YT_PRI_FUNC_PARAMS_8()
+#define YT_PRI_FUNC_ARG_8()  h, YT_PRI_FUNC_PARAMS_7()
+#define YT_PRI_FUNC_ARG_7()  g, YT_PRI_FUNC_PARAMS_6()
+#define YT_PRI_FUNC_ARG_6()  f, YT_PRI_FUNC_PARAMS_5()
+#define YT_PRI_FUNC_ARG_5()  e, YT_PRI_FUNC_PARAMS_4()
+#define YT_PRI_FUNC_ARG_4()  d, YT_PRI_FUNC_PARAMS_3()
+#define YT_PRI_FUNC_ARG_3()  c, YT_PRI_FUNC_PARAMS_2()
+#define YT_PRI_FUNC_ARG_2()  b, YT_PRI_FUNC_PARAMS_1()
+#define YT_PRI_FUNC_ARG_1()  a
+#define YT_PRI_FUNC_ARG_0()
+
+// -----------------------[ FAKE FUNCTION DECLARATION ]------------------------
+#define YT_DECLARE_FUNC_VOID(f, ...)                \
+    typedef void (*f##_fake_handler) (__VA_ARGS__); \
+    YT_PRI_DECLARE_STRUCT_VOID (f)
+
+// ----
+#define YT_DECLARE_FUNC(rt, f, ...)               \
+    typedef rt (*f##_fake_handler) (__VA_ARGS__); \
+    YT_PRI_DECLARE_STRUCT (rt, f)
+
+// ----
+#define YT_PRI_DECLARE_STRUCT_VOID(f)                         \
+    YT_PRI_DECLARE_STRUCT_START (f)                           \
+    YT_PRI_STRUCT_FIELD (void*, resources);                   \
+    YT_PRI_STRUCT_FIELD (unsigned int, invokeCount);          \
+    YT_PRI_STRUCT_FIELD (YT_PRI_STRUCT_HANDLER (f), handler); \
+    YT_PRI_DECLARE_STRUCT_END (f)
+
+#define YT_PRI_DECLARE_STRUCT(rt, f)                          \
+    YT_PRI_DECLARE_STRUCT_START (f)                           \
+    YT_PRI_STRUCT_FIELD (void*, resources);                   \
+    YT_PRI_STRUCT_FIELD (unsigned int, invokeCount);          \
+    YT_PRI_STRUCT_FIELD (rt, ret);                            \
+    YT_PRI_STRUCT_FIELD (YT_PRI_STRUCT_HANDLER (f), handler); \
+    YT_PRI_DECLARE_STRUCT_END (f)
+
+#define YT_PRI_DECLARE_STRUCT_START(f) typedef struct YT_PRI_STRUCT_TAG (f) {
+#define YT_PRI_STRUCT_FIELD(pt, p)     pt p
+#define YT_PRI_DECLARE_STRUCT_END(f) \
+    }                                \
+    YT_PRI_STRUCT_TAG (f);           \
+    extern YT_PRI_STRUCT_TAG (f) YT_PRI_STRUCT_VAR (f)
+
+// -----------------------[ RESET MOCK ]------------------------
+#define YT_RESET_MOCK(f) memset (&YT_PRI_STRUCT_VAR (f), 0, sizeof (YT_PRI_STRUCT_VAR (f)))
+
+/*
+ * =================================================================================
+ * FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE AND TEXT EXPECTATIONS
+ * =================================================================================
+ * SECTION 2: FUNCTION & MACROS TO TEST EXPECTATIONS ON FUNCTION CALLS
+ * =================================================================================
+ * */
+#ifdef YUKTI_TEST_IMPLEMENTATION
+uint32_t yt_pri_total_test_count  = 0;
+uint32_t yt_pri_failed_test_count = 0;
+
+    #ifndef YUKTI_TEST_NO_MUST_CALL
+
+        #define YT_MUST_NEVER_CALL(f, ...)                                                        \
+            do {                                                                                  \
+                yt_pri_total_test_count++;                                                        \
+                yt_pri_add_callrecord (&yt_pri_neverCallExceptationsListHead, __LINE__, __FILE__, \
+                                       YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__);   \
+            } while (0)
+
+        #define YT_MUST_CALL_IN_ORDER(f, ...)                                                   \
+            do {                                                                                \
+                yt_pri_total_test_count++;                                                      \
+                yt_pri_add_callrecord (&yt_pri_orderedExceptationListHead, __LINE__, __FILE__,  \
+                                       YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
+            } while (0)
+
+        #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(n, f, ...) \
+            for (int i = n; i; i--) {                          \
+                YT_MUST_CALL_IN_ORDER (f, ##__VA_ARGS__);      \
+            }
+
+        #define YT_MUST_CALL_ANY_ORDER(f, ...)                                                  \
+            do {                                                                                \
+                yt_pri_total_test_count++;                                                      \
+                yt_pri_add_callrecord (&yt_pri_globalExceptationListHead, __LINE__, __FILE__,   \
+                                       YT_PRI_COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
+            } while (0)
+
+        #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...) \
+            for (int i = n; i; i--) {                           \
+                YT_MUST_CALL_ANY_ORDER (f, ##__VA_ARGS__);      \
+            }
+
+    #else
+        // Compilation will fail since the these macros will expand to invalid C code.
+        #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
+
+        #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
+
+    #endif /* YUKTI_TEST_NO_MUST_CALL */
+
+    #define YT_PRI_MAX_STRING_SIZE          250
+    #define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
+    #define YT_PRI_ARG_OPTIONAL_CHAR        '!'
+    #define YT_PRI_ARG_SEPARATOR_CHAR       ','
+
+    #define YT_PRI_PANIC(str)                                            \
+        do {                                                             \
+            printf ("YT_PRI_PANIC! %s.\n", (str) == NULL ? "" : str);    \
+            printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
+            exit (1);                                                    \
+        } while (0)
 
 typedef struct YT_PRI_CallRecord {
     char callString[YT_PRI_MAX_STRING_SIZE];
@@ -259,17 +388,14 @@ static bool yt_pri_match_call_strings (const char* exp, const char* actual);
 static void yt_pri_string_append (char* str, size_t size, const char* const fmt, ...);
 static void yt_pri_call_record_free (YT_PRI_CallRecord* node);
 static void yt_pri_free_call_list (ACL_ListNode* head);
-#ifdef YUKTI_TEST_DEBUG
+    #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-#else
+    #else
 static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-#endif
+    #endif /* YUKTI_TEST_DEBUG */
 
-static void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
-                                   const char* const sourceFileName, int n, const char* const fn,
-                                   ...);
 static void yt_pri_print_unmet_expectations();
 static void yt_pri_validate_expectations();
 static void yt_pri_ec_init();
@@ -278,9 +404,8 @@ static void yt_pri_teardown();
 static ACL_ListNode yt_pri_neverCallExceptationsListHead;
 static ACL_ListNode yt_pri_orderedExceptationListHead;
 static ACL_ListNode yt_pri_globalExceptationListHead;
-static ACL_ListNode yt_pri_actualCallListHead;
+ACL_ListNode yt_pri_actualCallListHead;
 
-#ifdef YUKTI_TEST_IMPLEMENTATION
 static bool yt_pri_match_call_strings (const char* exp, const char* actual)
 {
     // Expectation: Input pointers are not NULL. They are not user facing!
@@ -354,12 +479,12 @@ static void yt_pri_call_record_free (YT_PRI_CallRecord* node)
 }
 
     #ifdef YUKTI_TEST_DEBUG
-static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
-                                       const char* const fn, va_list l)
+void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
+                                const char* const fn, va_list l)
     #else
-static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
-                                       const char* const fn, va_list l)
-    #endif
+void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n, const char* const fn,
+                                va_list l)
+    #endif /* YUKTI_TEST_DEBUG */
 {
     // Expectation: Input pointers are not NULL and Buffer size > 0. They are not user facing!
     assert (buffer != NULL && fn != NULL && buffer_size > 0);
@@ -374,7 +499,7 @@ static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
     #ifdef YUKTI_TEST_DEBUG
             // Expectation: Actual call list must not have optional arguments
             assert (head != &yt_pri_actualCallListHead);
-    #endif
+    #endif /* YUKTI_TEST_DEBUG */
             yt_pri_string_append (buffer, buffer_size, "%c%c", separator, YT_PRI_ARG_OPTIONAL_CHAR);
         } else {
             yt_pri_string_append (buffer, buffer_size, "%c%d", separator, item.val);
@@ -419,7 +544,7 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
     yt_pri_create_call_string (head, newrec->callString, sizeof (newrec->callString), n, fn, l);
     #else
     yt_pri_create_call_string (newrec->callString, sizeof (newrec->callString), n, fn, l);
-    #endif
+    #endif /* YUKTI_TEST_DEBUG */
     va_end (l);
 }
 
@@ -563,195 +688,83 @@ static void yt_pri_ec_init()
     acl_list_init (&yt_pri_orderedExceptationListHead);
     acl_list_init (&yt_pri_actualCallListHead);
 }
-#endif // YUKTI_TEST_IMPLEMENTATION
+#endif /* YUKTI_TEST_IMPLEMENTATION */
 
 /*
  * =================================================================================
- * SECTION 2: MOCK FUNCTION DECLARATION AND DEFINITION MACROS
+ * FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE AND TEXT EXPECTATIONS
+ * =================================================================================
+ * SECTION 2.1: FUNCTION & MACROS TO TEST STATE EXPECTATIONS
  * =================================================================================
  * */
-
-void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
-
-// ----------------------------------------------------------------------------
-// Common Helper macros used by both declaration and defination macros.
-// ----------------------------------------------------------------------------
-#define YT_PRI_STRUCT_TAG(f)     f##_fake_tag
-#define YT_PRI_STRUCT_VAR(f)     f##_fake
-#define YT_PRI_STRUCT_HANDLER(f) f##_fake_handler
-
-// ---------------------[ FAKE FUNCTION DEFINITION ]-----------------------------
-#define YT_DEFINE_FUNC_VOID(f, ...) \
-    YT_PRI_DEFINE_FUNC_STRUCT (f);  \
-    YT_PRI_DEFINE_FUNC_BODY_VOID (YT_PRI_COUNT_ARGS (__VA_ARGS__), f, __VA_ARGS__)
-
-// ----
-#define YT_DEFINE_FUNC(rt, f, ...) \
-    YT_PRI_DEFINE_FUNC_STRUCT (f); \
-    YT_PRI_DEFINE_FUNC_BODY (YT_PRI_COUNT_ARGS (__VA_ARGS__), rt, f, __VA_ARGS__)
-
-// ----
-#define YT_PRI_DEFINE_FUNC_STRUCT(f) YT_PRI_STRUCT_TAG (f) YT_PRI_STRUCT_VAR (f) = { 0 }
-
-#define YT_PRI_DEFINE_FUNC_BODY_VOID(n, f, ...)    \
-    void f (YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__)) \
-    {                                              \
-        YT_PRI_RECORD_CALL (n, f, __VA_ARGS__);    \
-        YT_PRI_STRUCT_VAR (f).invokeCount++;       \
-        YT_PRI_RETURN_VOID (n, f, __VA_ARGS__);    \
-    }
-
-#define YT_PRI_DEFINE_FUNC_BODY(n, rt, f, ...)   \
-    rt f (YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__)) \
-    {                                            \
-        YT_PRI_RECORD_CALL (n, f, __VA_ARGS__);  \
-        YT_PRI_STRUCT_VAR (f).invokeCount++;     \
-        YT_PRI_RETURN (n, f, __VA_ARGS__);       \
-    }
-
-#define YT_PRI_RETURN_VOID(n, f, ...)  \
-    if (YT_PRI_STRUCT_VAR (f).handler) \
-    YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n())
-
-#define YT_PRI_RETURN(n, f, ...)                                                                   \
-    return (YT_PRI_STRUCT_VAR (f).handler) ? YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n()) \
-                                           : YT_PRI_STRUCT_VAR (f).ret
-
-#define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_8(t, ...)  t h, YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_7(t, ...)  t g, YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_6(t, ...)  t f, YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_5(t, ...)  t e, YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_4(t, ...)  t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_3(t, ...)  t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
-#define YT_PRI_FUNC_PARAMS_0(...)
-
-#define YT_PRI_FUNC_ARG_10() j, YT_PRI_FUNC_PARAMS_9()
-#define YT_PRI_FUNC_ARG_9()  i, YT_PRI_FUNC_PARAMS_8()
-#define YT_PRI_FUNC_ARG_8()  h, YT_PRI_FUNC_PARAMS_7()
-#define YT_PRI_FUNC_ARG_7()  g, YT_PRI_FUNC_PARAMS_6()
-#define YT_PRI_FUNC_ARG_6()  f, YT_PRI_FUNC_PARAMS_5()
-#define YT_PRI_FUNC_ARG_5()  e, YT_PRI_FUNC_PARAMS_4()
-#define YT_PRI_FUNC_ARG_4()  d, YT_PRI_FUNC_PARAMS_3()
-#define YT_PRI_FUNC_ARG_3()  c, YT_PRI_FUNC_PARAMS_2()
-#define YT_PRI_FUNC_ARG_2()  b, YT_PRI_FUNC_PARAMS_1()
-#define YT_PRI_FUNC_ARG_1()  a
-#define YT_PRI_FUNC_ARG_0()
-
-// -----------------------[ FAKE FUNCTION DECLARATION ]------------------------
-#define YT_DECLARE_FUNC_VOID(f, ...)                \
-    typedef void (*f##_fake_handler) (__VA_ARGS__); \
-    YT_PRI_DECLARE_STRUCT_VOID (f)
-
-// ----
-#define YT_DECLARE_FUNC(rt, f, ...)               \
-    typedef rt (*f##_fake_handler) (__VA_ARGS__); \
-    YT_PRI_DECLARE_STRUCT (rt, f)
-
-// ----
-#define YT_PRI_DECLARE_STRUCT_VOID(f)                         \
-    YT_PRI_DECLARE_STRUCT_START (f)                           \
-    YT_PRI_STRUCT_FIELD (void*, resources);                   \
-    YT_PRI_STRUCT_FIELD (unsigned int, invokeCount);          \
-    YT_PRI_STRUCT_FIELD (YT_PRI_STRUCT_HANDLER (f), handler); \
-    YT_PRI_DECLARE_STRUCT_END (f)
-
-#define YT_PRI_DECLARE_STRUCT(rt, f)                          \
-    YT_PRI_DECLARE_STRUCT_START (f)                           \
-    YT_PRI_STRUCT_FIELD (void*, resources);                   \
-    YT_PRI_STRUCT_FIELD (unsigned int, invokeCount);          \
-    YT_PRI_STRUCT_FIELD (rt, ret);                            \
-    YT_PRI_STRUCT_FIELD (YT_PRI_STRUCT_HANDLER (f), handler); \
-    YT_PRI_DECLARE_STRUCT_END (f)
-
-#define YT_PRI_DECLARE_STRUCT_START(f) typedef struct YT_PRI_STRUCT_TAG (f) {
-#define YT_PRI_STRUCT_FIELD(pt, p)     pt p
-#define YT_PRI_DECLARE_STRUCT_END(f) \
-    }                                \
-    YT_PRI_STRUCT_TAG (f);           \
-    extern YT_PRI_STRUCT_TAG (f) YT_PRI_STRUCT_VAR (f)
-
-// -----------------------[ RESET MOCK ]------------------------
-#define YT_RESET_MOCK(f) memset (&YT_PRI_STRUCT_VAR (f), 0, sizeof (YT_PRI_STRUCT_VAR (f)))
-
-/*
- * =================================================================================
- * SECTION 3: UNITTEST FUNCTIONS & MACROS
- * =================================================================================
- * */
-
+#ifdef YUKTI_TEST_IMPLEMENTATION
 static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, int* i);
 static int yt_pri_equal_string (const char* a, const char* b, int* i);
 
-#define YT_PRI_TEST_SCALAR(a, o, b)                               \
-    do {                                                          \
-        __auto_type ut_a = (a);                                   \
-        __auto_type ut_b = (b);                                   \
-        yt_pri_total_test_count++;                                \
-        if (ut_a o ut_b)                                          \
-            YT_PRI_PASSED (a o b);                                \
-        else                                                      \
-            YT_PRI_FAILED (a o b, "[%d !" #o " %d]", ut_a, ut_b); \
-    } while (0)
+    #define YT_PRI_TEST_SCALAR(a, o, b)                               \
+        do {                                                          \
+            __auto_type ut_a = (a);                                   \
+            __auto_type ut_b = (b);                                   \
+            yt_pri_total_test_count++;                                \
+            if (ut_a o ut_b)                                          \
+                YT_PRI_PASSED (a o b);                                \
+            else                                                      \
+                YT_PRI_FAILED (a o b, "[%d !" #o " %d]", ut_a, ut_b); \
+        } while (0)
 
-#define YT_PRI_TEST_MEM(a, o, b, sz)                                                    \
-    do {                                                                                \
-        __auto_type ut_a = (a);                                                         \
-        __auto_type ut_b = (b);                                                         \
-        yt_pri_total_test_count++;                                                      \
-        int i;                                                                          \
-        if (ut_equal_mem (ut_a, ut_b, sz, &i) o 1)                                      \
-            YT_PRI_PASSED (a o b);                                                      \
-        else                                                                            \
-            YT_PRI_FAILED (a o b, "[Idx: %d, 0x%X !" #o " 0x%X]", i, ut_a[i], ut_b[i]); \
-    } while (0)
+    #define YT_PRI_TEST_MEM(a, o, b, sz)                                                    \
+        do {                                                                                \
+            __auto_type ut_a = (a);                                                         \
+            __auto_type ut_b = (b);                                                         \
+            yt_pri_total_test_count++;                                                      \
+            int i;                                                                          \
+            if (ut_equal_mem (ut_a, ut_b, sz, &i) o 1)                                      \
+                YT_PRI_PASSED (a o b);                                                      \
+            else                                                                            \
+                YT_PRI_FAILED (a o b, "[Idx: %d, 0x%X !" #o " 0x%X]", i, ut_a[i], ut_b[i]); \
+        } while (0)
 
-#define YT_PRI_TEST_STRING(a, o, b)                                                     \
-    do {                                                                                \
-        __auto_type ut_a = (a);                                                         \
-        __auto_type ut_b = (b);                                                         \
-        yt_pri_total_test_count++;                                                      \
-        int i;                                                                          \
-        if (ut_equal_string (ut_a, ut_b, &i) o 1)                                       \
-            YT_PRI_PASSED (a o b);                                                      \
-        else                                                                            \
-            YT_PRI_FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
-    } while (0)
+    #define YT_PRI_TEST_STRING(a, o, b)                                                     \
+        do {                                                                                \
+            __auto_type ut_a = (a);                                                         \
+            __auto_type ut_b = (b);                                                         \
+            yt_pri_total_test_count++;                                                      \
+            int i;                                                                          \
+            if (ut_equal_string (ut_a, ut_b, &i) o 1)                                       \
+                YT_PRI_PASSED (a o b);                                                      \
+            else                                                                            \
+                YT_PRI_FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
+        } while (0)
 
-#define YT_EQ_SCALAR(a, b)  YT_PRI_TEST_SCALAR (a, ==, b)
-#define YT_NEQ_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, !=, b)
-#define YT_GEQ_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, >=, b)
-#define YT_LEQ_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, <=, b)
-#define YT_LES_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, <, b)
-#define YT_GRT_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, >, b)
+    #define YT_EQ_SCALAR(a, b)  YT_PRI_TEST_SCALAR (a, ==, b)
+    #define YT_NEQ_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, !=, b)
+    #define YT_GEQ_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, >=, b)
+    #define YT_LEQ_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, <=, b)
+    #define YT_LES_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, <, b)
+    #define YT_GRT_SCALAR(a, b) YT_PRI_TEST_SCALAR (a, >, b)
 
-#define YT_EQ_MEM(a, b, sz)  YT_PRI_TEST_MEM (a, ==, b, sz)
-#define YT_NEQ_MEM(a, b, sz) YT_PRI_TEST_MEM (a, !=, b, sz)
+    #define YT_EQ_MEM(a, b, sz)  YT_PRI_TEST_MEM (a, ==, b, sz)
+    #define YT_NEQ_MEM(a, b, sz) YT_PRI_TEST_MEM (a, !=, b, sz)
 
-#define YT_EQ_STRING(a, b)  YT_PRI_TEST_STRING (a, ==, b)
-#define YT_NEQ_STRING(a, b) YT_PRI_TEST_STRING (a, !=, b)
+    #define YT_EQ_STRING(a, b)  YT_PRI_TEST_STRING (a, ==, b)
+    #define YT_NEQ_STRING(a, b) YT_PRI_TEST_STRING (a, !=, b)
 
-#define YT_TEST(tf, fn)                                                                  \
-    static void fn()                                                                     \
-    {                                                                                    \
-        reset();                                                                         \
-        yt_pri_ec_init();                                                                \
-        printf ("%s[%20s - %-20s]%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
-        do
+    #define YT_TEST(tf, fn)                                                                  \
+        static void fn()                                                                     \
+        {                                                                                    \
+            reset();                                                                         \
+            yt_pri_ec_init();                                                                \
+            printf ("%s[%20s - %-20s]%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
+            do
 
-#define YT_END()                    \
-    yt_pri_validate_expectations(); \
-    yt_pri_teardown();              \
-    }                               \
-    while (0)                       \
-        ;                           \
-    printf ("\n")
+    #define YT_END()                    \
+        yt_pri_validate_expectations(); \
+        yt_pri_teardown();              \
+        }                               \
+        while (0)                       \
+            ;                           \
+        printf ("\n")
 
-#ifdef YUKTI_TEST_IMPLEMENTATION
 static int yt_pri_equal_string (const char* a, const char* b, int* i)
 {
     *i = 0;
@@ -772,7 +785,7 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
 
     return *(uint8_t*)--a == *(uint8_t*)--b;
 }
-#endif // YUKTI_TEST_IMPLEMENTATION
+#endif /* YUKTI_TEST_IMPLEMENTATION */
 
 #pragma GCC diagnostic pop
 #endif // YUKTI_TEST_H
