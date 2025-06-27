@@ -315,8 +315,26 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 uint32_t yt_pri_total_test_count  = 0;
 uint32_t yt_pri_failed_test_count = 0;
 
-    #ifndef YUKTI_TEST_NO_MUST_CALL
+    #define YT_PRI_PANIC(str)                                            \
+        do {                                                             \
+            printf ("YT_PRI_PANIC! %s.\n", (str) == NULL ? "" : str);    \
+            printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
+            exit (1);                                                    \
+        } while (0)
 
+    #ifdef YUKTI_TEST_NO_MUST_CALL
+        // Compilation will fail since the these macros will expand to invalid C code.
+        #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
+
+        #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
+        #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
+
+        #define yt_pri_validate_expectations() (void)0
+        #define yt_pri_teardown()              (void)0
+        #define yt_pri_ec_init()               (void)0
+    #else
         #define YT_MUST_NEVER_CALL(f, ...)                                                        \
             do {                                                                                  \
                 yt_pri_total_test_count++;                                                        \
@@ -348,31 +366,13 @@ uint32_t yt_pri_failed_test_count = 0;
                 YT_MUST_CALL_ANY_ORDER (f, ##__VA_ARGS__);      \
             }
 
-    #else
-        // Compilation will fail since the these macros will expand to invalid C code.
-        #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
-
-        #define YT_MUST_CALL_IN_ORDER(...)                YT_PRI_ERROR_MESSAGE
-        #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT_PRI_ERROR_MESSAGE
-        #define YT_MUST_CALL_ANY_ORDER(...)               YT_PRI_ERROR_MESSAGE
-        #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(...) YT_PRI_ERROR_MESSAGE
-
-    #endif /* YUKTI_TEST_NO_MUST_CALL */
-
-    #define YT_PRI_MAX_STRING_SIZE          250
-    #define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
-    #define YT_PRI_ARG_OPTIONAL_CHAR        '!'
-    #define YT_PRI_ARG_SEPARATOR_CHAR       ','
-
-    #define YT_PRI_PANIC(str)                                            \
-        do {                                                             \
-            printf ("YT_PRI_PANIC! %s.\n", (str) == NULL ? "" : str);    \
-            printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
-            exit (1);                                                    \
-        } while (0)
+        #define YT_PRI_MAX_CALLSTRING_SIZE      250
+        #define YT_PRI_MAX_SOURCE_FILE_NAME_LEN 250
+        #define YT_PRI_ARG_OPTIONAL_CHAR        '!'
+        #define YT_PRI_ARG_SEPARATOR_CHAR       ','
 
 typedef struct YT_PRI_CallRecord {
-    char callString[YT_PRI_MAX_STRING_SIZE];
+    char callString[YT_PRI_MAX_CALLSTRING_SIZE];
     enum {
         YT_CALLRECORD_TYPE_ORDERED_EXPECTATION,
         YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION,
@@ -388,13 +388,13 @@ static bool yt_pri_match_call_strings (const char* exp, const char* actual);
 static void yt_pri_string_append (char* str, size_t size, const char* const fmt, ...);
 static void yt_pri_call_record_free (YT_PRI_CallRecord* node);
 static void yt_pri_free_call_list (ACL_ListNode* head);
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
 static void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-    #else
+        #else
 static void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n,
                                        const char* const fn, va_list l);
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
 
 static void yt_pri_print_unmet_expectations();
 static void yt_pri_validate_expectations();
@@ -478,13 +478,13 @@ static void yt_pri_call_record_free (YT_PRI_CallRecord* node)
     free (node);
 }
 
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
 void yt_pri_create_call_string (ACL_ListNode* head, char* buffer, size_t buffer_size, int n,
                                 const char* const fn, va_list l)
-    #else
+        #else
 void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n, const char* const fn,
                                 va_list l)
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
 {
     // Expectation: Input pointers are not NULL and Buffer size > 0. They are not user facing!
     assert (buffer != NULL && fn != NULL && buffer_size > 0);
@@ -496,10 +496,10 @@ void yt_pri_create_call_string (char* buffer, size_t buffer_size, int n, const c
         char separator  = (i == 0) ? ' ' : YT_PRI_ARG_SEPARATOR_CHAR;
 
         if (item.isOpt) {
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
             // Expectation: Actual call list must not have optional arguments
             assert (head != &yt_pri_actualCallListHead);
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
             yt_pri_string_append (buffer, buffer_size, "%c%c", separator, YT_PRI_ARG_OPTIONAL_CHAR);
         } else {
             yt_pri_string_append (buffer, buffer_size, "%c%d", separator, item.val);
@@ -540,11 +540,11 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
 
     va_list l;
     va_start (l, fn);
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
     yt_pri_create_call_string (head, newrec->callString, sizeof (newrec->callString), n, fn, l);
-    #else
+        #else
     yt_pri_create_call_string (newrec->callString, sizeof (newrec->callString), n, fn, l);
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
     va_end (l);
 }
 
@@ -590,7 +590,7 @@ void yt_pri_print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedLi
         }
     }
 
-    #ifdef YUKTI_TEST_DEBUG
+        #ifdef YUKTI_TEST_DEBUG
     printf ("\n  Actual order of functions calls was the following:\n");
     acl_list_for_each (&yt_pri_actualCallListHead, node)
     {
@@ -601,7 +601,7 @@ void yt_pri_print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedLi
 
         printf ("    * %s\n", item->callString);
     }
-    #endif /* YUKTI_TEST_DEBUG */
+        #endif /* YUKTI_TEST_DEBUG */
 }
 
 void yt_pri_validate_expectations()
@@ -688,7 +688,8 @@ static void yt_pri_ec_init()
     acl_list_init (&yt_pri_orderedExceptationListHead);
     acl_list_init (&yt_pri_actualCallListHead);
 }
-#endif /* YUKTI_TEST_IMPLEMENTATION */
+    #endif     /* YUKTI_TEST_NO_MUST_CALL */
+#endif         /* YUKTI_TEST_IMPLEMENTATION */
 
 /*
  * =================================================================================
