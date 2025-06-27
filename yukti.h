@@ -39,9 +39,9 @@
 #include <stdarg.h>
 
 /*
- * =================================================================================
+ * ========================================================================================
  * SECTION 0: SUPPORTING
- * =================================================================================
+ * ========================================================================================
  * */
 
 /* ----------------------------------------------------------------------------
@@ -126,12 +126,13 @@ static inline void acl_list_remove (ACL_ListNode* item)
         printf ("   at %s:%d in %s.", __func__, __LINE__, __FILE__); \
         exit (1);                                                    \
     } while (0)
+
 /*
- * =================================================================================
- * FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
- * =================================================================================
- * SECTION 1: RECORD CALL MACROS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
+ * ========================================================================================
+ * 1.1: RECORD CALL MACROS
+ * ========================================================================================
  * */
 
 #pragma GCC diagnostic push
@@ -184,11 +185,11 @@ typedef struct YT_PRI_Arg {
 #endif /* YUKTI_TEST_NO_MUST_CALL */
 
 /*
- * =================================================================================
- * FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
- * =================================================================================
- * SECTION 1.1: MOCKS TO CREATE FAKE/MOCK FUNCTION DEFINITIONS & DECLARATIONS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
+ * ========================================================================================
+ * 1.2: MOCKS TO CREATE FAKE/MOCK FUNCTION DEFINITIONS & DECLARATIONS
+ * ========================================================================================
  * */
 void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
@@ -298,11 +299,11 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 #define YT_RESET_MOCK(f) memset (&YT_PRI_STRUCT_VAR (f), 0, sizeof (YT_PRI_STRUCT_VAR (f)))
 
 /*
- * =================================================================================
- * FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE AND TEXT EXPECTATIONS
- * =================================================================================
- * SECTION 2: FUNCTION & MACROS TO TEST EXPECTATIONS ON FUNCTION CALLS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+ * ========================================================================================
+ * 2.1: FOR REPORTING LIST OF FALIED TESTS IN THE END.
+ * ========================================================================================
  * */
 #ifdef YUKTI_TEST_IMPLEMENTATION
 
@@ -332,7 +333,7 @@ static YT_PRI_TestRecord* yt_pri_create_testRecord (char* testname)
 
     newrec->total_exp_count  = 0;
     newrec->failed_exp_count = 0;
-    strncpy (newrec->test_function_name, testname, YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH);
+    strncpy (newrec->test_function_name, testname, YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH - 1);
     acl_list_init (&newrec->failedTestListNode);
 
     return newrec;
@@ -373,6 +374,13 @@ static void yt_pri_free_testRecord (YT_PRI_TestRecord* trecord)
             return yt_pri_failed_test_count == 0 ? YT_PRI_EXIT_SUCCESS : YT_PRI_EXIT_FAILURE; \
         } while (0)
 
+    /*
+     * ========================================================================================
+     * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+     * ========================================================================================
+     * 2.2: FUNCTION & MACROS TO TEST EXPECTATIONS ON FUNCTION CALLS
+     * ========================================================================================
+     * */
     #ifdef YUKTI_TEST_NO_MUST_CALL
         // Compilation will fail since the these macros will expand to invalid C code.
         #define YT_PRI_ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
@@ -565,9 +573,11 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
 {
     YT_PRI_CallRecord* newrec = NULL;
     if (!(newrec = malloc (sizeof (YT_PRI_CallRecord)))) {
+        perror ("malloc");
         YT_PRI_PANIC (NULL);
     }
     if (!(newrec->sourceFileName = malloc (sizeof (char) * YT_PRI_MAX_SOURCE_FILE_NAME_LEN))) {
+        perror ("malloc");
         YT_PRI_PANIC (NULL);
     }
 
@@ -587,7 +597,7 @@ void yt_pri_add_callrecord (ACL_ListNode* head, int sourceLineNumber,
     acl_list_add_before (head, &newrec->listNode);
     newrec->callString[0]    = '\0';
     newrec->sourceLineNumber = sourceLineNumber;
-    strncpy (newrec->sourceFileName, sourceFileName, YT_PRI_MAX_SOURCE_FILE_NAME_LEN);
+    strncpy (newrec->sourceFileName, sourceFileName, YT_PRI_MAX_SOURCE_FILE_NAME_LEN - 1);
 
     va_list l;
     va_start (l, fn);
@@ -743,11 +753,11 @@ static void yt_pri_ec_init()
 #endif         /* YUKTI_TEST_IMPLEMENTATION */
 
 /*
- * =================================================================================
- * FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE AND TEXT EXPECTATIONS
- * =================================================================================
- * SECTION 2.1: FUNCTION & MACROS TO TEST STATE EXPECTATIONS
- * =================================================================================
+ * ========================================================================================
+ * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+ * ========================================================================================
+ * 2.3: FUNCTION & MACROS TO TEST STATE EXPECTATIONS
+ * ========================================================================================
  * */
 #ifdef YUKTI_TEST_IMPLEMENTATION
 static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, int* i);
