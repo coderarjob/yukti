@@ -325,8 +325,10 @@ static uint32_t yt_pri_failed_test_count            = 0;
 
 static YT_PRI_TestRecord* yt_pri_create_testRecord (char* testname)
 {
+    assert (testname != NULL);
+
     YT_PRI_TestRecord* newrec = NULL;
-    if (!(newrec = malloc (sizeof (YT_PRI_TestRecord)))) {
+    if (!(newrec = calloc (1, sizeof (YT_PRI_TestRecord)))) {
         perror ("malloc");
         YT_PRI_PANIC (NULL);
     }
