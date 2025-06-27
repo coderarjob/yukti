@@ -830,10 +830,16 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         yt_pri_teardown();                                                        \
         if (yt_pri_current_testrecord->failed_exp_count != 0) {                   \
             /* Add test to failed test list */                                    \
+            printf ("\n  %sSome test expectations failed [%d of %d failed]%s",    \
+                    YT_PRI_COL_RED, yt_pri_current_testrecord->failed_exp_count,  \
+                    yt_pri_current_testrecord->total_exp_count, YT_PRI_COL_RESET);\
             yt_pri_failed_test_count++;                                           \
             acl_list_add_before (&yt_pri_failedTestsListHead,                     \
                                  &yt_pri_current_testrecord->failedTestListNode); \
         } else {                                                                  \
+            printf ("\n  %sAll test expectations passed [0 of %d failed]%s",      \
+                    YT_PRI_COL_GREEN, yt_pri_current_testrecord->total_exp_count, \
+                    YT_PRI_COL_RESET);                                            \
             yt_pri_free_testRecord (yt_pri_current_testrecord);                   \
         }                                                                         \
         yt_pri_current_testrecord = NULL;                                         \
