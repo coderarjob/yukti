@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdbool.h>
+#define YULTI_TEST_NO_MUST_CALL
 #define YUKTI_TEST_IMPLEMENTATION
 #include "../../yukti.h"
 
-/* Fake function defination and declaration */
+/* Fake function definition and declaration */
 YT_DECLARE_FUNC (bool, isSpaceAvailable);
 YT_DEFINE_FUNC (bool, isSpaceAvailable);
 
@@ -52,6 +53,7 @@ void reset()
 
 int main()
 {
+    YT_INIT();
     Success_Complete();
     Fail_Afterwards();
     YT_RETURN_WITH_REPORT();

@@ -5,3 +5,4 @@
 [X]  Prints the file name & line number of the expectation which failed.
 [X]  Only print actual call list when YUKTI_TEST_DEBUG is defined.
 [X]  Helper macro to call YT_MUST_CALL_ANY_ORDER multiple times.
+[X]  Show the names of tests which failed.

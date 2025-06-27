@@ -27,6 +27,7 @@ void reset()
 
 int main(void)
 {
+    YT_INIT();
     dut_test();
     YT_RETURN_WITH_REPORT();
 }

@@ -86,6 +86,7 @@ void reset()
 
 int main()
 {
+    YT_INIT();
     branch_1_test();
     branch_2_test();
     YT_RETURN_WITH_REPORT();
