@@ -132,70 +132,74 @@ static inline void acl_list_remove (ACL_ListNode* item)
 // ----------------------------------------------------------------------------
 // Declaring, defining and calling functions
 // ----------------------------------------------------------------------------
-#define YT__FCALL_WRAP_ARGS_X(n, w, ...)  YT__FCALL_WRAP_ARGS_##n (w, __VA_ARGS__)
-#define YT__FCALL_WRAP_ARGS_10(w, t, ...) YT__FCALL_WRAP_ARGS_9 (w, __VA_ARGS__), w (_j)
-#define YT__FCALL_WRAP_ARGS_9(w, t, ...)  YT__FCALL_WRAP_ARGS_8 (w, __VA_ARGS__), w (_i)
-#define YT__FCALL_WRAP_ARGS_8(w, t, ...)  YT__FCALL_WRAP_ARGS_7 (w, __VA_ARGS__), w (_h)
-#define YT__FCALL_WRAP_ARGS_7(w, t, ...)  YT__FCALL_WRAP_ARGS_6 (w, __VA_ARGS__), w (_g)
-#define YT__FCALL_WRAP_ARGS_6(w, t, ...)  YT__FCALL_WRAP_ARGS_5 (w, __VA_ARGS__), w (_f)
-#define YT__FCALL_WRAP_ARGS_5(w, t, ...)  YT__FCALL_WRAP_ARGS_4 (w, __VA_ARGS__), w (_e)
-#define YT__FCALL_WRAP_ARGS_4(w, t, ...)  YT__FCALL_WRAP_ARGS_3 (w, __VA_ARGS__), w (_d)
-#define YT__FCALL_WRAP_ARGS_3(w, t, ...)  YT__FCALL_WRAP_ARGS_2 (w, __VA_ARGS__), w (_c)
-#define YT__FCALL_WRAP_ARGS_2(w, t, ...)  YT__FCALL_WRAP_ARGS_1 (w, __VA_ARGS__), w (_b)
-#define YT__FCALL_WRAP_ARGS_1(w, t, ...)  w (_a)
-#define YT__FCALL_WRAP_ARGS_0(...)
+// clang-format off
+#define YT__FCALL_WRAP_ARGS_X(w, ...)     YT__FCALL_WRAP_ARGS_0 (w, __VA_ARGS__)
+#define YT__FCALL_WRAP_ARGS_0(w, ...)  __VA_OPT__ (YT__FCALL_WRAP_ARGS_1 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_1(w, t, ...)  w(_a)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_2 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_2(w, t, ...)  w(_b)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_3 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_3(w, t, ...)  w(_c)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_4 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_4(w, t, ...)  w(_d)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_5 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_5(w, t, ...)  w(_e)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_6 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_6(w, t, ...)  w(_f)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_7 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_7(w, t, ...)  w(_g)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_8 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_8(w, t, ...)  w(_h)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_9 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_9(w, t, ...)  w(_i)__VA_OPT__ (, YT__FCALL_WRAP_ARGS_10 (w, __VA_ARGS__))
+#define YT__FCALL_WRAP_ARGS_10(w, t, ...) w(_j)
+// clang-format on
 
-#define YT__FCALL_ARGS_X(n, ...)  YT__FCALL_ARGS_##n (i, __VA_ARGS__)
-#define YT__FCALL_ARGS_10(t, ...) YT__FCALL_ARGS_9 (i, __VA_ARGS__), _j
-#define YT__FCALL_ARGS_9(t, ...)  YT__FCALL_ARGS_8 (i, __VA_ARGS__), _i
-#define YT__FCALL_ARGS_8(t, ...)  YT__FCALL_ARGS_7 (i, __VA_ARGS__), _h
-#define YT__FCALL_ARGS_7(t, ...)  YT__FCALL_ARGS_6 (i, __VA_ARGS__), _g
-#define YT__FCALL_ARGS_6(t, ...)  YT__FCALL_ARGS_5 (i, __VA_ARGS__), _f
-#define YT__FCALL_ARGS_5(t, ...)  YT__FCALL_ARGS_4 (i, __VA_ARGS__), _e
-#define YT__FCALL_ARGS_4(t, ...)  YT__FCALL_ARGS_3 (i, __VA_ARGS__), _d
-#define YT__FCALL_ARGS_3(t, ...)  YT__FCALL_ARGS_2 (i, __VA_ARGS__), _c
-#define YT__FCALL_ARGS_2(t, ...)  YT__FCALL_ARGS_1 (i, __VA_ARGS__), _b
-#define YT__FCALL_ARGS_1(t, ...)  _a
-#define YT__FCALL_ARGS_0(...)
+#define YT__FCALL_ARGS_X(...)     YT__FCALL_ARGS_0 (__VA_ARGS__)
+#define YT__FCALL_ARGS_0(...)     __VA_OPT__ (YT__FCALL_ARGS_1 (__VA_ARGS__))
+#define YT__FCALL_ARGS_1(t, ...)  _a __VA_OPT__ (, YT__FCALL_ARGS_2 (__VA_ARGS__))
+#define YT__FCALL_ARGS_2(t, ...)  _b __VA_OPT__ (, YT__FCALL_ARGS_3 (__VA_ARGS__))
+#define YT__FCALL_ARGS_3(t, ...)  _c __VA_OPT__ (, YT__FCALL_ARGS_4 (__VA_ARGS__))
+#define YT__FCALL_ARGS_4(t, ...)  _d __VA_OPT__ (, YT__FCALL_ARGS_5 (__VA_ARGS__))
+#define YT__FCALL_ARGS_5(t, ...)  _e __VA_OPT__ (, YT__FCALL_ARGS_6 (__VA_ARGS__))
+#define YT__FCALL_ARGS_6(t, ...)  _f __VA_OPT__ (, YT__FCALL_ARGS_7 (__VA_ARGS__))
+#define YT__FCALL_ARGS_7(t, ...)  _g __VA_OPT__ (, YT__FCALL_ARGS_8 (__VA_ARGS__))
+#define YT__FCALL_ARGS_8(t, ...)  _h __VA_OPT__ (, YT__FCALL_ARGS_9 (__VA_ARGS__))
+#define YT__FCALL_ARGS_9(t, ...)  _i __VA_OPT__ (, YT__FCALL_ARGS_10 (__VA_ARGS__))
+#define YT__FCALL_ARGS_10(t, ...) _j
 
-#define YT__FCALL_ARGS_ARRAY_X(n, i, ...)  YT__FCALL_ARGS_ARRAY_##n (i, __VA_ARGS__)
-#define YT__FCALL_ARGS_ARRAY_10(i, t, ...) YT__FCALL_ARGS_ARRAY_9 (i, __VA_ARGS__), _j[i]
-#define YT__FCALL_ARGS_ARRAY_9(i, t, ...)  YT__FCALL_ARGS_ARRAY_8 (i, __VA_ARGS__), _i[i]
-#define YT__FCALL_ARGS_ARRAY_8(i, t, ...)  YT__FCALL_ARGS_ARRAY_7 (i, __VA_ARGS__), _h[i]
-#define YT__FCALL_ARGS_ARRAY_7(i, t, ...)  YT__FCALL_ARGS_ARRAY_6 (i, __VA_ARGS__), _g[i]
-#define YT__FCALL_ARGS_ARRAY_6(i, t, ...)  YT__FCALL_ARGS_ARRAY_5 (i, __VA_ARGS__), _f[i]
-#define YT__FCALL_ARGS_ARRAY_5(i, t, ...)  YT__FCALL_ARGS_ARRAY_4 (i, __VA_ARGS__), _e[i]
-#define YT__FCALL_ARGS_ARRAY_4(i, t, ...)  YT__FCALL_ARGS_ARRAY_3 (i, __VA_ARGS__), _d[i]
-#define YT__FCALL_ARGS_ARRAY_3(i, t, ...)  YT__FCALL_ARGS_ARRAY_2 (i, __VA_ARGS__), _c[i]
-#define YT__FCALL_ARGS_ARRAY_2(i, t, ...)  YT__FCALL_ARGS_ARRAY_1 (i, __VA_ARGS__), _b[i]
-#define YT__FCALL_ARGS_ARRAY_1(i, t, ...)  _a[i]
-#define YT__FCALL_ARGS_ARRAY_0(...)
+// clang-format off
+#define YT__FCALL_ARGS_ARRAY_X(i, ...)     YT__FCALL_ARGS_ARRAY_0 (i, __VA_ARGS__)
+#define YT__FCALL_ARGS_ARRAY_0(i, ...)  __VA_OPT__ (YT__FCALL_ARGS_ARRAY_1 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_1(i, t, ...)  _a[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_2 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_2(i, t, ...)  _b[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_3 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_3(i, t, ...)  _c[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_4 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_4(i, t, ...)  _d[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_5 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_5(i, t, ...)  _e[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_6 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_6(i, t, ...)  _f[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_7 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_7(i, t, ...)  _g[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_8 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_8(i, t, ...)  _h[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_9 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_9(i, t, ...)  _i[i] __VA_OPT__ (, YT__FCALL_ARGS_ARRAY_10 (i, __VA_ARGS__))
+#define YT__FCALL_ARGS_ARRAY_10(i, t, ...) _j[i]
+// clang-format on
 
-#define YT__FUNC_PARAMS_X(n, ...)  YT__FUNC_PARAMS_##n (__VA_ARGS__)
-#define YT__FUNC_PARAMS_10(t, ...) YT__FUNC_PARAMS_9 (__VA_ARGS__), t _j
-#define YT__FUNC_PARAMS_9(t, ...)  YT__FUNC_PARAMS_8 (__VA_ARGS__), t _i
-#define YT__FUNC_PARAMS_8(t, ...)  YT__FUNC_PARAMS_7 (__VA_ARGS__), t _h
-#define YT__FUNC_PARAMS_7(t, ...)  YT__FUNC_PARAMS_6 (__VA_ARGS__), t _g
-#define YT__FUNC_PARAMS_6(t, ...)  YT__FUNC_PARAMS_5 (__VA_ARGS__), t _f
-#define YT__FUNC_PARAMS_5(t, ...)  YT__FUNC_PARAMS_4 (__VA_ARGS__), t _e
-#define YT__FUNC_PARAMS_4(t, ...)  YT__FUNC_PARAMS_3 (__VA_ARGS__), t _d
-#define YT__FUNC_PARAMS_3(t, ...)  YT__FUNC_PARAMS_2 (__VA_ARGS__), t _c
-#define YT__FUNC_PARAMS_2(t, ...)  YT__FUNC_PARAMS_1 (__VA_ARGS__), t _b
-#define YT__FUNC_PARAMS_1(t, ...)  t _a
-#define YT__FUNC_PARAMS_0(...)
+#define YT__FUNC_PARAMS_X(...)     YT__FUNC_PARAMS_0 (__VA_ARGS__)
+#define YT__FUNC_PARAMS_0(...)     __VA_OPT__ (YT__FUNC_PARAMS_1 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_1(t, ...)  t _a __VA_OPT__ (, YT__FUNC_PARAMS_2 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_2(t, ...)  t _b __VA_OPT__ (, YT__FUNC_PARAMS_3 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_3(t, ...)  t _c __VA_OPT__ (, YT__FUNC_PARAMS_4 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_4(t, ...)  t _d __VA_OPT__ (, YT__FUNC_PARAMS_5 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_5(t, ...)  t _e __VA_OPT__ (, YT__FUNC_PARAMS_6 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_6(t, ...)  t _f __VA_OPT__ (, YT__FUNC_PARAMS_7 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_7(t, ...)  t _g __VA_OPT__ (, YT__FUNC_PARAMS_8 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_8(t, ...)  t _h __VA_OPT__ (, YT__FUNC_PARAMS_9 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_9(t, ...)  t _i __VA_OPT__ (, YT__FUNC_PARAMS_10 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_10(t, ...) t _j
 
-#define YT__FUNC_PARAMS_ARRAY_X(n, ...)  YT__FUNC_PARAMS_ARRAY_##n (__VA_ARGS__)
-#define YT__FUNC_PARAMS_ARRAY_10(t, ...) YT__FUNC_PARAMS_ARRAY_9 (__VA_ARGS__), t _j[]
-#define YT__FUNC_PARAMS_ARRAY_9(t, ...)  YT__FUNC_PARAMS_ARRAY_8 (__VA_ARGS__), t _i[]
-#define YT__FUNC_PARAMS_ARRAY_8(t, ...)  YT__FUNC_PARAMS_ARRAY_7 (__VA_ARGS__), t _h[]
-#define YT__FUNC_PARAMS_ARRAY_7(t, ...)  YT__FUNC_PARAMS_ARRAY_6 (__VA_ARGS__), t _g[]
-#define YT__FUNC_PARAMS_ARRAY_6(t, ...)  YT__FUNC_PARAMS_ARRAY_5 (__VA_ARGS__), t _f[]
-#define YT__FUNC_PARAMS_ARRAY_5(t, ...)  YT__FUNC_PARAMS_ARRAY_4 (__VA_ARGS__), t _e[]
-#define YT__FUNC_PARAMS_ARRAY_4(t, ...)  YT__FUNC_PARAMS_ARRAY_3 (__VA_ARGS__), t _d[]
-#define YT__FUNC_PARAMS_ARRAY_3(t, ...)  YT__FUNC_PARAMS_ARRAY_2 (__VA_ARGS__), t _c[]
-#define YT__FUNC_PARAMS_ARRAY_2(t, ...)  YT__FUNC_PARAMS_ARRAY_1 (__VA_ARGS__), t _b[]
-#define YT__FUNC_PARAMS_ARRAY_1(t, ...)  t _a[]
-#define YT__FUNC_PARAMS_ARRAY_0(...)
+#define YT__FUNC_PARAMS_ARRAY_X(...)     YT__FUNC_PARAMS_ARRAY_0 (__VA_ARGS__)
+#define YT__FUNC_PARAMS_ARRAY_0(...)     __VA_OPT__ (YT__FUNC_PARAMS_ARRAY_1 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_1(t, ...)  t _a[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_2 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_2(t, ...)  t _b[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_3 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_3(t, ...)  t _c[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_4 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_4(t, ...)  t _d[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_5 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_5(t, ...)  t _e[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_6 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_6(t, ...)  t _f[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_7 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_7(t, ...)  t _g[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_8 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_8(t, ...)  t _h[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_9 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_9(t, ...)  t _i[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_10 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_10(t, ...) t _j[]
 /*
  * ========================================================================================
  * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
@@ -219,7 +223,7 @@ typedef struct YT__Arg {
     uintptr_t val; // A type large enough to hold both integers & addresses
 } YT__Arg;
 
-    #define YT__RECORD_CALL_X(n, ...) YT__FCALL_WRAP_ARGS_X (n, YT_V, ##__VA_ARGS__)
+    #define YT__RECORD_CALL_X(...) YT__FCALL_WRAP_ARGS_X (YT_V, ##__VA_ARGS__)
 
     #define YT_V(v)                               \
         (YT__Arg)                                 \
@@ -232,11 +236,11 @@ typedef struct YT__Arg {
             .isOpt = true, .val = 0 \
         }
 
-    #define YT__RECORD_CALL(n, f, ...)                                                  \
-        do {                                                                            \
-            YT__add_callrecord (&YT__actualCallListHead, __LINE__, __FILE__,            \
-                                YT__COUNT_ARGS (__VA_ARGS__),                           \
-                                #f __VA_OPT__ (, ) YT__RECORD_CALL_X (n, __VA_ARGS__)); \
+    #define YT__RECORD_CALL(n, f, ...)                                              \
+        do {                                                                        \
+            YT__add_callrecord (&YT__actualCallListHead, __LINE__, __FILE__,        \
+                                YT__COUNT_ARGS (__VA_ARGS__),                       \
+                                #f __VA_OPT__ (, YT__RECORD_CALL_X (__VA_ARGS__))); \
         } while (0)
 #else
     #define YT__RECORD_CALL(...) (void)0
@@ -271,29 +275,31 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 // ----
 #define YT__DEFINE_FUNC_STRUCT(f) YT__STRUCT_TAG (f) YT__STRUCT_VAR (f) = { 0 }
 
-#define YT__DEFINE_FUNC_BODY_VOID(n, f, ...)    \
-    void f (YT__FUNC_PARAMS_X (n, __VA_ARGS__)) \
-    {                                           \
-        YT__RECORD_CALL (n, f, __VA_ARGS__);    \
-        YT__STRUCT_VAR (f).invokeCount++;       \
-        YT__RETURN_VOID (n, f, __VA_ARGS__);    \
+#define YT__DEFINE_FUNC_BODY_VOID(n, f, ...) \
+    void f (YT__FUNC_PARAMS_X (__VA_ARGS__)) \
+    {                                        \
+        YT__RECORD_CALL (n, f, __VA_ARGS__); \
+        YT__STRUCT_VAR (f).invokeCount++;    \
+        YT__RETURN_VOID (f, __VA_ARGS__);    \
     }
 
-#define YT__DEFINE_FUNC_BODY(n, rt, f, ...)   \
-    rt f (YT__FUNC_PARAMS_X (n, __VA_ARGS__)) \
-    {                                         \
-        YT__RECORD_CALL (n, f, __VA_ARGS__);  \
-        YT__STRUCT_VAR (f).invokeCount++;     \
-        YT__RETURN (n, f, __VA_ARGS__);       \
+#define YT__DEFINE_FUNC_BODY(n, rt, f, ...)  \
+    rt f (YT__FUNC_PARAMS_X (__VA_ARGS__))   \
+    {                                        \
+        YT__RECORD_CALL (n, f, __VA_ARGS__); \
+        YT__STRUCT_VAR (f).invokeCount++;    \
+        YT__RETURN (f, __VA_ARGS__);         \
     }
 
-#define YT__RETURN_VOID(n, f, ...)  \
-    if (YT__STRUCT_VAR (f).handler) \
-    YT__STRUCT_VAR (f).handler (YT__FCALL_ARGS_##n())
+#define YT__RETURN_VOID(f, ...)                                      \
+    if (YT__STRUCT_VAR (f).handler) {                                \
+        YT__STRUCT_VAR (f).handler (YT__FCALL_ARGS_X (__VA_ARGS__)); \
+    }
 
-#define YT__RETURN(n, f, ...)                                                               \
-    return (YT__STRUCT_VAR (f).handler) ? YT__STRUCT_VAR (f).handler (YT__FCALL_ARGS_##n()) \
-                                        : YT__STRUCT_VAR (f).ret
+#define YT__RETURN(f, ...)                                                   \
+    return (YT__STRUCT_VAR (f).handler)                                      \
+               ? YT__STRUCT_VAR (f).handler (YT__FCALL_ARGS_X (__VA_ARGS__)) \
+               : YT__STRUCT_VAR (f).ret
 
 // -----------------------[ FAKE FUNCTION DECLARATION ]------------------------
 #define YT_DECLARE_FUNC_VOID(f, ...)                \
@@ -890,40 +896,40 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define YT_ARG_8() _i
     #define YT_ARG_9() _j
 
-    #define YT__TEST_IMPL_BODY(tf, fn, n, i, ...)                                   \
+    #define YT__TEST_IMPL_BODY(tf, fn, count, i, ...)                               \
         reset();                                                                    \
         YT__ec_init();                                                              \
         YT__total_test_count++;                                                     \
         /* Following assert ensures we are not overriding it. It was taken cared of \
          * in the previous test's YT_END. */                                        \
         assert (YT__current_testrecord == NULL);                                    \
-        YT__current_testrecord = YT__create_testRecord (#fn, n, i);                 \
+        YT__current_testrecord = YT__create_testRecord (#fn, count, i);             \
         do
 
     #define YT__TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void YT__##fn##_test (size_t, size_t, __VA_ARGS__)
 
-    #define YT__TESTP_DEFINE_TEST_FUNC(n, tf, fn, ...)                                           \
-        static void YT__##fn##_test (size_t count, size_t i, YT__FUNC_PARAMS_X (n, __VA_ARGS__)) \
-        {                                                                                        \
-            printf ("%s %s [%lu/%lu] %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT,                      \
-                    YT__COL_GRAY_HIGHLIGHT, i + 1, count, #tf, #fn, YT__COL_RESET);              \
+    #define YT__TESTP_DEFINE_TEST_FUNC(tf, fn, ...)                                           \
+        static void YT__##fn##_test (size_t count, size_t i, YT__FUNC_PARAMS_X (__VA_ARGS__)) \
+        {                                                                                     \
+            printf ("%s %s [%lu/%lu] %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT,                   \
+                    YT__COL_GRAY_HIGHLIGHT, i + 1, count, #tf, #fn, YT__COL_RESET);           \
             YT__TEST_IMPL_BODY (tf, fn, count, i)
 
-    #define YT__TESTP_DEFINE_TEST_WRAPPER_FUNC(n, tf, fn, ...)                          \
-        static void fn (size_t count, YT__FUNC_PARAMS_ARRAY_X (n, __VA_ARGS__))         \
-        {                                                                               \
-            printf ("%s %s %s:%s [%lu tests] %s\n", YT__COL_BLUE_HIGHLIGHT,             \
-                    YT__COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, count, YT__COL_RESET);       \
-            for (unsigned i = 0; i < count; i++) {                                      \
-                YT__##fn##_test (count, i, YT__FCALL_ARGS_ARRAY_X (n, i, __VA_ARGS__)); \
-            }                                                                           \
+    #define YT__TESTP_DEFINE_TEST_WRAPPER_FUNC(tf, fn, ...)                          \
+        static void fn (size_t count, YT__FUNC_PARAMS_ARRAY_X (__VA_ARGS__))         \
+        {                                                                            \
+            printf ("%s %s %s:%s [%lu tests] %s\n", YT__COL_BLUE_HIGHLIGHT,          \
+                    YT__COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, count, YT__COL_RESET);    \
+            for (unsigned i = 0; i < count; i++) {                                   \
+                YT__##fn##_test (count, i, YT__FCALL_ARGS_ARRAY_X (i, __VA_ARGS__)); \
+            }                                                                        \
         }
 
-    #define YT_TESTP(tf, fn, ...)                                                              \
-        YT__TESTP_DECLARE_TEST_FUNC (fn, __VA_ARGS__);                                         \
-        YT__TESTP_DEFINE_TEST_WRAPPER_FUNC (YT__COUNT_ARGS (__VA_ARGS__), tf, fn, __VA_ARGS__) \
-        YT__TESTP_DEFINE_TEST_FUNC (YT__COUNT_ARGS (__VA_ARGS__), tf, fn, __VA_ARGS__)
+    #define YT_TESTP(tf, fn, ...)                                \
+        YT__TESTP_DECLARE_TEST_FUNC (fn, __VA_ARGS__);           \
+        YT__TESTP_DEFINE_TEST_WRAPPER_FUNC (tf, fn, __VA_ARGS__) \
+        YT__TESTP_DEFINE_TEST_FUNC (tf, fn, __VA_ARGS__)
 
     #define YT_TEST(tf, fn)                                                                    \
         static void fn()                                                                       \
