@@ -131,68 +131,68 @@ static inline void acl_list_remove (ACL_ListNode* item)
 // Declaring, defining and calling functions
 // ----------------------------------------------------------------------------
 #define YT_PRI_FCALL_WRAP_ARGS_X(n, w, ...)  YT_PRI_FCALL_WRAP_ARGS_##n (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_10(w, t, ...) w (j), YT_PRI_FCALL_WRAP_ARGS_9 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_9(w, t, ...)  w (i), YT_PRI_FCALL_WRAP_ARGS_8 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_8(w, t, ...)  w (h), YT_PRI_FCALL_WRAP_ARGS_7 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_7(w, t, ...)  w (g), YT_PRI_FCALL_WRAP_ARGS_6 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_6(w, t, ...)  w (f), YT_PRI_FCALL_WRAP_ARGS_5 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_5(w, t, ...)  w (e), YT_PRI_FCALL_WRAP_ARGS_4 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_4(w, t, ...)  w (d), YT_PRI_FCALL_WRAP_ARGS_3 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_3(w, t, ...)  w (c), YT_PRI_FCALL_WRAP_ARGS_2 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_2(w, t, ...)  w (b), YT_PRI_FCALL_WRAP_ARGS_1 (w, __VA_ARGS__)
-#define YT_PRI_FCALL_WRAP_ARGS_1(w, t, ...)  w (a)
+#define YT_PRI_FCALL_WRAP_ARGS_10(w, t, ...) YT_PRI_FCALL_WRAP_ARGS_9 (w, __VA_ARGS__), w (_j)
+#define YT_PRI_FCALL_WRAP_ARGS_9(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_8 (w, __VA_ARGS__), w (_i)
+#define YT_PRI_FCALL_WRAP_ARGS_8(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_7 (w, __VA_ARGS__), w (_h)
+#define YT_PRI_FCALL_WRAP_ARGS_7(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_6 (w, __VA_ARGS__), w (_g)
+#define YT_PRI_FCALL_WRAP_ARGS_6(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_5 (w, __VA_ARGS__), w (_f)
+#define YT_PRI_FCALL_WRAP_ARGS_5(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_4 (w, __VA_ARGS__), w (_e)
+#define YT_PRI_FCALL_WRAP_ARGS_4(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_3 (w, __VA_ARGS__), w (_d)
+#define YT_PRI_FCALL_WRAP_ARGS_3(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_2 (w, __VA_ARGS__), w (_c)
+#define YT_PRI_FCALL_WRAP_ARGS_2(w, t, ...)  YT_PRI_FCALL_WRAP_ARGS_1 (w, __VA_ARGS__), w (_b)
+#define YT_PRI_FCALL_WRAP_ARGS_1(w, t, ...)  w (_a)
 #define YT_PRI_FCALL_WRAP_ARGS_0(...)
 
-#define YT_PRI_FCALL_ARGS_X(n, ...)  YT_PRI_FCALL_ARGS_##n (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_10(t, ...) j, YT_PRI_FCALL_ARGS_9 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_9(t, ...)  i, YT_PRI_FCALL_ARGS_8 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_8(t, ...)  h, YT_PRI_FCALL_ARGS_7 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_7(t, ...)  g, YT_PRI_FCALL_ARGS_6 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_6(t, ...)  f, YT_PRI_FCALL_ARGS_5 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_5(t, ...)  e, YT_PRI_FCALL_ARGS_4 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_4(t, ...)  d, YT_PRI_FCALL_ARGS_3 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_3(t, ...)  c, YT_PRI_FCALL_ARGS_2 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_2(t, ...)  b, YT_PRI_FCALL_ARGS_1 (__VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_1(t, ...)  a
+#define YT_PRI_FCALL_ARGS_X(n, ...)  YT_PRI_FCALL_ARGS_##n (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_10(t, ...) YT_PRI_FCALL_ARGS_9 (i, __VA_ARGS__), _j
+#define YT_PRI_FCALL_ARGS_9(t, ...)  YT_PRI_FCALL_ARGS_8 (i, __VA_ARGS__), _i
+#define YT_PRI_FCALL_ARGS_8(t, ...)  YT_PRI_FCALL_ARGS_7 (i, __VA_ARGS__), _h
+#define YT_PRI_FCALL_ARGS_7(t, ...)  YT_PRI_FCALL_ARGS_6 (i, __VA_ARGS__), _g
+#define YT_PRI_FCALL_ARGS_6(t, ...)  YT_PRI_FCALL_ARGS_5 (i, __VA_ARGS__), _f
+#define YT_PRI_FCALL_ARGS_5(t, ...)  YT_PRI_FCALL_ARGS_4 (i, __VA_ARGS__), _e
+#define YT_PRI_FCALL_ARGS_4(t, ...)  YT_PRI_FCALL_ARGS_3 (i, __VA_ARGS__), _d
+#define YT_PRI_FCALL_ARGS_3(t, ...)  YT_PRI_FCALL_ARGS_2 (i, __VA_ARGS__), _c
+#define YT_PRI_FCALL_ARGS_2(t, ...)  YT_PRI_FCALL_ARGS_1 (i, __VA_ARGS__), _b
+#define YT_PRI_FCALL_ARGS_1(t, ...)  _a
 #define YT_PRI_FCALL_ARGS_0(...)
 
 #define YT_PRI_FCALL_ARGS_ARRAY_X(n, i, ...)  YT_PRI_FCALL_ARGS_ARRAY_##n (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_10(i, t, ...) j[i], YT_PRI_FCALL_ARGS_ARRAY_9 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_9(i, t, ...)  i[i], YT_PRI_FCALL_ARGS_ARRAY_8 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_8(i, t, ...)  h[i], YT_PRI_FCALL_ARGS_ARRAY_7 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_7(i, t, ...)  g[i], YT_PRI_FCALL_ARGS_ARRAY_6 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_6(i, t, ...)  f[i], YT_PRI_FCALL_ARGS_ARRAY_5 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_5(i, t, ...)  e[i], YT_PRI_FCALL_ARGS_ARRAY_4 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_4(i, t, ...)  d[i], YT_PRI_FCALL_ARGS_ARRAY_3 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_3(i, t, ...)  c[i], YT_PRI_FCALL_ARGS_ARRAY_2 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_2(i, t, ...)  b[i], YT_PRI_FCALL_ARGS_ARRAY_1 (i, __VA_ARGS__)
-#define YT_PRI_FCALL_ARGS_ARRAY_1(i, t, ...)  a[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_10(i, t, ...) YT_PRI_FCALL_ARGS_ARRAY_9 (i, __VA_ARGS__), _j[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_9(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_8 (i, __VA_ARGS__), _i[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_8(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_7 (i, __VA_ARGS__), _h[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_7(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_6 (i, __VA_ARGS__), _g[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_6(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_5 (i, __VA_ARGS__), _f[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_5(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_4 (i, __VA_ARGS__), _e[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_4(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_3 (i, __VA_ARGS__), _d[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_3(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_2 (i, __VA_ARGS__), _c[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_2(i, t, ...)  YT_PRI_FCALL_ARGS_ARRAY_1 (i, __VA_ARGS__), _b[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_1(i, t, ...)  _a[i]
 #define YT_PRI_FCALL_ARGS_ARRAY_0(...)
 
 #define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_8(t, ...)  t h, YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_7(t, ...)  t g, YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_6(t, ...)  t f, YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_5(t, ...)  t e, YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_4(t, ...)  t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_3(t, ...)  t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
+#define YT_PRI_FUNC_PARAMS_10(t, ...) YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__), t _j
+#define YT_PRI_FUNC_PARAMS_9(t, ...)  YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__), t _i
+#define YT_PRI_FUNC_PARAMS_8(t, ...)  YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__), t _h
+#define YT_PRI_FUNC_PARAMS_7(t, ...)  YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__), t _g
+#define YT_PRI_FUNC_PARAMS_6(t, ...)  YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__), t _f
+#define YT_PRI_FUNC_PARAMS_5(t, ...)  YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__), t _e
+#define YT_PRI_FUNC_PARAMS_4(t, ...)  YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__), t _d
+#define YT_PRI_FUNC_PARAMS_3(t, ...)  YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__), t _c
+#define YT_PRI_FUNC_PARAMS_2(t, ...)  YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__), t _b
+#define YT_PRI_FUNC_PARAMS_1(t, ...)  t _a
 #define YT_PRI_FUNC_PARAMS_0(...)
 
 #define YT_PRI_FUNC_PARAMS_ARRAY_X(n, ...)  YT_PRI_FUNC_PARAMS_ARRAY_##n (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_10(t, ...) t j[], YT_PRI_FUNC_PARAMS_ARRAY_9 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_9(t, ...)  t i[], YT_PRI_FUNC_PARAMS_ARRAY_8 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_8(t, ...)  t h[], YT_PRI_FUNC_PARAMS_ARRAY_7 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_7(t, ...)  t g[], YT_PRI_FUNC_PARAMS_ARRAY_6 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_6(t, ...)  t f[], YT_PRI_FUNC_PARAMS_ARRAY_5 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_5(t, ...)  t e[], YT_PRI_FUNC_PARAMS_ARRAY_4 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_4(t, ...)  t d[], YT_PRI_FUNC_PARAMS_ARRAY_3 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_3(t, ...)  t c[], YT_PRI_FUNC_PARAMS_ARRAY_2 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_2(t, ...)  t b[], YT_PRI_FUNC_PARAMS_ARRAY_1 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_ARRAY_1(t, ...)  t a[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_10(t, ...) YT_PRI_FUNC_PARAMS_ARRAY_9 (__VA_ARGS__), t _j[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_9(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_8 (__VA_ARGS__), t _i[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_8(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_7 (__VA_ARGS__), t _h[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_7(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_6 (__VA_ARGS__), t _g[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_6(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_5 (__VA_ARGS__), t _f[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_5(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_4 (__VA_ARGS__), t _e[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_4(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_3 (__VA_ARGS__), t _d[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_3(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_2 (__VA_ARGS__), t _c[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_2(t, ...)  YT_PRI_FUNC_PARAMS_ARRAY_1 (__VA_ARGS__), t _b[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_1(t, ...)  t _a[]
 #define YT_PRI_FUNC_PARAMS_ARRAY_0(...)
 /*
  * ========================================================================================
