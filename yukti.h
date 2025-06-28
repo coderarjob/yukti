@@ -408,7 +408,7 @@ static void yt_pri_free_testRecord (YT_PRI_TestRecord* trecord)
                     YT_PRI_TestRecord* test = ACL_LIST_ITEM (node, YT_PRI_TestRecord,         \
                                                              failedTestListNode);             \
                     printf ("\n    %s* '%s [%lu/%lu]' test failed%s", YT_PRI_COL_RED,         \
-                            test->test_function_name, test->parameterised_test_index,         \
+                            test->test_function_name, test->parameterised_test_index + 1,     \
                             test->parameterised_test_count, YT_PRI_COL_RESET);                \
                 }                                                                             \
             }                                                                                 \
@@ -907,12 +907,12 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
     #define YT_PRI_TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void yt_pri_##fn##_test (size_t, size_t, __VA_ARGS__)
 
-    #define YT_PRI_TESTP_DEFINE_TEST_FUNC(n, tf, fn, ...)                              \
-        static void yt_pri_##fn##_test (size_t count, size_t i,                        \
-                                        YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__))         \
-        {                                                                              \
-            printf ("%s %s %s:%s [%lu/%lu]%20s", YT_PRI_COL_YELLOW_HIGHLIGHT,          \
-                    YT_PRI_COL_BLACK_HIGHLIGHT, #tf, #fn, i, count, YT_PRI_COL_RESET); \
+    #define YT_PRI_TESTP_DEFINE_TEST_FUNC(n, tf, fn, ...)                                  \
+        static void yt_pri_##fn##_test (size_t count, size_t i,                            \
+                                        YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__))             \
+        {                                                                                  \
+            printf ("%s %s %s:%s [%lu/%lu]%20s", YT_PRI_COL_YELLOW_HIGHLIGHT,              \
+                    YT_PRI_COL_BLACK_HIGHLIGHT, #tf, #fn, i + 1, count, YT_PRI_COL_RESET); \
             YT_PRI_TEST_IMPL_BODY (tf, fn, count, i)
 
     #define YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC(n, fn, ...)                                 \
@@ -933,7 +933,7 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
         {                                                                    \
             printf ("%s %s %s:%s [1/1]%20s", YT_PRI_COL_YELLOW_HIGHLIGHT,    \
                     YT_PRI_COL_BLACK_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
-            YT_PRI_TEST_IMPL_BODY (tf, fn, 1, 1)
+            YT_PRI_TEST_IMPL_BODY (tf, fn, 0, 1)
 
     // clang-format off
     #define YT_END()                                                              \
