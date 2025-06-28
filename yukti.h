@@ -347,6 +347,8 @@ typedef struct YT_PRI_TestRecord {
     char test_function_name[YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH];
     uint32_t total_exp_count;
     uint32_t failed_exp_count;
+    size_t parameterised_test_index;
+    size_t parameterised_test_count;
     ACL_ListNode failedTestListNode;
 } YT_PRI_TestRecord;
 
@@ -355,7 +357,8 @@ static YT_PRI_TestRecord* yt_pri_current_testrecord = NULL;
 static uint32_t yt_pri_total_test_count             = 0;
 static uint32_t yt_pri_failed_test_count            = 0;
 
-static YT_PRI_TestRecord* yt_pri_create_testRecord (char* testname)
+static YT_PRI_TestRecord* yt_pri_create_testRecord (char* testname, size_t test_count,
+                                                    size_t test_index)
 {
     assert (testname != NULL);
 
@@ -365,8 +368,10 @@ static YT_PRI_TestRecord* yt_pri_create_testRecord (char* testname)
         YT_PRI_PANIC (NULL);
     }
 
-    newrec->total_exp_count  = 0;
-    newrec->failed_exp_count = 0;
+    newrec->total_exp_count          = 0;
+    newrec->failed_exp_count         = 0;
+    newrec->parameterised_test_index = test_index;
+    newrec->parameterised_test_count = test_count;
     strncpy (newrec->test_function_name, testname, YT_PRI_MAX_TEST_FUNCTION_NAME_LENGTH - 1);
     acl_list_init (&newrec->failedTestListNode);
 
@@ -400,8 +405,9 @@ static void yt_pri_free_testRecord (YT_PRI_TestRecord* trecord)
                 {                                                                             \
                     YT_PRI_TestRecord* test = ACL_LIST_ITEM (node, YT_PRI_TestRecord,         \
                                                              failedTestListNode);             \
-                    printf ("\n    %s* '%s' test failed%s", YT_PRI_COL_RED,                   \
-                            test->test_function_name, YT_PRI_COL_RESET);                      \
+                    printf ("\n    %s* '%s [%lu/%lu]' test failed%s", YT_PRI_COL_RED,         \
+                            test->test_function_name, test->parameterised_test_index,         \
+                            test->parameterised_test_count, YT_PRI_COL_RESET);                \
                 }                                                                             \
             }                                                                                 \
             printf ("\n");                                                                    \
@@ -873,16 +879,6 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
      * 2.4: FUNCTION & MACROS TO PARAMETERISED TEST IMPLEMENTATION
      * ========================================================================================
      * */
-    #define YT_PRI_TEST_IMPL_BODY(tf, fn, ...)                                      \
-        reset();                                                                    \
-        yt_pri_ec_init();                                                           \
-        yt_pri_total_test_count++;                                                  \
-        /* Following assert ensures we are not overriding it. It was taken cared of \
-         * in the previous test's YT_END. */                                        \
-        assert (yt_pri_current_testrecord == NULL);                                 \
-        yt_pri_current_testrecord = yt_pri_create_testRecord (#fn);                 \
-        do
-
     #define YT_ARG(t) (t[])
 
     #define YT_ARG_0() _a
@@ -896,6 +892,16 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
     #define YT_ARG_8() _i
     #define YT_ARG_9() _j
 
+    #define YT_PRI_TEST_IMPL_BODY(tf, fn, n, i, ...)                                \
+        reset();                                                                    \
+        yt_pri_ec_init();                                                           \
+        yt_pri_total_test_count++;                                                  \
+        /* Following assert ensures we are not overriding it. It was taken cared of \
+         * in the previous test's YT_END. */                                        \
+        assert (yt_pri_current_testrecord == NULL);                                 \
+        yt_pri_current_testrecord = yt_pri_create_testRecord (#fn, n, i);           \
+        do
+
     #define YT_PRI_TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void yt_pri_##fn##_test (size_t, size_t, __VA_ARGS__)
 
@@ -905,7 +911,7 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
         {                                                                                       \
             printf ("%s[%20s - %-20s](%lu of %lu)%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, i, count, \
                     YT_PRI_COL_RESET);                                                          \
-            YT_PRI_TEST_IMPL_BODY (tf, fn)
+            YT_PRI_TEST_IMPL_BODY (tf, fn, n, i)
 
     #define YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC(n, fn, ...)                                 \
         static void fn (size_t count, YT_PRI_FUNC_PARAMS_ARRAY_X (n, __VA_ARGS__))            \
@@ -924,7 +930,7 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
         static void fn()                                                                     \
         {                                                                                    \
             printf ("%s[%20s - %-20s]%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
-            YT_PRI_TEST_IMPL_BODY (tf, fn)
+            YT_PRI_TEST_IMPL_BODY (tf, fn, 1, 1)
 
     // clang-format off
     #define YT_END()                                                              \
