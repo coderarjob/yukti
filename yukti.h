@@ -127,6 +127,47 @@ static inline void acl_list_remove (ACL_ListNode* item)
         exit (1);                                                    \
     } while (0)
 
+// ----------------------------------------------------------------------------
+// Declaring, defining and calling functions
+// ----------------------------------------------------------------------------
+#define YT_PRI_FCALL_WRAP_ARGS_X(n, w, ...)  YT_PRI_FCALL_WRAP_ARGS_##n (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_10(w, t, ...) w (j), YT_PRI_FCALL_WRAP_ARGS_9 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_9(w, t, ...)  w (i), YT_PRI_FCALL_WRAP_ARGS_8 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_8(w, t, ...)  w (h), YT_PRI_FCALL_WRAP_ARGS_7 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_7(w, t, ...)  w (g), YT_PRI_FCALL_WRAP_ARGS_6 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_6(w, t, ...)  w (f), YT_PRI_FCALL_WRAP_ARGS_5 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_5(w, t, ...)  w (e), YT_PRI_FCALL_WRAP_ARGS_4 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_4(w, t, ...)  w (d), YT_PRI_FCALL_WRAP_ARGS_3 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_3(w, t, ...)  w (c), YT_PRI_FCALL_WRAP_ARGS_2 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_2(w, t, ...)  w (b), YT_PRI_FCALL_WRAP_ARGS_1 (w, __VA_ARGS__)
+#define YT_PRI_FCALL_WRAP_ARGS_1(w, t, ...)  w (a)
+#define YT_PRI_FCALL_WRAP_ARGS_0(...)
+
+#define YT_PRI_FCALL_ARGS_X(n, ...)  YT_PRI_FCALL_ARGS_##n (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_10(t, ...) j, YT_PRI_FCALL_ARGS_9 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_9(t, ...)  i, YT_PRI_FCALL_ARGS_8 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_8(t, ...)  h, YT_PRI_FCALL_ARGS_7 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_7(t, ...)  g, YT_PRI_FCALL_ARGS_6 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_6(t, ...)  f, YT_PRI_FCALL_ARGS_5 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_5(t, ...)  e, YT_PRI_FCALL_ARGS_4 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_4(t, ...)  d, YT_PRI_FCALL_ARGS_3 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_3(t, ...)  c, YT_PRI_FCALL_ARGS_2 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_2(t, ...)  b, YT_PRI_FCALL_ARGS_1 (__VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_1(t, ...)  a
+#define YT_PRI_FCALL_ARGS_0(...)
+
+#define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_8(t, ...)  t h, YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_7(t, ...)  t g, YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_6(t, ...)  t f, YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_5(t, ...)  t e, YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_4(t, ...)  t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_3(t, ...)  t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
+#define YT_PRI_FUNC_PARAMS_0(...)
 /*
  * ========================================================================================
  * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
@@ -147,26 +188,15 @@ extern ACL_ListNode yt_pri_actualCallListHead;
 
 typedef struct YT_PRI_Arg {
     bool isOpt;
-    int val;
+    uintptr_t val; // A type large enough to hold both integers & addresses
 } YT_PRI_Arg;
 
-    #define YT_PRI_RECORD_CALL_X(n, ...)  YT_PRI_RECORD_CALL_##n (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_10(t, ...) YT_V (j), YT_PRI_RECORD_CALL_9 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_9(t, ...)  YT_V (i), YT_PRI_RECORD_CALL_8 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_8(t, ...)  YT_V (h), YT_PRI_RECORD_CALL_7 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_7(t, ...)  YT_V (g), YT_PRI_RECORD_CALL_6 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_6(t, ...)  YT_V (f), YT_PRI_RECORD_CALL_5 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_5(t, ...)  YT_V (e), YT_PRI_RECORD_CALL_4 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_4(t, ...)  YT_V (d), YT_PRI_RECORD_CALL_3 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_3(t, ...)  YT_V (c), YT_PRI_RECORD_CALL_2 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_2(t, ...)  YT_V (b), YT_PRI_RECORD_CALL_1 (__VA_ARGS__)
-    #define YT_PRI_RECORD_CALL_1(t, ...)  YT_V (a)
-    #define YT_PRI_RECORD_CALL_0(...)
+    #define YT_PRI_RECORD_CALL_X(n, ...) YT_PRI_FCALL_WRAP_ARGS_X (n, YT_V, ##__VA_ARGS__)
 
-    #define YT_V(v)                    \
-        (YT_PRI_Arg)                   \
-        {                              \
-            .isOpt = false, .val = (v) \
+    #define YT_V(v)                               \
+        (YT_PRI_Arg)                              \
+        {                                         \
+            .isOpt = false, .val = (uintptr_t)(v) \
         }
     #define _                       \
         (YT_PRI_Arg)                \
@@ -231,36 +261,12 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
 #define YT_PRI_RETURN_VOID(n, f, ...)  \
     if (YT_PRI_STRUCT_VAR (f).handler) \
-    YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n())
+    YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FCALL_ARGS_##n())
 
-#define YT_PRI_RETURN(n, f, ...)                                                                   \
-    return (YT_PRI_STRUCT_VAR (f).handler) ? YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FUNC_ARG_##n()) \
-                                           : YT_PRI_STRUCT_VAR (f).ret
-
-#define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_8(t, ...)  t h, YT_PRI_FUNC_PARAMS_7 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_7(t, ...)  t g, YT_PRI_FUNC_PARAMS_6 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_6(t, ...)  t f, YT_PRI_FUNC_PARAMS_5 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_5(t, ...)  t e, YT_PRI_FUNC_PARAMS_4 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_4(t, ...)  t d, YT_PRI_FUNC_PARAMS_3 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_3(t, ...)  t c, YT_PRI_FUNC_PARAMS_2 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
-#define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
-#define YT_PRI_FUNC_PARAMS_0(...)
-
-#define YT_PRI_FUNC_ARG_10() j, YT_PRI_FUNC_PARAMS_9()
-#define YT_PRI_FUNC_ARG_9()  i, YT_PRI_FUNC_PARAMS_8()
-#define YT_PRI_FUNC_ARG_8()  h, YT_PRI_FUNC_PARAMS_7()
-#define YT_PRI_FUNC_ARG_7()  g, YT_PRI_FUNC_PARAMS_6()
-#define YT_PRI_FUNC_ARG_6()  f, YT_PRI_FUNC_PARAMS_5()
-#define YT_PRI_FUNC_ARG_5()  e, YT_PRI_FUNC_PARAMS_4()
-#define YT_PRI_FUNC_ARG_4()  d, YT_PRI_FUNC_PARAMS_3()
-#define YT_PRI_FUNC_ARG_3()  c, YT_PRI_FUNC_PARAMS_2()
-#define YT_PRI_FUNC_ARG_2()  b, YT_PRI_FUNC_PARAMS_1()
-#define YT_PRI_FUNC_ARG_1()  a
-#define YT_PRI_FUNC_ARG_0()
+#define YT_PRI_RETURN(n, f, ...)                                         \
+    return (YT_PRI_STRUCT_VAR (f).handler)                               \
+               ? YT_PRI_STRUCT_VAR (f).handler (YT_PRI_FCALL_ARGS_##n()) \
+               : YT_PRI_STRUCT_VAR (f).ret
 
 // -----------------------[ FAKE FUNCTION DECLARATION ]------------------------
 #define YT_DECLARE_FUNC_VOID(f, ...)                \
