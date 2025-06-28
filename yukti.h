@@ -883,7 +883,8 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
      * 2.4: FUNCTION & MACROS TO PARAMETERISED TEST IMPLEMENTATION
      * ========================================================================================
      * */
-    #define YT_ARG(t) (t[])
+    #define YT_ARG(t)                   (t[])
+    #define YT_ARG_SUB_ARRAY(type, ...) &YT_ARG (type) __VA_ARGS__[0]
 
     #define YT_ARG_0() _a
     #define YT_ARG_1() _b
