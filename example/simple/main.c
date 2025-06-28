@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <stdbool.h>
 #define YUKTI_TEST_DEBUG
@@ -88,6 +89,21 @@ YT_TESTP (test, add_two_numbers, int, int, char)
     YT_END();
 }
 
+YT_TESTP (test, add_continous, int, size_t, int*, char)
+{
+    int arg1          = YT_ARG_0();
+    size_t arg2_count = YT_ARG_1();
+    int* arg2         = YT_ARG_2();
+    char exp          = YT_ARG_3();
+
+    int sum = arg1;
+    for (size_t i = 0; i < arg2_count; i++) {
+        sum += arg2[i];
+    }
+    YT_EQ_SCALAR (sum, exp);
+    YT_END();
+}
+
 void reset()
 {
     YT_RESET_MOCK (fnA);
@@ -98,8 +114,29 @@ void reset()
 int main()
 {
     YT_INIT();
-    add_two_numbers (4, YT_ARG (int){ 1, 2, 3, 4 }, YT_ARG (int){ 5, 6, 7, 8 },
-                     YT_ARG (char){ 6, 8, 10, 12 });
+    // clang-format off
+    add_two_numbers (4, YT_ARG (int) { 1, 2,  3,  4 }, 
+                        YT_ARG (int) { 5, 6,  7,  8 },
+                        YT_ARG (char){ 6, 8, 10, 12 });
+
+    add_continous (4, YT_ARG (int)    { 1, 2, 3, 4 },
+                      YT_ARG (size_t) { 1, 2, 1, 1 },
+                      YT_ARG (int*)   {&YT_ARG(int){1   }[0], 
+                                       &YT_ARG(int){1, 2}[0], 
+                                       &YT_ARG(int){2   }[0], 
+                                       &YT_ARG(int){3   }[0]},
+                      YT_ARG (char)   { 2, 5, 5, 7 });
+
+    // Alternatively the above can written using the shortcut macro YT_ARG_SUB_ARRAY.
+    //     add_continous (4, YT_ARG (int)    { 1, 2, 3, 4 },
+    //                       YT_ARG (size_t) { 1, 2, 1, 1 },
+    //                       YT_ARG (int*)   {YT_ARG_SUB_ARRAY(int, {1   }),
+    //                                        YT_ARG_SUB_ARRAY(int, {1, 2}),
+    //                                        YT_ARG_SUB_ARRAY(int, {2   }),
+    //                                        YT_ARG_SUB_ARRAY(int, {3   })},
+    //                       YT_ARG (char)   { 2, 5, 5, 7 });
+
+    // clang-format on
     branch_1_test();
     branch_2_test();
     YT_RETURN_WITH_REPORT();
