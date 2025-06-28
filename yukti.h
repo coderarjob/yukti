@@ -105,12 +105,13 @@ static inline void acl_list_remove (ACL_ListNode* item)
 // ----------------------------------------------------------------------------
 // Color template for printing
 // ----------------------------------------------------------------------------
-#define YT_PRI_COL_RED              "\x1b[0;31m"
-#define YT_PRI_COL_GREEN            "\x1b[0;32m"
-#define YT_PRI_COL_BLACK_HIGHLIGHT  "\x1b[1;40m"
-#define YT_PRI_COL_BLUE_HIGHLIGHT   "\x1b[0;104m"
-#define YT_PRI_COL_YELLOW_HIGHLIGHT "\x1b[0;103m"
-#define YT_PRI_COL_RESET            "\x1b[0m"
+#define YT_PRI_COL_RED                 "\x1b[0;31m"
+#define YT_PRI_COL_GREEN               "\x1b[0;32m"
+#define YT_PRI_COL_GRAY_HIGHLIGHT      "\x1b[0;100m"
+#define YT_PRI_COL_BOLD_GRAY_HIGHLIGHT "\x1b[1;100m"
+#define YT_PRI_COL_BLUE_HIGHLIGHT      "\x1b[1;104m"
+#define YT_PRI_COL_YELLOW_HIGHLIGHT    "\x1b[0;103m"
+#define YT_PRI_COL_RESET               "\x1b[0m"
 
 #define YT_PRI_PASSED(t) printf ("\n  %sPass%s: %-20s", YT_PRI_COL_GREEN, YT_PRI_COL_RESET, #t)
 
@@ -394,8 +395,7 @@ static void yt_pri_free_testRecord (YT_PRI_TestRecord* trecord)
 
     #define YT_RETURN_WITH_REPORT()                                                           \
         do {                                                                                  \
-            printf ("\n%s %s Tests Summary%20s", YT_PRI_COL_YELLOW_HIGHLIGHT,                 \
-                    YT_PRI_COL_BLUE_HIGHLIGHT, YT_PRI_COL_RESET);                             \
+            printf ("\n%s Tests Summary%20s", YT_PRI_COL_BLUE_HIGHLIGHT, YT_PRI_COL_RESET);   \
             if (yt_pri_failed_test_count == 0) {                                              \
                 printf ("\n  %sAll tests passed [0 of %d failed]%s\n", YT_PRI_COL_GREEN,      \
                         yt_pri_total_test_count, YT_PRI_COL_RESET);                           \
@@ -907,32 +907,35 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
     #define YT_PRI_TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void yt_pri_##fn##_test (size_t, size_t, __VA_ARGS__)
 
-    #define YT_PRI_TESTP_DEFINE_TEST_FUNC(n, tf, fn, ...)                                  \
-        static void yt_pri_##fn##_test (size_t count, size_t i,                            \
-                                        YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__))             \
-        {                                                                                  \
-            printf ("%s %s %s:%s [%lu/%lu]%20s", YT_PRI_COL_YELLOW_HIGHLIGHT,              \
-                    YT_PRI_COL_BLACK_HIGHLIGHT, #tf, #fn, i + 1, count, YT_PRI_COL_RESET); \
+    #define YT_PRI_TESTP_DEFINE_TEST_FUNC(n, tf, fn, ...)                                 \
+        static void yt_pri_##fn##_test (size_t count, size_t i,                           \
+                                        YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__))            \
+        {                                                                                 \
+            printf ("%s %s [%lu/%lu] %s:%s %20s", YT_PRI_COL_YELLOW_HIGHLIGHT,            \
+                    YT_PRI_COL_GRAY_HIGHLIGHT, i + 1, count, #tf, #fn, YT_PRI_COL_RESET); \
             YT_PRI_TEST_IMPL_BODY (tf, fn, count, i)
 
-    #define YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC(n, fn, ...)                                 \
+    #define YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC(n, tf, fn, ...)                             \
         static void fn (size_t count, YT_PRI_FUNC_PARAMS_ARRAY_X (n, __VA_ARGS__))            \
         {                                                                                     \
+            printf ("%s %s %s:%s [%lu tests] %s\n", YT_PRI_COL_BLUE_HIGHLIGHT,                \
+                    YT_PRI_COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, count, YT_PRI_COL_RESET);       \
             for (unsigned i = 0; i < count; i++) {                                            \
                 yt_pri_##fn##_test (count, i, YT_PRI_FCALL_ARGS_ARRAY_X (n, i, __VA_ARGS__)); \
             }                                                                                 \
         }
 
-    #define YT_TESTP(tf, fn, ...)                                                                \
-        YT_PRI_TESTP_DECLARE_TEST_FUNC (fn, __VA_ARGS__);                                        \
-        YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC (YT_PRI_COUNT_ARGS (__VA_ARGS__), fn, __VA_ARGS__) \
+    #define YT_TESTP(tf, fn, ...)                                                       \
+        YT_PRI_TESTP_DECLARE_TEST_FUNC (fn, __VA_ARGS__);                               \
+        YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC (YT_PRI_COUNT_ARGS (__VA_ARGS__), tf, fn, \
+                                               __VA_ARGS__)                             \
         YT_PRI_TESTP_DEFINE_TEST_FUNC (YT_PRI_COUNT_ARGS (__VA_ARGS__), tf, fn, __VA_ARGS__)
 
-    #define YT_TEST(tf, fn)                                                  \
-        static void fn()                                                     \
-        {                                                                    \
-            printf ("%s %s %s:%s [1/1]%20s", YT_PRI_COL_YELLOW_HIGHLIGHT,    \
-                    YT_PRI_COL_BLACK_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
+    #define YT_TEST(tf, fn)                                                      \
+        static void fn()                                                         \
+        {                                                                        \
+            printf ("%s %s %s:%s %20s", YT_PRI_COL_YELLOW_HIGHLIGHT,             \
+                    YT_PRI_COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
             YT_PRI_TEST_IMPL_BODY (tf, fn, 0, 1)
 
     // clang-format off
