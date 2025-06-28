@@ -883,7 +883,18 @@ static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, i
         yt_pri_current_testrecord = yt_pri_create_testRecord (#fn);                 \
         do
 
-    #define YT_A(t) (t[])
+    #define YT_ARG(t) (t[])
+
+    #define YT_ARG_0() _a
+    #define YT_ARG_1() _b
+    #define YT_ARG_2() _c
+    #define YT_ARG_3() _d
+    #define YT_ARG_4() _e
+    #define YT_ARG_5() _f
+    #define YT_ARG_6() _g
+    #define YT_ARG_7() _h
+    #define YT_ARG_8() _i
+    #define YT_ARG_9() _j
 
     #define YT_PRI_TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void yt_pri_##fn##_test (size_t, size_t, __VA_ARGS__)

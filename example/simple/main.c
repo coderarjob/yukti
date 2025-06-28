@@ -77,6 +77,17 @@ YT_TEST (simple, branch_2_test)
     YT_END();
 }
 
+YT_TESTP (test, add_two_numbers, int, int, int)
+{
+    int exp  = YT_ARG_2();
+    int arg1 = YT_ARG_1();
+    int arg2 = YT_ARG_0();
+
+    YT_EQ_SCALAR (arg1 + arg2, exp);
+
+    YT_END();
+}
+
 void reset()
 {
     YT_RESET_MOCK (fnA);
@@ -87,6 +98,8 @@ void reset()
 int main()
 {
     YT_INIT();
+    add_two_numbers (4, YT_ARG (int){ 1, 2, 3, 4 }, YT_ARG (int){ 5, 6, 7, 8 },
+                     YT_ARG (int){ 6, 8, 10, 12 });
     branch_1_test();
     branch_2_test();
     YT_RETURN_WITH_REPORT();
