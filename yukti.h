@@ -156,6 +156,19 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT_PRI_FCALL_ARGS_1(t, ...)  a
 #define YT_PRI_FCALL_ARGS_0(...)
 
+#define YT_PRI_FCALL_ARGS_ARRAY_X(n, i, ...)  YT_PRI_FCALL_ARGS_ARRAY_##n (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_10(i, t, ...) j[i], YT_PRI_FCALL_ARGS_ARRAY_9 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_9(i, t, ...)  i[i], YT_PRI_FCALL_ARGS_ARRAY_8 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_8(i, t, ...)  h[i], YT_PRI_FCALL_ARGS_ARRAY_7 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_7(i, t, ...)  g[i], YT_PRI_FCALL_ARGS_ARRAY_6 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_6(i, t, ...)  f[i], YT_PRI_FCALL_ARGS_ARRAY_5 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_5(i, t, ...)  e[i], YT_PRI_FCALL_ARGS_ARRAY_4 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_4(i, t, ...)  d[i], YT_PRI_FCALL_ARGS_ARRAY_3 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_3(i, t, ...)  c[i], YT_PRI_FCALL_ARGS_ARRAY_2 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_2(i, t, ...)  b[i], YT_PRI_FCALL_ARGS_ARRAY_1 (i, __VA_ARGS__)
+#define YT_PRI_FCALL_ARGS_ARRAY_1(i, t, ...)  a[i]
+#define YT_PRI_FCALL_ARGS_ARRAY_0(...)
+
 #define YT_PRI_FUNC_PARAMS_X(n, ...)  YT_PRI_FUNC_PARAMS_##n (__VA_ARGS__)
 #define YT_PRI_FUNC_PARAMS_10(t, ...) t j, YT_PRI_FUNC_PARAMS_9 (__VA_ARGS__)
 #define YT_PRI_FUNC_PARAMS_9(t, ...)  t i, YT_PRI_FUNC_PARAMS_8 (__VA_ARGS__)
@@ -168,6 +181,19 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT_PRI_FUNC_PARAMS_2(t, ...)  t b, YT_PRI_FUNC_PARAMS_1 (__VA_ARGS__)
 #define YT_PRI_FUNC_PARAMS_1(t, ...)  t a
 #define YT_PRI_FUNC_PARAMS_0(...)
+
+#define YT_PRI_FUNC_PARAMS_ARRAY_X(n, ...)  YT_PRI_FUNC_PARAMS_ARRAY_##n (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_10(t, ...) t j[], YT_PRI_FUNC_PARAMS_ARRAY_9 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_9(t, ...)  t i[], YT_PRI_FUNC_PARAMS_ARRAY_8 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_8(t, ...)  t h[], YT_PRI_FUNC_PARAMS_ARRAY_7 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_7(t, ...)  t g[], YT_PRI_FUNC_PARAMS_ARRAY_6 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_6(t, ...)  t f[], YT_PRI_FUNC_PARAMS_ARRAY_5 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_5(t, ...)  t e[], YT_PRI_FUNC_PARAMS_ARRAY_4 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_4(t, ...)  t d[], YT_PRI_FUNC_PARAMS_ARRAY_3 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_3(t, ...)  t c[], YT_PRI_FUNC_PARAMS_ARRAY_2 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_2(t, ...)  t b[], YT_PRI_FUNC_PARAMS_ARRAY_1 (__VA_ARGS__)
+#define YT_PRI_FUNC_PARAMS_ARRAY_1(t, ...)  t a[]
+#define YT_PRI_FUNC_PARAMS_ARRAY_0(...)
 /*
  * ========================================================================================
  * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
@@ -819,18 +845,75 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
     #define YT_EQ_STRING(a, b)  YT_PRI_TEST_STRING (a, ==, b)
     #define YT_NEQ_STRING(a, b) YT_PRI_TEST_STRING (a, !=, b)
 
+static int yt_pri_equal_string (const char* a, const char* b, int* i)
+{
+    *i = 0;
+    while (*a && *b && *a == *b) {
+        a++;
+        b++;
+        (*i)++;
+    }
+
+    return *a == *b;
+}
+
+static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, int* i)
+{
+    *i = 0;
+    while (size-- && *(uint8_t*)a++ == *(uint8_t*)b++)
+        (*i)++;
+
+    return *(uint8_t*)--a == *(uint8_t*)--b;
+}
+
+    /*
+     * ========================================================================================
+     * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
+     * ========================================================================================
+     * 2.4: FUNCTION & MACROS TO PARAMETERISED TEST IMPLEMENTATION
+     * ========================================================================================
+     * */
+    #define YT_PRI_TEST_IMPL_BODY(tf, fn, ...)                                      \
+        reset();                                                                    \
+        yt_pri_ec_init();                                                           \
+        yt_pri_total_test_count++;                                                  \
+        /* Following assert ensures we are not overriding it. It was taken cared of \
+         * in the previous test's YT_END. */                                        \
+        assert (yt_pri_current_testrecord == NULL);                                 \
+        yt_pri_current_testrecord = yt_pri_create_testRecord (#fn);                 \
+        do
+
+    #define YT_A(t) (t[])
+
+    #define YT_PRI_TESTP_DECLARE_TEST_FUNC(fn, ...) \
+        static void yt_pri_##fn##_test (size_t, size_t, __VA_ARGS__)
+
+    #define YT_PRI_TESTP_DEFINE_TEST_FUNC(n, tf, fn, ...)                                       \
+        static void yt_pri_##fn##_test (size_t count, size_t i,                                 \
+                                        YT_PRI_FUNC_PARAMS_X (n, __VA_ARGS__))                  \
+        {                                                                                       \
+            printf ("%s[%20s - %-20s](%lu of %lu)%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, i, count, \
+                    YT_PRI_COL_RESET);                                                          \
+            YT_PRI_TEST_IMPL_BODY (tf, fn)
+
+    #define YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC(n, fn, ...)                                 \
+        static void fn (size_t count, YT_PRI_FUNC_PARAMS_ARRAY_X (n, __VA_ARGS__))            \
+        {                                                                                     \
+            for (unsigned i = 0; i < count; i++) {                                            \
+                yt_pri_##fn##_test (count, i, YT_PRI_FCALL_ARGS_ARRAY_X (n, i, __VA_ARGS__)); \
+            }                                                                                 \
+        }
+
+    #define YT_TESTP(tf, fn, ...)                                                                \
+        YT_PRI_TESTP_DECLARE_TEST_FUNC (fn, __VA_ARGS__);                                        \
+        YT_PRI_TESTP_DEFINE_TEST_WRAPPER_FUNC (YT_PRI_COUNT_ARGS (__VA_ARGS__), fn, __VA_ARGS__) \
+        YT_PRI_TESTP_DEFINE_TEST_FUNC (YT_PRI_COUNT_ARGS (__VA_ARGS__), tf, fn, __VA_ARGS__)
+
     #define YT_TEST(tf, fn)                                                                  \
         static void fn()                                                                     \
         {                                                                                    \
-            reset();                                                                         \
-            yt_pri_ec_init();                                                                \
-            yt_pri_total_test_count++;                                                       \
-            /* Following assert ensures we are not overriding it. It was taken cared of      \
-             * in the previous test's YT_END. */                                             \
-            assert (yt_pri_current_testrecord == NULL);                                      \
-            yt_pri_current_testrecord = yt_pri_create_testRecord (#fn);                      \
             printf ("%s[%20s - %-20s]%s", YT_PRI_COL_HIGHLIGHT, #tf, #fn, YT_PRI_COL_RESET); \
-            do
+            YT_PRI_TEST_IMPL_BODY (tf, fn)
 
     // clang-format off
     #define YT_END()                                                              \
@@ -854,28 +937,8 @@ static int yt_pri_equal_string (const char* a, const char* b, int* i);
         /* following '}' is for closing YT_TEST's do loop */                      \
         } while (0);                                                              \
         printf ("\n");
-// clang-format on
+    // clang-format on
 
-static int yt_pri_equal_string (const char* a, const char* b, int* i)
-{
-    *i = 0;
-    while (*a && *b && *a == *b) {
-        a++;
-        b++;
-        (*i)++;
-    }
-
-    return *a == *b;
-}
-
-static int yt_pri_equal_mem (const void* a, const void* b, unsigned long size, int* i)
-{
-    *i = 0;
-    while (size-- && *(uint8_t*)a++ == *(uint8_t*)b++)
-        (*i)++;
-
-    return *(uint8_t*)--a == *(uint8_t*)--b;
-}
 #endif /* YUKTI_TEST_IMPLEMENTATION */
 
 #pragma GCC diagnostic pop
