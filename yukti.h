@@ -354,8 +354,8 @@ typedef struct YT__TestRecord {
     char test_function_name[YT__MAX_TEST_FUNCTION_NAME_LENGTH];
     uint32_t total_exp_count;
     uint32_t failed_exp_count;
-    size_t parameterised_test_index;
-    size_t parameterised_test_count;
+    size_t parameterised_test_number; /* Parameterised Test number (starts from 1) */
+    size_t parameterised_test_count;  /* Total number of tests which the same name. */
     ACL_ListNode failedTestListNode;
 } YT__TestRecord;
 
@@ -364,7 +364,7 @@ static YT__TestRecord* YT__current_testrecord = NULL;
 static uint32_t YT__total_test_count          = 0;
 static uint32_t YT__failed_test_count         = 0;
 
-static YT__TestRecord* YT__create_testRecord (char* testname, size_t test_count, size_t test_index)
+static YT__TestRecord* YT__create_testRecord (char* testname, size_t test_count, size_t test_number)
 {
     assert (testname != NULL);
 
@@ -374,10 +374,10 @@ static YT__TestRecord* YT__create_testRecord (char* testname, size_t test_count,
         YT__PANIC (NULL);
     }
 
-    newrec->total_exp_count          = 0;
-    newrec->failed_exp_count         = 0;
-    newrec->parameterised_test_index = test_index;
-    newrec->parameterised_test_count = test_count;
+    newrec->total_exp_count           = 0;
+    newrec->failed_exp_count          = 0;
+    newrec->parameterised_test_number = test_number;
+    newrec->parameterised_test_count  = test_count;
     strncpy (newrec->test_function_name, testname, YT__MAX_TEST_FUNCTION_NAME_LENGTH - 1);
     acl_list_init (&newrec->failedTestListNode);
 
@@ -397,27 +397,27 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
             YT__total_test_count = 0;                 \
         } while (0)
 
-    #define YT_RETURN_WITH_REPORT()                                                       \
-        do {                                                                              \
-            printf ("\n%s Tests Summary%20s", YT__COL_BLUE_HIGHLIGHT, YT__COL_RESET);     \
-            if (YT__failed_test_count == 0) {                                             \
-                printf ("\n  %sAll tests passed [0 of %d failed]%s\n", YT__COL_GREEN,     \
-                        YT__total_test_count, YT__COL_RESET);                             \
-            } else {                                                                      \
-                printf ("\n%sNot all tests passed [%d of %d failed]%s", YT__COL_RED,      \
-                        YT__failed_test_count, YT__total_test_count, YT__COL_RESET);      \
-                ACL_ListNode* node;                                                       \
-                acl_list_for_each (&YT__failedTestsListHead, node)                        \
-                {                                                                         \
-                    YT__TestRecord* test = ACL_LIST_ITEM (node, YT__TestRecord,           \
-                                                          failedTestListNode);            \
-                    printf ("\n    %s* '%s [%lu/%lu]' test failed%s", YT__COL_RED,        \
-                            test->test_function_name, test->parameterised_test_index + 1, \
-                            test->parameterised_test_count, YT__COL_RESET);               \
-                }                                                                         \
-            }                                                                             \
-            printf ("\n");                                                                \
-            return YT__failed_test_count == 0 ? YT__EXIT_SUCCESS : YT__EXIT_FAILURE;      \
+    #define YT_RETURN_WITH_REPORT()                                                    \
+        do {                                                                           \
+            printf ("\n%s Tests Summary%20s", YT__COL_BLUE_HIGHLIGHT, YT__COL_RESET);  \
+            if (YT__failed_test_count == 0) {                                          \
+                printf ("\n  %sAll tests passed [0 of %d failed]%s\n", YT__COL_GREEN,  \
+                        YT__total_test_count, YT__COL_RESET);                          \
+            } else {                                                                   \
+                printf ("\n%sNot all tests passed [%d of %d failed]%s", YT__COL_RED,   \
+                        YT__failed_test_count, YT__total_test_count, YT__COL_RESET);   \
+                ACL_ListNode* node;                                                    \
+                acl_list_for_each (&YT__failedTestsListHead, node)                     \
+                {                                                                      \
+                    YT__TestRecord* test = ACL_LIST_ITEM (node, YT__TestRecord,        \
+                                                          failedTestListNode);         \
+                    printf ("\n    %s* '%s [%lu/%lu]' test failed%s", YT__COL_RED,     \
+                            test->test_function_name, test->parameterised_test_number, \
+                            test->parameterised_test_count, YT__COL_RESET);            \
+                }                                                                      \
+            }                                                                          \
+            printf ("\n");                                                             \
+            return YT__failed_test_count == 0 ? YT__EXIT_SUCCESS : YT__EXIT_FAILURE;   \
         } while (0)
 
     /*
@@ -896,34 +896,34 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define YT_ARG_8() _i
     #define YT_ARG_9() _j
 
-    #define YT__TEST_IMPL_BODY(tf, fn, count, i, ...)                               \
+    #define YT__TEST_IMPL_BODY(tf, fn, count, tn, ...)                              \
         reset();                                                                    \
         YT__ec_init();                                                              \
         YT__total_test_count++;                                                     \
         /* Following assert ensures we are not overriding it. It was taken cared of \
          * in the previous test's YT_END. */                                        \
         assert (YT__current_testrecord == NULL);                                    \
-        YT__current_testrecord = YT__create_testRecord (#fn, count, i);             \
+        YT__current_testrecord = YT__create_testRecord (#fn, count, tn);            \
         do
 
     #define YT__TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void YT__##fn##_test (size_t, size_t, __VA_ARGS__)
 
-    #define YT__TESTP_DEFINE_TEST_FUNC(tf, fn, ...)                                           \
-        static void YT__##fn##_test (size_t count, size_t i, YT__FUNC_PARAMS_X (__VA_ARGS__)) \
-        {                                                                                     \
-            printf ("%s %s [%lu/%lu] %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT,                   \
-                    YT__COL_GRAY_HIGHLIGHT, i + 1, count, #tf, #fn, YT__COL_RESET);           \
-            YT__TEST_IMPL_BODY (tf, fn, count, i)
+    #define YT__TESTP_DEFINE_TEST_FUNC(tf, fn, ...)                                            \
+        static void YT__##fn##_test (size_t count, size_t tn, YT__FUNC_PARAMS_X (__VA_ARGS__)) \
+        {                                                                                      \
+            printf ("%s %s [%lu/%lu] %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT,                    \
+                    YT__COL_GRAY_HIGHLIGHT, tn, count, #tf, #fn, YT__COL_RESET);               \
+            YT__TEST_IMPL_BODY (tf, fn, count, tn)
 
-    #define YT__TESTP_DEFINE_TEST_WRAPPER_FUNC(tf, fn, ...)                          \
-        static void fn (size_t count, YT__FUNC_PARAMS_ARRAY_X (__VA_ARGS__))         \
-        {                                                                            \
-            printf ("%s %s %s:%s [%lu tests] %s\n", YT__COL_BLUE_HIGHLIGHT,          \
-                    YT__COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, count, YT__COL_RESET);    \
-            for (unsigned i = 0; i < count; i++) {                                   \
-                YT__##fn##_test (count, i, YT__FCALL_ARGS_ARRAY_X (i, __VA_ARGS__)); \
-            }                                                                        \
+    #define YT__TESTP_DEFINE_TEST_WRAPPER_FUNC(tf, fn, ...)                              \
+        static void fn (size_t count, YT__FUNC_PARAMS_ARRAY_X (__VA_ARGS__))             \
+        {                                                                                \
+            printf ("%s %s %s:%s [%lu tests] %s\n", YT__COL_BLUE_HIGHLIGHT,              \
+                    YT__COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, count, YT__COL_RESET);        \
+            for (unsigned i = 0; i < count; i++) {                                       \
+                YT__##fn##_test (count, i + 1, YT__FCALL_ARGS_ARRAY_X (i, __VA_ARGS__)); \
+            }                                                                            \
         }
 
     #define YT_TESTP(tf, fn, ...)                                \
@@ -936,7 +936,7 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
         {                                                                                      \
             printf ("%s %s %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT, YT__COL_BOLD_GRAY_HIGHLIGHT, \
                     #tf, #fn, YT__COL_RESET);                                                  \
-            YT__TEST_IMPL_BODY (tf, fn, 0, 1)
+            YT__TEST_IMPL_BODY (tf, fn, 1, 1)
 
     // clang-format off
     #define YT_END()                                                           \
