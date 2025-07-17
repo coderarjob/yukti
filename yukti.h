@@ -826,15 +826,15 @@ static void YT__ec_init()
 static int YT__equal_mem (const void* a, const void* b, unsigned long size, int* i);
 static int YT__equal_string (const char* a, const char* b, int* i);
 
-    #define YT__TEST_SCALAR(a, o, b)                               \
-        do {                                                       \
-            __auto_type ut_a = (a);                                \
-            __auto_type ut_b = (b);                                \
-            YT__current_testrecord->total_exp_count++;             \
-            if (ut_a o ut_b)                                       \
-                YT__PASSED (a o b);                                \
-            else                                                   \
-                YT__FAILED (a o b, "[%d !" #o " %d]", ut_a, ut_b); \
+    #define YT__TEST_SCALAR(a, o, b)                                                         \
+        do {                                                                                 \
+            __auto_type ut_a = (a);                                                          \
+            __auto_type ut_b = (b);                                                          \
+            YT__current_testrecord->total_exp_count++;                                       \
+            if (ut_a o ut_b)                                                                 \
+                YT__PASSED (a o b);                                                          \
+            else                                                                             \
+                YT__FAILED (a o b, "[%lld !" #o " %lld]", (long long)ut_a, (long long)ut_b); \
         } while (0)
 
     #define YT__TEST_MEM(a, o, b, sz)                                                    \
@@ -843,7 +843,7 @@ static int YT__equal_string (const char* a, const char* b, int* i);
             __auto_type ut_b = (b);                                                      \
             YT__current_testrecord->total_exp_count++;                                   \
             int i;                                                                       \
-            if (ut_equal_mem (ut_a, ut_b, sz, &i) o 1)                                   \
+            if (YT__equal_mem (ut_a, ut_b, sz, &i) o 1)                                  \
                 YT__PASSED (a o b);                                                      \
             else                                                                         \
                 YT__FAILED (a o b, "[Idx: %d, 0x%X !" #o " 0x%X]", i, ut_a[i], ut_b[i]); \
@@ -855,7 +855,7 @@ static int YT__equal_string (const char* a, const char* b, int* i);
             __auto_type ut_b = (b);                                                      \
             YT__current_testrecord->total_exp_count++;                                   \
             int i;                                                                       \
-            if (ut_equal_string (ut_a, ut_b, &i) o 1)                                    \
+            if (YT__equal_string (ut_a, ut_b, &i) o 1)                                   \
                 YT__PASSED (a o b);                                                      \
             else                                                                         \
                 YT__FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \

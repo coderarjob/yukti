@@ -111,6 +111,25 @@ void reset()
     YT_RESET_MOCK (fnC);
 }
 
+YT_TEST (foo, string_and_memory_tests)
+{
+    char* a = "Arjob";
+    char* b = "Arjob";
+    char* c = "Arjov";
+
+    YT_EQ_MEM (a, b, 6);
+    YT_NEQ_MEM (a, c, 6);
+
+    YT_EQ_STRING (a, b);
+    YT_NEQ_STRING (a, c);
+
+    YT_EQ_SCALAR ((size_t)12U, (size_t)12U);
+    YT_NEQ_SCALAR ((size_t)12U, (size_t)13U);
+    YT_GEQ_SCALAR ((size_t)14U, (size_t)12U);
+
+    YT_END();
+}
+
 int main()
 {
     YT_INIT();
@@ -139,5 +158,6 @@ int main()
     // clang-format on
     branch_1_test();
     branch_2_test();
+    string_and_memory_tests();
     YT_RETURN_WITH_REPORT();
 }
