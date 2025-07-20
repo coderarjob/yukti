@@ -52,7 +52,7 @@ any argument.
 
 Each test function must end with `YT_END()` macro. If omitted will result in compilation errors.
 
-See [Parameterised test example](./example/basic/add_parameterised_test.c) example
+See [Parameterised test](./example/add_parameterised_test.c) example
 
 ### Assertion macros
 
@@ -71,6 +71,8 @@ these macros.
 | `YT_NEQ_MEM(a, b, sz)` | First `sz` bytes in buffers `a` & `b` are not equal |
 | `YT_EQ_STRING(a, b)`   | String `a` and `b` are equal                        |
 | `YT_NEQ_STRING(a, b)`  | String `a` and `b` are not equal                    |
+
+See [Basic tests](./example/basic_tests.c) example
 
 #### Interaction or behaviour validation macros
 
