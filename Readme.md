@@ -90,6 +90,8 @@ in what order and which what parameters.
 | `YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...)` | Function `f` is called with the given arguments at least `n` times in no particular order |
 | `YT_MUST_NEVER_CALL(f, ...)`                      | Function `f` with the given arguments is never called                                     |
 
+See [read_temparature_log_called](./example/sensor_test.c) example
+
 ### Mock or Fake function declaration
 
 When unittesting it might be required to provide a fake definitions of external functions. This is
@@ -103,6 +105,8 @@ validations and one can modify the behaviour of these fake functions in various 
 | `YT_DEFINE_FUNC(rt, f, ...)`   | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC`.                         |
 | `YT_DEFINE_FUNC_void(f, ...)`  | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC_VOID`.                    |
 | `YT_RESET_MOCK(f)`             | Resets internal state of a fake function previously defined using `YT_DEFINE_FUNC*`.                  |
+
+See [Mocking and faking](./example/sensor_test.c) example
 
 ## Feedback
 
