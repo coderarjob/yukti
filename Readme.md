@@ -59,18 +59,20 @@ See [Parameterised test](./example/add_parameterised_test.c) example
 Assertions macros check state expectations from an SUT (System Under Test). These are several of
 these macros.
 
-| Macro name             | Validates                                           |
-|------------------------|-----------------------------------------------------|
-| `YT_EQ_SCALAR(a, b)`   | a == b                                              |
-| `YT_NEQ_SCALAR(a, b)`  | a != b                                              |
-| `YT_GEQ_SCALAR(a, b)`  | a >= b                                              |
-| `YT_LEQ_SCALAR(a, b)`  | a <= b                                              |
-| `YT_GRT_SCALAR(a, b)`  | a > b                                               |
-| `YT_LES_SCALAR(a, b)`  | a < b                                               |
-| `YT_EQ_MEM(a, b, sz)`  | First `sz` bytes in buffers `a` & `b` are equal     |
-| `YT_NEQ_MEM(a, b, sz)` | First `sz` bytes in buffers `a` & `b` are not equal |
-| `YT_EQ_STRING(a, b)`   | String `a` and `b` are equal                        |
-| `YT_NEQ_STRING(a, b)`  | String `a` and `b` are not equal                    |
+| Macro name               | Validates                                           |
+|--------------------------|-----------------------------------------------------|
+| `YT_EQ_SCALAR(a, b)`     | a == b                                              |
+| `YT_NEQ_SCALAR(a, b)`    | a != b                                              |
+| `YT_GEQ_SCALAR(a, b)`    | a >= b                                              |
+| `YT_LEQ_SCALAR(a, b)`    | a <= b                                              |
+| `YT_GRT_SCALAR(a, b)`    | a > b                                               |
+| `YT_LES_SCALAR(a, b)`    | a < b                                               |
+| `YT_EQ_MEM(a, b, sz)`    | First `sz` bytes in buffers `a` & `b` are equal     |
+| `YT_NEQ_MEM(a, b, sz)`   | First `sz` bytes in buffers `a` & `b` are not equal |
+| `YT_EQ_STRING(a, b)`     | String `a` and `b` are equal                        |
+| `YT_NEQ_STRING(a, b)`    | String `a` and `b` are not equal                    |
+| `YT_EQ_DOUBLE(a, b, e)`  | Approx match a == b. Passes if `mod(a - b) <= e`    |
+| `YT_NEQ_DOUBLE(a, b, e)` | Approx match a != b. Passes if `mod(a - b) > e`     |
 
 See [Basic tests](./example/basic_tests.c) example
 

@@ -805,6 +805,24 @@ static void YT__ec_init()
 static int YT__equal_mem (const void* a, const void* b, unsigned long size, int* i);
 static int YT__equal_string (const char* a, const char* b, int* i);
 
+    #define YT__TEST_DOUBLE(e, a, o, b, op)                              \
+        do {                                                             \
+            __auto_type ut_a = (a);                                      \
+            __auto_type ut_b = (b);                                      \
+            YT__current_testrecord->total_exp_count++;                   \
+            if (ut_a > ut_b) {                                           \
+                if (ut_a - ut_b o (e))                                   \
+                    YT__PASSED (a o b);                                  \
+                else                                                     \
+                    YT__FAILED (a op b, "[%f !" #op " %f]", ut_a, ut_b); \
+            } else {                                                     \
+                if (ut_b - ut_a o (e))                                   \
+                    YT__PASSED (a op b);                                 \
+                else                                                     \
+                    YT__FAILED (a op b, "[%f !" #op " %f]", ut_a, ut_b); \
+            }                                                            \
+        } while (0)
+
     #define YT__TEST_SCALAR(a, o, b)                                                         \
         do {                                                                                 \
             __auto_type ut_a = (a);                                                          \
@@ -840,12 +858,14 @@ static int YT__equal_string (const char* a, const char* b, int* i);
                 YT__FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
         } while (0)
 
-    #define YT_EQ_SCALAR(a, b)  YT__TEST_SCALAR (a, ==, b)
-    #define YT_NEQ_SCALAR(a, b) YT__TEST_SCALAR (a, !=, b)
-    #define YT_GEQ_SCALAR(a, b) YT__TEST_SCALAR (a, >=, b)
-    #define YT_LEQ_SCALAR(a, b) YT__TEST_SCALAR (a, <=, b)
-    #define YT_LES_SCALAR(a, b) YT__TEST_SCALAR (a, <, b)
-    #define YT_GRT_SCALAR(a, b) YT__TEST_SCALAR (a, >, b)
+    #define YT_EQ_DOUBLE(a, b, e)  YT__TEST_DOUBLE (e, a, <=, b, ==)
+    #define YT_NEQ_DOUBLE(a, b, e) YT__TEST_DOUBLE (e, a, >, b, !=)
+    #define YT_EQ_SCALAR(a, b)     YT__TEST_SCALAR (a, ==, b)
+    #define YT_NEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, !=, b)
+    #define YT_GEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, >=, b)
+    #define YT_LEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, <=, b)
+    #define YT_LES_SCALAR(a, b)    YT__TEST_SCALAR (a, <, b)
+    #define YT_GRT_SCALAR(a, b)    YT__TEST_SCALAR (a, >, b)
 
     #define YT_EQ_MEM(a, b, sz)  YT__TEST_MEM (a, ==, b, sz)
     #define YT_NEQ_MEM(a, b, sz) YT__TEST_MEM (a, !=, b, sz)

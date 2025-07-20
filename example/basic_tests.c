@@ -1,9 +1,21 @@
 #define YUKTI_TEST_IMPLEMENTATION
 #include "../yukti.h"
 
-YT_TEST (basic, scaler_tests)
+YT_TEST (basic, scaler_tests_floats)
+{
+    YT_NEQ_DOUBLE (1.0, 2.0, 0.01);      // Passed because 1.0 != 2.0
+    YT_NEQ_DOUBLE (1.1234, 1.12, 0.001); // Passed because 1.1234 - 1.12 > 0.001
+
+    YT_EQ_DOUBLE (1.1234, 1.12, 0.01); // Passed because 1.1234 - 1.12 <= 0.01
+    YT_EQ_DOUBLE (0.0, 0.0, 0.001);    // Passed because 1.0 != 2.0
+
+    YT_END();
+}
+
+YT_TEST (basic, scaler_tests_ints)
 {
     YT_NEQ_SCALAR (1, 2); // Passed because 1 != 2
+    YT_EQ_SCALAR (3, 3);  // Passed because 3 == 3
 
     YT_GEQ_SCALAR (2, 2); // Passes because 2 >= 2
     YT_GEQ_SCALAR (3, 2); // Passes because 3 >= 2
@@ -49,7 +61,8 @@ void yt_reset()
 int main (void)
 {
     YT_INIT();
-    scaler_tests();
+    scaler_tests_ints();
+    scaler_tests_floats();
     string_tests();
     memory_tests();
     YT_RETURN_WITH_REPORT();
