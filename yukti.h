@@ -22,27 +22,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  * ----------------------------------------------------------------------------
- *
- * Mock/Fake function macros for Unit testing parts of a program. These macros make it easy to
- * create fake/mock functions, with support for return and byref parameters.
- *
- * ----------------------------------------------------------------------------
- * Examples:
- * ----------------------------------------------------------------------------
- *
- * C declaration              Mock declaration and definition
- * ------------------------   -----------------------------------------
- * void f ();                 YT_DECLARE_FUNC_VOID(f);
- *                            YT_DEFINE_FUNC_VOID(f);
- *
- * void f (int a);            YT_DECLARE_FUNC_VOID(f, int);
- *                            YT_DEFINE_FUNC_VOID(f, int);
- *
- * int f ();                  YT_DECLARE_FUNC(int, f);
- *                            YT_DEFINE_FUNC(int, f);
- *
- * int f (int a);             YT_DECLARE_FUNC(int, f, int);
- *                            YT_DEFINE_FUNC(int, f, int);
  */
 
 #ifndef YUKTI_TEST_H
@@ -112,7 +91,7 @@ static inline void acl_list_remove (ACL_ListNode* item)
     for ((node) = (head)->next; (node) != (head); (node) = (node)->next)
 
 // ----------------------------------------------------------------------------
-// Macros to find out the number of arguments passed to a variarg macros
+// Macros to find out the number of arguments passed to a variadic macro
 // ----------------------------------------------------------------------------
 #define YT__FIFTEENTH_ELEMENT(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, \
                               ...)                                                              \
@@ -272,10 +251,10 @@ typedef struct YT__Arg {
  * 1.2: MOCKS TO CREATE FAKE/MOCK FUNCTION DEFINITIONS & DECLARATIONS
  * ========================================================================================
  * */
-void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
+void yt_reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
 // ----------------------------------------------------------------------------
-// Common Helper macros used by both declaration and defination macros.
+// Common Helper macros used by both declaration and definition macros.
 // ----------------------------------------------------------------------------
 #define YT__STRUCT_TAG(f)     f##_fake_tag
 #define YT__STRUCT_VAR(f)     f##_fake
@@ -360,7 +339,7 @@ void reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
  * ========================================================================================
  * SECTION 2: FOR USAGE IN TEST IMPLEMENTATION TO VALIDATE TEST EXPECTATIONS & REPORTING
  * ========================================================================================
- * 2.1: FOR REPORTING LIST OF FALIED TESTS IN THE END.
+ * 2.1: FOR REPORTING LIST OF FAILED TESTS IN THE END.
  * ========================================================================================
  * */
 #ifdef YUKTI_TEST_IMPLEMENTATION
@@ -917,7 +896,7 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define YT_ARG_9() _j
 
     #define YT__TEST_IMPL_BODY(tf, fn, count, tn, ...)                              \
-        reset();                                                                    \
+        yt_reset();                                                                 \
         YT__ec_init();                                                              \
         YT__total_test_count++;                                                     \
         /* Following assert ensures we are not overriding it. It was taken cared of \
