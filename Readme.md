@@ -90,7 +90,7 @@ in what order and which what parameters.
 | `YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...)` | Function `f` is called with the given arguments at least `n` times in no particular order |
 | `YT_MUST_NEVER_CALL(f, ...)`                      | Function `f` with the given arguments is never called                                     |
 
-See [read_temparature_log_called](./example/sensor_test.c) example
+See [control_temparature_test](./example/sensor_test.c) example
 
 ### Mock or Fake function declaration
 

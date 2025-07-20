@@ -7,11 +7,15 @@
 #define ADC_MAX_VALUE    (1023U)
 #define ADC_RAIL_VOLTAGE (5.0)
 
-// Note: Assume that log_adc_value, readADC functions is defined externally. For our case we will
+double read_temparature();
+void start_control_temparature (double goal_temparature);
+
+// Note: Assume that that the following are defined externally. For our case we will
 // use this to show how to mock external functions in yukti.h
 uint16_t readADC();
-void log_adc_value (uint16_t adc);
-
-double read_temparature();
+void record_current_temparate (double);
+uint32_t pwm_adjust (double, double);
+void pwm_set (uint32_t);
+bool should_stop();
 
 #endif // SENSOR_H
