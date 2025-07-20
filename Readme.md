@@ -4,10 +4,10 @@
 
 ## About
 
-Yukti is a single header testing framework for C/C++ projects. It has no 3rd party dependencies and
-is fully contained within one single header file.
+Yukti is a single header testing library for C/C++ projects. It has no 3rd party dependencies and is
+fully contained within one single header file.
 
-It provides most of the features available in other popular testing framework but in a small (< 1000
+It provides most of the features available in other popular testing library but in a small (< 1500
 LOC) single header library.
 
 * [Examples](#examples)
