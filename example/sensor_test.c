@@ -4,7 +4,6 @@
 
 #include <stdbool.h>
 #define YUKTI_TEST_IMPLEMENTATION
-#define YUKTI_TEST_DEBUG
 #include "../yukti.h"
 #include "suts/sensor.h"
 
@@ -31,7 +30,7 @@ YT_TESTP (sensor, read_temperature_test, uint16_t, double)
     uint16_t adc_value     = YT_ARG_0();
     double temperature_exp = YT_ARG_1();
 
-    // read_temperature() which calls readADC() should return the adc value we expect.
+    // readADC() called by read_temperature() SUT function should return the adc value we expect.
     readADC_fake.ret = adc_value;
 
     YT_EQ_DOUBLE (read_temperature(), temperature_exp, 0.00999);
@@ -43,11 +42,11 @@ YT_TEST (printer, printer_fail)
 #define DUMMY_FILE_NAME "./somefile"
 
     // In order to simulate printer error, we want start_printing() function to return a negative
-    // number.
+    // number. start_printing() is called by the print_and_wait() SUT function.
     start_printing_fake.ret = -1;
 
     // Since printing has failed, we expect `set_status (STATUS_ERROR)` to be called. ANY_ORDER
-    // macro is used because we don't case in what order this is called.
+    // macro is used because we don't care in what order this is called.
     YT_MUST_CALL_ANY_ORDER (set_status, YT_V (STATUS_ERROR));
 
     // Call the actual SUT function.
@@ -78,17 +77,19 @@ YT_TEST (printer, printer_success)
 #define DUMMY_FILE_NAME "./somefile"
 
     // In order to simulate printer error, we want start_printing() function to return a
-    // non-negative number. This step is OPTIONAL, since all fakes by default return 0.
+    // non-negative number. This step is OPTIONAL, since all fakes by default returns 0.
     start_printing_fake.ret = 0;
 
-    // is_printing_complete() function should return true after 2 iterations. The function contains
-    // this logic. To make it more flexible, we can pass in the number of iterations in
-    // is_printing_complete.resources.
+    // is_printing_complete() function should return false for 2 iterations, then it should return
+    // true to break out of the `while` loop in the print_and_wait() SUT function. The handler
+    // function contains this logic. To make it more flexible, we can pass in the number of
+    // iterations in is_printing_complete.resources.
     int stop_after_iteration            = 2;
     is_printing_complete_fake.resources = &stop_after_iteration;
     is_printing_complete_fake.handler   = is_printing_complete_handler;
 
-    // Since printer door is closed we do not expect `set_status (STATUS_ERROR)` to ever be called.
+    // Since this is the success case we do not expect `set_status (STATUS_ERROR)` to ever be
+    // called.
     YT_MUST_NEVER_CALL (set_status, YT_V (STATUS_ERROR));
 
     // We expect these functions to be called in the following order - start_printing() first

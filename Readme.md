@@ -25,7 +25,7 @@ LOC) single header library.
     - [X] Continuous data like array, string assertion macros
     - [X] YT_EQ_DOUBLE macro for approx matching of values
 - [X] **Parameterised testing macros**
-    - [ ] Double parameter with approx matching of values.
+    - [ ] Floating point parameter with approx matching of values.
 - [X] **Faking/Mocking external functions**
     - [X] Macros to fake external functions
     - [X] Behaviour modification of faked functions using custom Handler functions
