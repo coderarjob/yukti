@@ -1,9 +1,7 @@
 <p align="center">
     <img src="./docs/images/logo.png"/>
-    <br/>
-    <br/>
-    <img src="https://github.com/coderarjob/yukti/actions/workflows/build.yaml/badge.svg"/>
 </p>
+<img src="https://github.com/coderarjob/yukti/actions/workflows/build.yaml/badge.svg"/>
 
 ## About
 
