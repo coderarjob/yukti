@@ -983,5 +983,48 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
 
 #endif /* YUKTI_TEST_IMPLEMENTATION */
 
+/* When YUKTI_STRIP_PREFIX is defined, the all public interfaces (expect yt_reset,
+ * YT_INIT & YT_RETURN_WITH_REPORT) will have another variant without the 'YT_'
+ * prefix.
+ */
+#ifdef YUKTI_STRIP_PREFIX
+    #define TEST                              YT_TEST
+    #define END                               YT_END
+    #define V                                 YT_V
+    #define DEFINE_FUNC_VOID                  YT_DEFINE_FUNC_VOID
+    #define DEFINE_FUNC                       YT_DEFINE_FUNC
+    #define DECLARE_FUNC_VOID                 YT_DECLARE_FUNC_VOID
+    #define DECLARE_FUNC                      YT_DECLARE_FUNC
+    #define RESET_MOCK                        YT__RESET_MOCK
+    #define MUST_CALL_IN_ORDER                YT_MUST_CALL_IN_ORDER
+    #define MUST_CALL_IN_ORDER_ATLEAST_TIMES  YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES
+    #define MUST_CALL_ANY_ORDER               YT_MUST_CALL_ANY_ORDER
+    #define MUST_CALL_ANY_ORDER_ATLEAST_TIMES YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES
+    #define EQ_DOUBLE                         YT_EQ_DOUBLE
+    #define NEQ_DOUBLE                        YT_NEQ_DOUBLE
+    #define EQ_SCALAR                         YT_EQ_SCALAR
+    #define NEQ_SCALAR                        YT_NEQ_SCALAR
+    #define GEQ_SCALAR                        YT_GEQ_SCALAR
+    #define LEQ_SCALAR                        YT_LEQ_SCALAR
+    #define LES_SCALAR                        YT_LES_SCALAR
+    #define GRT_SCALAR                        YT_GRT_SCALAR
+    #define EQ_MEM                            YT_EQ_MEM
+    #define NEQ_MEM                           YT_NEQ_MEM
+    #define EQ_STRING                         YT_EQ_STRING
+    #define NEQ_STRING                        YT_NEQ_STRING
+    #define ARG                               YT_ARG
+    #define ARG_SUB_ARRAY                     YT_ARG_SUB_ARRAY
+    #define ARG_0                             YT_ARG_0
+    #define ARG_1                             YT_ARG_1
+    #define ARG_2                             YT_ARG_2
+    #define ARG_3                             YT_ARG_3
+    #define ARG_4                             YT_ARG_4
+    #define ARG_5                             YT_ARG_5
+    #define ARG_6                             YT_ARG_6
+    #define ARG_7                             YT_ARG_7
+    #define ARG_8                             YT_ARG_8
+    #define ARG_9                             YT_ARG_9
+#endif /* YUKTI_STRIP_PREFIX */
+
 #pragma GCC diagnostic pop
 #endif // YUKTI_TEST_H
