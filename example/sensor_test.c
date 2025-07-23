@@ -1,4 +1,6 @@
-/* Unittest for suts/sensor.c */
+/* Unittest for suts/sensor.c
+ * Compile using `gcc example/sensor_test.c example/suts/sensor.c -o ./sensor_test`
+ */
 
 #include <stdbool.h>
 #define YUKTI_TEST_IMPLEMENTATION

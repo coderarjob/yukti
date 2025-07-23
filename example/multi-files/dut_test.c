@@ -20,7 +20,7 @@ YT_TEST(test, dut_test)
     YT_END();
 }
 
-void reset()
+void yt_reset()
 {
     reset_mock();
 }

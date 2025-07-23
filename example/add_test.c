@@ -1,4 +1,6 @@
-/* Unittest for suts/add.c */
+/* Unittest for suts/add.c 
+ * Compile using `gcc example/add_test.c example/suts/add.c -o ./add_test`
+ */
 
 #define YUKTI_TEST_IMPLEMENTATION
 #include "../yukti.h"
