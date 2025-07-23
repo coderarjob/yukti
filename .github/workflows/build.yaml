@@ -1,0 +1,14 @@
+on: [push]
+
+jobs:
+  builld_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: sudo apt-get install gcc
+
+    - name: Build and run tests
+      run: bash ${{github.workspace}}/tests/test.sh || exit
