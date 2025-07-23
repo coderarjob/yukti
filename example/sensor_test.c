@@ -1,6 +1,8 @@
 /* Unittest for suts/sensor.c */
 
+#include <stdbool.h>
 #define YUKTI_TEST_IMPLEMENTATION
+#define YUKTI_TEST_DEBUG
 #include "../yukti.h"
 #include "suts/sensor.h"
 
@@ -8,61 +10,104 @@
  * Mocking of readADC function
  ************************************************************************************/
 YT_DECLARE_FUNC (uint16_t, readADC);
-YT_DECLARE_FUNC_VOID (record_current_temparate, double);
-YT_DECLARE_FUNC (uint32_t, pwm_adjust, double, double);
-YT_DECLARE_FUNC_VOID (pwm_set, uint32_t);
-YT_DECLARE_FUNC (bool, should_stop);
+YT_DECLARE_FUNC (int, start_printing, const char*);
+YT_DECLARE_FUNC (bool, is_printing_complete, int);
+YT_DECLARE_FUNC_VOID (printer_report_progress, int);
+YT_DECLARE_FUNC_VOID (set_status, Status);
 
 YT_DEFINE_FUNC (uint16_t, readADC);
-YT_DEFINE_FUNC_VOID (record_current_temparate, double);
-YT_DEFINE_FUNC (uint32_t, pwm_adjust, double, double);
-YT_DEFINE_FUNC_VOID (pwm_set, uint32_t);
-YT_DEFINE_FUNC (bool, should_stop);
+YT_DEFINE_FUNC (int, start_printing, const char*);
+YT_DEFINE_FUNC (bool, is_printing_complete, int);
+YT_DEFINE_FUNC_VOID (printer_report_progress, int);
+YT_DEFINE_FUNC_VOID (set_status, Status);
 
 /*************************************************************************************
  * Tests
  ************************************************************************************/
-YT_TESTP (sensor, read_temparature_test, uint16_t, double)
+YT_TESTP (sensor, read_temperature_test, uint16_t, double)
 {
     uint16_t adc_value     = YT_ARG_0();
-    double temparature_exp = YT_ARG_1();
+    double temperature_exp = YT_ARG_1();
 
-    // read_temparature() which calls readADC() should return the adc value we expect.
+    // read_temperature() which calls readADC() should return the adc value we expect.
     readADC_fake.ret = adc_value;
 
-    YT_EQ_DOUBLE (read_temparature(), temparature_exp, 0.00999);
+    YT_EQ_DOUBLE (read_temperature(), temperature_exp, 0.00999);
     YT_END();
 }
 
-// Handler function is called when should_stop mocked function is called. What the handler function
-// does has no effect as long as it returns what should_stop function expects.
-bool should_stop_handler()
+YT_TEST (printer, printer_fail)
 {
-    // * `should_stop_fake.resources` is used to pass values from the test function. Since the
-    // handler function is called from within the test function, we can pass stack variables through
-    // this `resources`.
-    int stop_after_iteration = *(int*)should_stop_fake.resources;
+#define DUMMY_FILE_NAME "./somefile"
 
-    // * `should_stop_fake.invokeCount` shows the number of times this mocked function was called.
-    // Starts from 1.
-    return (should_stop_fake.invokeCount > stop_after_iteration);
+    // In order to simulate printer error, we want start_printing() function to return a negative
+    // number.
+    start_printing_fake.ret = -1;
+
+    // Since printing has failed, we expect `set_status (STATUS_ERROR)` to be called. ANY_ORDER
+    // macro is used because we don't case in what order this is called.
+    YT_MUST_CALL_ANY_ORDER (set_status, YT_V (STATUS_ERROR));
+
+    // Call the actual SUT function.
+    print_and_wait (DUMMY_FILE_NAME);
+    YT_END();
 }
 
-YT_TEST (sensor, control_temparature_test)
+// Handler function is called when `is_printing_complete` mocked function is called. It must have
+// the same signature as its mocked function, i.e `is_printing_complete` function here. What the
+// handler function does has no effect as long as it returns what `is_printing_complete` function
+// expects.
+bool is_printing_complete_handler (int id)
 {
-    // should_stop() function should return true after 1 iteration.
-    int stop_after_iteration   = 1;
-    should_stop_fake.resources = &stop_after_iteration;
-    should_stop_fake.handler   = should_stop_handler;
+    (void)id; // unused argument.
 
-    YT_MUST_CALL_IN_ORDER (readADC);
-    YT_MUST_CALL_IN_ORDER (record_current_temparate, _); // _ means don't care argument.
-    YT_MUST_CALL_IN_ORDER (pwm_adjust, _, YT_V (45.5)); // YT_V(..) macro is used to pass some value
-                                                        // when its expected.
-    YT_MUST_CALL_IN_ORDER (pwm_set, _);
+    // * `is_printing_complete.resources` is used to pass values from the test function. Since the
+    // handler function is called from within the test function, we can pass stack variables through
+    // this `resources`.
+    int stop_after_iteration = *(int*)is_printing_complete_fake.resources;
 
-    start_control_temparature (45.5);
+    // * `is_printing_complete.invokeCount` shows the number of times this mocked function was
+    // called. Starting from 1.
+    return (is_printing_complete_fake.invokeCount > stop_after_iteration);
+}
 
+YT_TEST (printer, printer_success)
+{
+#define DUMMY_FILE_NAME "./somefile"
+
+    // In order to simulate printer error, we want start_printing() function to return a
+    // non-negative number. This step is OPTIONAL, since all fakes by default return 0.
+    start_printing_fake.ret = 0;
+
+    // is_printing_complete() function should return true after 2 iterations. The function contains
+    // this logic. To make it more flexible, we can pass in the number of iterations in
+    // is_printing_complete.resources.
+    int stop_after_iteration            = 2;
+    is_printing_complete_fake.resources = &stop_after_iteration;
+    is_printing_complete_fake.handler   = is_printing_complete_handler;
+
+    // Since printer door is closed we do not expect `set_status (STATUS_ERROR)` to ever be called.
+    YT_MUST_NEVER_CALL (set_status, YT_V (STATUS_ERROR));
+
+    // We expect these functions to be called in the following order - start_printing() first
+    // followed by is_printing_complete() and so on. Note that print_and_wait() function might be
+    // calling more functions, but we only validate expectations on functions which we care about in
+    // the test.
+
+    // We can put expectations on what arguments were passed. There are two macros of this:
+    // * 'YT_V(..)' macro is used to pass some value when its expected. Here we expect
+    // `start_printing` to be called with the file name we passed to the SUT function
+    YT_MUST_CALL_IN_ORDER (start_printing, YT_V (DUMMY_FILE_NAME));
+
+    // * '_' means don't care argument. That is we just expect 'is_printing_complete' to be
+    // called, but do not care about what argument was passed to it.
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (stop_after_iteration, is_printing_complete, _);
+    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (stop_after_iteration, printer_report_progress, _);
+
+    YT_MUST_CALL_IN_ORDER (set_status, YT_V (STATUS_FINISHED));
+
+    // Call the actual SUT function.
+    print_and_wait (DUMMY_FILE_NAME);
     YT_END();
 }
 
@@ -73,19 +118,20 @@ YT_TEST (sensor, control_temparature_test)
 void yt_reset()
 {
     YT_RESET_MOCK (readADC);
-    YT_RESET_MOCK (record_current_temparate);
-    YT_RESET_MOCK (pwm_adjust);
-    YT_RESET_MOCK (pwm_set);
-    YT_RESET_MOCK (should_stop);
+    YT_RESET_MOCK (start_printing);
+    YT_RESET_MOCK (is_printing_complete);
+    YT_RESET_MOCK (printer_report_progress);
+    YT_RESET_MOCK (set_status);
 }
 
 int main()
 {
     YT_INIT();
     // clang-format off
-    read_temparature_test (3, YT_ARG (uint16_t){ 0, 24, 1023 },
+    read_temperature_test (3, YT_ARG (uint16_t){ 0, 24, 1023 },
                               YT_ARG (double){ 0.0, 29.32, 1250.0 });
     // clang_format on
-    control_temparature_test();
+    printer_fail();
+    printer_success();
     YT_RETURN_WITH_REPORT();
 }

@@ -23,7 +23,9 @@ LOC) single header library.
 - [X] **State testing**
     - [X] State/scalar value assertion macros
     - [X] Continuous data like array, string assertion macros
+    - [X] YT_EQ_DOUBLE macro for approx matching of values
 - [X] **Parameterised testing macros**
+    - [ ] Double parameter with approx matching of values.
 - [X] **Faking/Mocking external functions**
     - [X] Macros to fake external functions
     - [X] Behaviour modification of faked functions using custom Handler functions
@@ -90,7 +92,9 @@ in what order and which what parameters.
 | `YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...)` | Function `f` is called with the given arguments at least `n` times in no particular order |
 | `YT_MUST_NEVER_CALL(f, ...)`                      | Function `f` with the given arguments is never called                                     |
 
-See [control_temparature_test](./example/sensor_test.c) example
+See these examples
+* [printer_fail](./example/sensor_test.c) example
+* [printer_success](./example/sensor_test.c) example
 
 ### Mock or Fake function declaration
 

@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-double read_temparature()
+double read_temperature()
 {
     // Note: Assume that readADC functions is defined externally. For our case we will use this to
     // show how to mock external functions in yukti.h
@@ -15,13 +15,19 @@ double read_temparature()
     return volts / 4.0e-3;
 }
 
-void start_control_temparature (double goal_temparature)
+void print_and_wait (const char* file)
 {
-    while (!should_stop()) {
-        double t = read_temparature();
-        record_current_temparate (t);
-
-        uint32_t pwm = pwm_adjust (t, goal_temparature);
-        pwm_set (pwm);
+    // Start the printing
+    int id = start_printing (file);
+    if (id < 0) {
+        set_status (STATUS_ERROR);
+        return;
     }
+
+    // Wait for printing to finish
+    while (!is_printing_complete (id)) {
+        printer_report_progress (id);
+    }
+
+    set_status (STATUS_FINISHED);
 }
