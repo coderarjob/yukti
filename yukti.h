@@ -477,10 +477,10 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
 typedef struct YT__CallRecord {
     char callString[YT__MAX_CALLSTRING_SIZE];
     enum {
-        YT_CALLRECORD_TYPE_ORDERED_EXPECTATION,
-        YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION,
-        YT_CALLRECORD_TYPE_ACTUALCALL,
-        YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION,
+        YT__CALLRECORD_TYPE_ORDERED_EXPECTATION,
+        YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION,
+        YT__CALLRECORD_TYPE_ACTUALCALL,
+        YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION,
     } type;
     int sourceLineNumber;
     char* sourceFileName;
@@ -626,13 +626,13 @@ void YT__add_callrecord (ACL_ListNode* head, int sourceLineNumber, const char* c
     }
 
     if (head == &YT__orderedExceptationListHead) {
-        newrec->type = YT_CALLRECORD_TYPE_ORDERED_EXPECTATION;
+        newrec->type = YT__CALLRECORD_TYPE_ORDERED_EXPECTATION;
     } else if (head == &YT__globalExceptationListHead) {
-        newrec->type = YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION;
+        newrec->type = YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION;
     } else if (head == &YT__actualCallListHead) {
-        newrec->type = YT_CALLRECORD_TYPE_ACTUALCALL;
+        newrec->type = YT__CALLRECORD_TYPE_ACTUALCALL;
     } else if (head == &YT__neverCallExceptationsListHead) {
-        newrec->type = YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION;
+        newrec->type = YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION;
     } else {
         YT__PANIC ("Invalid list");
     }
@@ -662,7 +662,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
             YT__CallRecord* item = ACL_LIST_ITEM (node, YT__CallRecord, listNode);
 
             // Never call List must contain only call records of never call expectations
-            assert (item->type == YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
+            assert (item->type == YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
 
             YT__FAILED (Expectation not met, "Called, when should be never called: %s\n\tAt: %s:%d",
                         item->callString, item->sourceFileName, item->sourceLineNumber);
@@ -675,7 +675,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
             YT__CallRecord* item = ACL_LIST_ITEM (node, YT__CallRecord, listNode);
 
             // Global List must contain only call records of global/unordered call expectations
-            assert (item->type == YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION);
+            assert (item->type == YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION);
 
             YT__FAILED (Expectation not met, "Never called: %s\n\tAt: %s:%d", item->callString,
                         item->sourceFileName, item->sourceLineNumber);
@@ -687,7 +687,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
             YT__CallRecord* item = ACL_LIST_ITEM (node, YT__CallRecord, listNode);
 
             // Ordered List must contain only call records of Ordered call expectations
-            assert (item->type == YT_CALLRECORD_TYPE_ORDERED_EXPECTATION);
+            assert (item->type == YT__CALLRECORD_TYPE_ORDERED_EXPECTATION);
 
             YT__FAILED (Expectation not met, "Never called/called out of order: %s\n\tAt %s:%d",
                         item->callString, item->sourceFileName, item->sourceLineNumber);
@@ -701,7 +701,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
         YT__CallRecord* item = ACL_LIST_ITEM (node, YT__CallRecord, listNode);
 
         // Actual List must contain only call records of actual calls
-        assert (item->type == YT_CALLRECORD_TYPE_ACTUALCALL);
+        assert (item->type == YT__CALLRECORD_TYPE_ACTUALCALL);
 
         printf ("    * %s\n", item->callString);
     }
@@ -720,7 +720,7 @@ void YT__validate_expectations()
         YT__CallRecord* item = ACL_LIST_ITEM (actCallNode, YT__CallRecord, listNode);
 
         // Actual List must contain only call records of actual calls
-        assert (item->type == YT_CALLRECORD_TYPE_ACTUALCALL);
+        assert (item->type == YT__CALLRECORD_TYPE_ACTUALCALL);
 
         ACL_ListNode* neverCallNode;
         acl_list_for_each (&YT__neverCallExceptationsListHead, neverCallNode)
@@ -728,7 +728,7 @@ void YT__validate_expectations()
             YT__CallRecord* neverExp = ACL_LIST_ITEM (neverCallNode, YT__CallRecord, listNode);
 
             // Never call List must contain only call records of never call expectations
-            assert (neverExp->type == YT_CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
+            assert (neverExp->type == YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
 
             if (YT__match_call_strings (neverExp->callString, item->callString)) {
                 acl_list_remove (&neverExp->listNode);
@@ -744,7 +744,7 @@ void YT__validate_expectations()
             YT__CallRecord* gloExp = ACL_LIST_ITEM (globalCallNode, YT__CallRecord, listNode);
 
             // Global List must contain only call records of global/unordered call expectations
-            assert (gloExp->type == YT_CALLRECORD_TYPE_GLOBAL_EXPECTATION);
+            assert (gloExp->type == YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION);
 
             if (YT__match_call_strings (gloExp->callString, item->callString)) {
                 globalExpectationMet = true;
@@ -758,7 +758,7 @@ void YT__validate_expectations()
                                                     YT__CallRecord, listNode);
 
             // Ordered List must contain only call records of Ordered call expectations
-            assert (ordExp->type == YT_CALLRECORD_TYPE_ORDERED_EXPECTATION);
+            assert (ordExp->type == YT__CALLRECORD_TYPE_ORDERED_EXPECTATION);
 
             if (YT__match_call_strings (ordExp->callString, item->callString)) {
                 YT__call_record_free (ordExp);
