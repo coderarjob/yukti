@@ -26,7 +26,7 @@ for fn in $TESTS_DIR/*.c; do
     echo " Compiling and running '$fn'"
     gcc -Wall -Wextra $fn -o $bin_file || exit
 
-    ./$bin_file > $out_file
+    $bin_file > $out_file
     diff $out_file $exp_file || exit
 done
 

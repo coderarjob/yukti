@@ -19,7 +19,7 @@ for fn in $DIR/*.c; do
     gcc -Wall -Wextra $fn -o $bin_file || exit
 
     echo "Running and recording output into '$exp_file'"
-    ./$bin_file > $exp_file
+    $bin_file > $exp_file
     chmod -w $exp_file      || exit
 done
 
