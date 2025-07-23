@@ -1,0 +1,16 @@
+[0;103m [1;100m mock:mock_return_value                 [0m
+  [0;32mPass[0m: sut_func (0, 0) == 0xFABC
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+[0;103m [1;100m mock:mock_handler                 [0m
+  [0;32mPass[0m: a == 0x1111         
+  [0;32mPass[0m: b == 0x2222         
+  [0;32mPass[0m: sut_func (0x1111, 0x2222) == 0x3333
+  [0;32mAll test expectations passed [0 of 3 failed][0m
+[0;103m [1;100m mock:mock_handler_resource_passing                 [0m
+  [0;32mPass[0m: *(int*)func_extern_1_fake.resources == 0x1212
+  [0;32mPass[0m: sut_func (0, 0) == 0
+  [0;32mAll test expectations passed [0 of 2 failed][0m
+
+[1;104m Tests Summary                [0m
+  [0;32mAll tests passed [0 of 3 failed][0m
+

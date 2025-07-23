@@ -1,0 +1,29 @@
+[0;103m [1;100m basic:scaler_tests_ints                 [0m
+  [0;32mPass[0m: 1 != 2              
+  [0;32mPass[0m: 3 == 3              
+  [0;32mPass[0m: 2 >= 2              
+  [0;32mPass[0m: 3 >= 2              
+  [0;32mPass[0m: 2 <= 2              
+  [0;32mPass[0m: -2 <= 2             
+  [0;32mPass[0m: -1 < 0              
+  [0;32mPass[0m: 3 > 1               
+  [0;32mAll test expectations passed [0 of 8 failed][0m
+[0;103m [1;100m basic:scaler_tests_floats                 [0m
+  [0;32mPass[0m: 1.0 != 2.0          
+  [0;32mPass[0m: 1.1234 > 1.12       
+  [0;32mPass[0m: 1.1234 <= 1.12      
+  [0;32mPass[0m: 0.0 == 0.0          
+  [0;32mAll test expectations passed [0 of 4 failed][0m
+[0;103m [1;100m basic:string_tests                 [0m
+  [0;32mPass[0m: string1 == "Earth"  
+  [0;32mPass[0m: string1 != "Mars"   
+  [0;32mPass[0m: string1 != "earth"  
+  [0;32mAll test expectations passed [0 of 3 failed][0m
+[0;103m [1;100m basic:memory_tests                 [0m
+  [0;32mPass[0m: buffer1 == buffer2  
+  [0;32mPass[0m: buffer1 != buffer3  
+  [0;32mAll test expectations passed [0 of 2 failed][0m
+
+[1;104m Tests Summary                [0m
+  [0;32mAll tests passed [0 of 4 failed][0m
+
