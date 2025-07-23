@@ -11,4 +11,6 @@ jobs:
       run: sudo apt-get install gcc
 
     - name: Build and run tests
-      run: bash ${{github.workspace}}/tests/test.sh || exit
+      run: |
+        cd ${{github.workspace}}
+        bash ./tests/test.sh || exit
