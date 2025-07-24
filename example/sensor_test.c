@@ -69,7 +69,7 @@ bool is_printing_complete_handler (int id)
 
     // * `is_printing_complete.invokeCount` shows the number of times this mocked function was
     // called. Starting from 1.
-    return (is_printing_complete_fake.invokeCount > stop_after_iteration);
+    return (is_printing_complete_fake.invokeCount > (unsigned)stop_after_iteration);
 }
 
 YT_TEST (printer, printer_success)

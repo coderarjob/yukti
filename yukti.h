@@ -289,7 +289,16 @@ void yt_reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
     YT__DEFINE_FUNC_BODY (YT__COUNT_ARGS (__VA_ARGS__), rt, f, __VA_ARGS__)
 
 // ----
-#define YT__DEFINE_FUNC_STRUCT(f) YT__STRUCT_TAG (f) YT__STRUCT_VAR (f) = { 0 }
+
+// clang-format off
+#ifdef __cplusplus
+    #define YT__ZEROED { }
+#else
+    #define YT__ZEROED { 0 }
+#endif /* __cplusplus */
+// clang-format on
+
+#define YT__DEFINE_FUNC_STRUCT(f) YT__STRUCT_TAG (f) YT__STRUCT_VAR (f) = YT__ZEROED;
 
 #define YT__DEFINE_FUNC_BODY_VOID(n, f, ...) \
     void f (YT__FUNC_PARAMS_X (__VA_ARGS__)) \
@@ -380,7 +389,8 @@ static YT__TestRecord* YT__current_testrecord = NULL;
 static uint32_t YT__total_test_count          = 0;
 static uint32_t YT__failed_test_count         = 0;
 
-static YT__TestRecord* YT__create_testRecord (char* testname, size_t test_count, size_t test_number)
+static YT__TestRecord* YT__create_testRecord (const char* testname, size_t test_count,
+                                              size_t test_number)
 {
     assert (testname != NULL);
 
@@ -457,7 +467,7 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
         #define YT__teardown()              (void)0
         #define YT__ec_init()               (void)0
     #else
-        #define YT_IN_SEQUENCE(n) for (unsigned i = 0; i < (n); i++)
+        #define YT_IN_SEQUENCE(n) for (int i = 0; i < (n); i++)
 
         #define YT_MUST_NEVER_CALL(f, ...)                                                  \
             do {                                                                            \
@@ -916,11 +926,14 @@ static int YT__equal_string (const char* a, const char* b, int* i)
 
 static int YT__equal_mem (const void* a, const void* b, unsigned long size, int* i)
 {
+    uint8_t* ta = (uint8_t*)a;
+    uint8_t* tb = (uint8_t*)b;
+
     *i = 0;
-    while (size-- && *(uint8_t*)a++ == *(uint8_t*)b++)
+    while (size-- && *ta++ == *tb++)
         (*i)++;
 
-    return *(uint8_t*)--a == *(uint8_t*)--b;
+    return *--ta == *--tb;
 }
 
     /*

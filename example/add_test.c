@@ -29,7 +29,7 @@ YT_TEST (add, add_two_positive_numbers)
 
 YT_TEST (add, add_must_fail)
 {
-    YT_NEQ_SCALAR (add (65536, 1), 65537);
+    YT_NEQ_SCALAR (add ((uint16_t)65534, 1), 65535);
     YT_END();
 }
 

@@ -28,26 +28,26 @@ YT_TEST (basic, scaler_tests_ints)
     YT_END();
 }
 
- YT_TEST (basic, string_tests)
+YT_TEST (basic, string_tests)
 {
-    char* string1 = "Earth";
+    const char* string1 = "Earth";
 
     YT_EQ_STRING (string1, "earth");  // Fails because string1 != "earth"
-    YT_NEQ_STRING (string1, "Earth");  // Fails because string1 == "Earth"
+    YT_NEQ_STRING (string1, "Earth"); // Fails because string1 == "Earth"
 
     YT_END();
 }
 
- YT_TEST (basic, memory_tests)
+YT_TEST (basic, memory_tests)
 {
 #define ARRAY_LEN(b) (sizeof (b) / sizeof (b[0]))
 
     char buffer1[] = { 0, 1, 2, 3 };
-    //char buffer2[] = { 0, 1, 2, 3 };
+    // char buffer2[] = { 0, 1, 2, 3 };
     char buffer3[] = { 0, 1, 2, 4 };
 
-    YT_EQ_MEM (buffer1, buffer3, ARRAY_LEN (buffer1));  // Fails because buffer1 != buffer3.
-    //YT_NEQ_MEM (buffer1, buffer2, ARRAY_LEN (buffer1)); // Fails because buffer1 == buffer2.
+    YT_EQ_MEM (buffer1, buffer3, ARRAY_LEN (buffer1)); // Fails because buffer1 != buffer3.
+    // YT_NEQ_MEM (buffer1, buffer2, ARRAY_LEN (buffer1)); // Fails because buffer1 == buffer2.
 
     YT_END();
 }

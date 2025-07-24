@@ -33,7 +33,7 @@ YT_TEST (basic, scaler_tests_ints)
 
 YT_TEST (basic, string_tests)
 {
-    char* string1 = "Earth";
+    const char* string1 = "Earth";
 
     YT_EQ_STRING (string1, "Earth");  // Passes because string1 == "Earth"
     YT_NEQ_STRING (string1, "Mars");  // Passes because string1 != "Mars"
