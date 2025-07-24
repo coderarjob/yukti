@@ -17,6 +17,8 @@ LOC) single header library.
     * [Assertion macros](#assertion-macros)
     * [Interaction/behaviour validation macros](#interaction-or-behaviour-validation-macros)
     * [Mock or Fake function creation macros](#mock-or-fake-function-declaration)
+* [Testing yukti.h](#running-tests)
+* [Versioning](#versioning)
 * [Feedback](#feedback)
 
 ## Goals
@@ -122,6 +124,14 @@ validations and one can modify the behaviour of these fake functions in various 
 | `YT_RESET_MOCK(f)`             | Resets internal state of a fake function previously defined using `YT_DEFINE_FUNC*`.                  |
 
 See [Mocking and faking](./example/sensor_test.c) example
+
+## Running tests
+
+In order to test yukti.h run `tests/test.sh`. This runs integration tests & examples.
+
+## Versioning
+
+It uses semantic versioning. See [https://semver.org/](https://semver.org).
 
 ## Feedback
 
