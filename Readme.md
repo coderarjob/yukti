@@ -47,13 +47,22 @@ Different examples are placed in the [example](./example) folder.
 
 ### Test macros
 
-`YT_TEST` & `YT_TESTP` macros are used to define a single non-parameterised test and a parameterised
+
+`YT_TEST` & `YT_TESTP` macros are used to create a non-parameterised test and a parameterised
 test respectively. Tests functions are identified by their name, that is the 2nd argument in these
 macros. These tests functions need to be called in the `main()` function explicitly. Arguments for
 parameterised tests are given when calling them in the `main()`, non-parameterised tests do not take
 any argument.
 
 Each test function must end with `YT_END()` macro. If omitted will result in compilation errors.
+
+| Macro name                     | Purpose                                                                                                                 |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `YT_TEST(g, tn)`               | Creates a new non-parameterised test `tn` under group `g`. Group name is not yet used for any purpose.                  |
+| `YT_TESTP(g, tn, t1, t2, ...)` | Creates a new parameterised test `tn` under group `g`. `t1`, `t2` etc are types of parameters to be passed to the test. |
+| `YT_END()`                     | Ends a test function. It must exist at the very end of each test function.                                              |
+| `YT_INIT()`                    | Initializes yukti test internals. Must be called from `main` before test functions are run.                             |
+| `YT_RETURN_WITH_REPORT()`      | Returns from `main` after printing a summary.                                                                           |
 
 See [Parameterised test](./example/add_parameterised_test.c) example
 
@@ -92,6 +101,7 @@ in what order and which what parameters.
 | `YT_MUST_CALL_ANY_ORDER(f, ...)`                  | Function `f` is called with the given arguments at least once in no particular order      |
 | `YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...)` | Function `f` is called with the given arguments at least `n` times in no particular order |
 | `YT_MUST_NEVER_CALL(f, ...)`                      | Function `f` with the given arguments is never called                                     |
+| `YT_IN_SEQUENCE(n)` | Repeats expectations `n` number of times. Used to put expectations for a loop. |
 
 See these examples
 * [printer_fail](./example/sensor_test.c) example
