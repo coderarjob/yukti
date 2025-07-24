@@ -429,6 +429,7 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
         // Compilation will fail since the these macros will expand to invalid C code.
         #define YT__ERROR_MESSAGE Invalid when YUKTI_TEST_NO_MUST_CALL is defined
 
+        #define YT_IN_SEQUENCE(n)                         YT__ERROR_MESSAGE
         #define YT_MUST_CALL_IN_ORDER(...)                YT__ERROR_MESSAGE
         #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(...)  YT__ERROR_MESSAGE
         #define YT_MUST_CALL_ANY_ORDER(...)               YT__ERROR_MESSAGE
@@ -438,6 +439,8 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
         #define YT__teardown()              (void)0
         #define YT__ec_init()               (void)0
     #else
+        #define YT_IN_SEQUENCE(n) for (unsigned i = 0; i < (n); i++)
+
         #define YT_MUST_NEVER_CALL(f, ...)                                                  \
             do {                                                                            \
                 YT__current_testrecord->total_exp_count++;                                  \
@@ -996,6 +999,7 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define DECLARE_FUNC_VOID                 YT_DECLARE_FUNC_VOID
     #define DECLARE_FUNC                      YT_DECLARE_FUNC
     #define RESET_MOCK                        YT__RESET_MOCK
+    #define IN_SEQUENCE                       YT_IN_SEQUENCE
     #define MUST_CALL_IN_ORDER                YT_MUST_CALL_IN_ORDER
     #define MUST_CALL_IN_ORDER_ATLEAST_TIMES  YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES
     #define MUST_CALL_ANY_ORDER               YT_MUST_CALL_ANY_ORDER

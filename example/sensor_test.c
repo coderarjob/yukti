@@ -102,10 +102,15 @@ YT_TEST (printer, printer_success)
     // `start_printing` to be called with the file name we passed to the SUT function
     YT_MUST_CALL_IN_ORDER (start_printing, YT_V (DUMMY_FILE_NAME));
 
-    // * '_' means don't care argument. That is we just expect 'is_printing_complete' to be
-    // called, but do not care about what argument was passed to it.
-    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (stop_after_iteration, is_printing_complete, _);
-    YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES (stop_after_iteration, printer_report_progress, _);
+    // YT_IN_SEQUENCE repeats the expectations placed within it the given number of times. It is
+    // used to put expectations on a loop which iterates some number of times.
+    YT_IN_SEQUENCE (stop_after_iteration)
+    {
+        // * '_' means don't care argument. That is we just expect 'is_printing_complete' to be
+        // called, but do not care about what argument was passed to it.
+        YT_MUST_CALL_IN_ORDER (is_printing_complete, _);
+        YT_MUST_CALL_IN_ORDER (printer_report_progress, _);
+    }
 
     YT_MUST_CALL_IN_ORDER (set_status, YT_V (STATUS_FINISHED));
 
