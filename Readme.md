@@ -8,9 +8,10 @@
 Yukti is a single header testing library for C/C++ projects. It has no 3rd party dependencies and is
 fully contained within one single header file.
 
-It provides most of the features available in other popular testing library but in a small (< 1500
-LOC) single header library.
+It provides most of the features available in other popular testing library but in a small single
+header library.
 
+* [Screenshots](#screenshots)
 * [Examples](#examples)
 * [Documentation](#documentation)
     * [Test macros](#test-macros)
@@ -40,6 +41,12 @@ LOC) single header library.
     - [X] Report line numbers and source file of failed expectations
     - [X] Report list of all the tests which failed
     - [X] Tests executables exit with non-zero code if any of its tests fails
+
+## Screenshots
+
+| Reporting test failure. Shows source file location and summary mentions failing tests | All test are passing                                                     |
+|---------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [![Failure](./docs/images/failure_thumb.png)](./docs/images/failure.png)              | [![Passing](./docs/images/passing_thumb.png)](./docs/images/passing.png) |
 
 ## Examples
 
