@@ -127,7 +127,7 @@ See [Mocking and faking](./example/sensor_test.c) example
 
 ## Running tests
 
-In order to test yukti.h run `tests/test.sh`. This runs integration tests & examples.
+In order to test yukti.h run `tests/run_all_tests.sht`. This runs integration tests & examples.
 
 ## Versioning
 

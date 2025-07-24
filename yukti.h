@@ -186,6 +186,21 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT__FUNC_PARAMS_9(t, ...)  t _i __VA_OPT__ (, YT__FUNC_PARAMS_10 (__VA_ARGS__))
 #define YT__FUNC_PARAMS_10(t, ...) t _j
 
+// clang-format off
+#ifdef __cplusplus
+#define YT__FUNC_PARAMS_ARRAY_X(...)     YT__FUNC_PARAMS_ARRAY_0 (__VA_ARGS__)
+#define YT__FUNC_PARAMS_ARRAY_0(...)     __VA_OPT__ (YT__FUNC_PARAMS_ARRAY_1 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_1(t, ...)  const t _a[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_2 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_2(t, ...)  const t _b[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_3 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_3(t, ...)  const t _c[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_4 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_4(t, ...)  const t _d[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_5 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_5(t, ...)  const t _e[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_6 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_6(t, ...)  const t _f[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_7 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_7(t, ...)  const t _g[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_8 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_8(t, ...)  const t _h[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_9 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_9(t, ...)  const t _i[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_10 (__VA_ARGS__))
+#define YT__FUNC_PARAMS_ARRAY_10(t, ...) const t _j[]
+#else
 #define YT__FUNC_PARAMS_ARRAY_X(...)     YT__FUNC_PARAMS_ARRAY_0 (__VA_ARGS__)
 #define YT__FUNC_PARAMS_ARRAY_0(...)     __VA_OPT__ (YT__FUNC_PARAMS_ARRAY_1 (__VA_ARGS__))
 #define YT__FUNC_PARAMS_ARRAY_1(t, ...)  t _a[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_2 (__VA_ARGS__))
@@ -198,6 +213,9 @@ static inline void acl_list_remove (ACL_ListNode* item)
 #define YT__FUNC_PARAMS_ARRAY_8(t, ...)  t _h[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_9 (__VA_ARGS__))
 #define YT__FUNC_PARAMS_ARRAY_9(t, ...)  t _i[] __VA_OPT__ (, YT__FUNC_PARAMS_ARRAY_10 (__VA_ARGS__))
 #define YT__FUNC_PARAMS_ARRAY_10(t, ...) t _j[]
+#endif /* __cplusplus */
+// clang-format on
+
 /*
  * ========================================================================================
  * SECTION 1: FOR CREATING MOCK FUNCTION DECLARATION & DEFINITIONS
@@ -367,7 +385,7 @@ static YT__TestRecord* YT__create_testRecord (char* testname, size_t test_count,
     assert (testname != NULL);
 
     YT__TestRecord* newrec = NULL;
-    if (!(newrec = calloc (1, sizeof (YT__TestRecord)))) {
+    if (!(newrec = (YT__TestRecord*)calloc (1, sizeof (YT__TestRecord)))) {
         perror ("malloc");
         YT__PANIC (NULL);
     }
@@ -477,14 +495,16 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
         #define YT__ARG_OPTIONAL_CHAR        '!'
         #define YT__ARG_SEPARATOR_CHAR       ','
 
+typedef enum YT__CallRecordTypes {
+    YT__CALLRECORD_TYPE_ORDERED_EXPECTATION,
+    YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION,
+    YT__CALLRECORD_TYPE_ACTUALCALL,
+    YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION,
+} YT__CallRecordTypes;
+
 typedef struct YT__CallRecord {
     char callString[YT__MAX_CALLSTRING_SIZE];
-    enum {
-        YT__CALLRECORD_TYPE_ORDERED_EXPECTATION,
-        YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION,
-        YT__CALLRECORD_TYPE_ACTUALCALL,
-        YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION,
-    } type;
+    YT__CallRecordTypes type;
     int sourceLineNumber;
     char* sourceFileName;
     ACL_ListNode listNode;
@@ -619,11 +639,11 @@ void YT__add_callrecord (ACL_ListNode* head, int sourceLineNumber, const char* c
                          int n, const char* const fn, ...)
 {
     YT__CallRecord* newrec = NULL;
-    if (!(newrec = malloc (sizeof (YT__CallRecord)))) {
+    if (!(newrec = (YT__CallRecord*)malloc (sizeof (YT__CallRecord)))) {
         perror ("malloc");
         YT__PANIC (NULL);
     }
-    if (!(newrec->sourceFileName = malloc (sizeof (char) * YT__MAX_SOURCE_FILE_NAME_LEN))) {
+    if (!(newrec->sourceFileName = (char*)malloc (sizeof (char) * YT__MAX_SOURCE_FILE_NAME_LEN))) {
         perror ("malloc");
         YT__PANIC (NULL);
     }
@@ -808,10 +828,16 @@ static void YT__ec_init()
 static int YT__equal_mem (const void* a, const void* b, unsigned long size, int* i);
 static int YT__equal_string (const char* a, const char* b, int* i);
 
+    #ifdef __cplusplus
+        #define AUTOTYPE auto
+    #else
+        #define AUTOTYPE __auto_type
+    #endif /* __cplusplus */
+
     #define YT__TEST_DOUBLE(e, a, o, b, op)                              \
         do {                                                             \
-            __auto_type ut_a = (a);                                      \
-            __auto_type ut_b = (b);                                      \
+            AUTOTYPE ut_a = (a);                                         \
+            AUTOTYPE ut_b = (b);                                         \
             YT__current_testrecord->total_exp_count++;                   \
             if (ut_a > ut_b) {                                           \
                 if (ut_a - ut_b o (e))                                   \
@@ -828,8 +854,8 @@ static int YT__equal_string (const char* a, const char* b, int* i);
 
     #define YT__TEST_SCALAR(a, o, b)                                                         \
         do {                                                                                 \
-            __auto_type ut_a = (a);                                                          \
-            __auto_type ut_b = (b);                                                          \
+            AUTOTYPE ut_a = (a);                                                             \
+            AUTOTYPE ut_b = (b);                                                             \
             YT__current_testrecord->total_exp_count++;                                       \
             if (ut_a o ut_b)                                                                 \
                 YT__PASSED (a o b);                                                          \
@@ -839,8 +865,8 @@ static int YT__equal_string (const char* a, const char* b, int* i);
 
     #define YT__TEST_MEM(a, o, b, sz)                                                    \
         do {                                                                             \
-            __auto_type ut_a = (a);                                                      \
-            __auto_type ut_b = (b);                                                      \
+            AUTOTYPE ut_a = (a);                                                         \
+            AUTOTYPE ut_b = (b);                                                         \
             YT__current_testrecord->total_exp_count++;                                   \
             int i;                                                                       \
             if (YT__equal_mem (ut_a, ut_b, sz, &i) o 1)                                  \
@@ -851,8 +877,8 @@ static int YT__equal_string (const char* a, const char* b, int* i);
 
     #define YT__TEST_STRING(a, o, b)                                                     \
         do {                                                                             \
-            __auto_type ut_a = (a);                                                      \
-            __auto_type ut_b = (b);                                                      \
+            AUTOTYPE ut_a = (a);                                                         \
+            AUTOTYPE ut_b = (b);                                                         \
             YT__current_testrecord->total_exp_count++;                                   \
             int i;                                                                       \
             if (YT__equal_string (ut_a, ut_b, &i) o 1)                                   \
@@ -904,7 +930,13 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
      * 2.4: FUNCTION & MACROS TO PARAMETERISED TEST IMPLEMENTATION
      * ========================================================================================
      * */
-    #define YT_ARG(t)                   (t[])
+
+    #ifdef __cplusplus
+        #define YT_ARG(t) (const t[])
+    #else
+        #define YT_ARG(t) (t[])
+    #endif /* __cplusplus */
+
     #define YT_ARG_SUB_ARRAY(type, ...) &YT_ARG (type) __VA_ARGS__[0]
 
     #define YT_ARG_0() _a

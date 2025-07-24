@@ -5,7 +5,7 @@ TMP_DIR=/tmp
 #######################################################################
 # Running recorded tests
 #######################################################################
-echo "Test 1/2: Running recorded tests"
+echo "Test 1/2: Running recorded tests ($CC)"
 
 TESTS_DIR=`dirname $0`
 EXP_DIR="$TESTS_DIR/exps"
@@ -24,7 +24,7 @@ for fn in $TESTS_DIR/*.c; do
     exp_file=$EXP_DIR/$fname.exp    # Expectation file for test
 
     echo " Compiling and running '$fn'"
-    gcc -Wall -Wextra $fn -o $bin_file || exit
+    $CC $CFLAGS $CFLAGS $fn -o $bin_file || exit
 
     $bin_file > $out_file
     diff $out_file $exp_file || exit
@@ -33,35 +33,33 @@ done
 #######################################################################
 # Compiling and running examples
 #######################################################################
-echo "Test 2/2: Running examples"
+echo "Test 2/2: Running examples ($CC)"
 
 echo " Running 'Sensor' example.."
-gcc example/sensor_test.c \
-    example/suts/sensor.c \
+$CC $CFLAGS example/sensor_test.c \
+    example/suts/sensor.c         \
     -o $TMP_DIR/test || exit
 $TMP_DIR/test        || exit
 
 echo " Running 'Basic' example.."
-gcc example/basic_tests.c \
+$CC $CFLAGS example/basic_tests.c \
     -o $TMP_DIR/test    || exit
 $TMP_DIR/test           || exit
 
 echo " Running 'Add' example.."
-gcc example/add_test.c \
-    example/suts/add.c \
+$CC $CFLAGS example/add_test.c \
+    example/suts/add.c         \
     -o $TMP_DIR/test     || exit
 $TMP_DIR/test            || exit
 
 echo " Running 'Add Parameterised' example.."
-gcc example/add_parameterised_test.c \
-    example/suts/add.c               \
+$CC $CFLAGS example/add_parameterised_test.c \
+    example/suts/add.c                       \
     -o $TMP_DIR/test || exit
 $TMP_DIR/test        || exit
 
 echo " Running 'Separate mock files' example.."
-gcc example/separate_mock_files/dut_test.c \
-    example/separate_mock_files/mock.c     \
+$CC $CFLAGS example/separate_mock_files/dut_test.c \
+    example/separate_mock_files/mock.c             \
     -o $TMP_DIR/test || exit
 $TMP_DIR/test        || exit
-
-echo "[ALl tests passed]"
