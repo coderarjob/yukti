@@ -35,26 +35,32 @@ done
 #######################################################################
 echo "Test 2/2: Running examples"
 
-echo " Sensor test.."
+echo " Running 'Sensor' example.."
 gcc example/sensor_test.c \
     example/suts/sensor.c \
     -o $TMP_DIR/test || exit
 $TMP_DIR/test        || exit
 
-echo " Basic test.."
+echo " Running 'Basic' example.."
 gcc example/basic_tests.c \
     -o $TMP_DIR/test    || exit
 $TMP_DIR/test           || exit
 
-echo " Add test.."
+echo " Running 'Add' example.."
 gcc example/add_test.c \
     example/suts/add.c \
     -o $TMP_DIR/test     || exit
 $TMP_DIR/test            || exit
 
-echo " Add Parameterised test.."
+echo " Running 'Add Parameterised' example.."
 gcc example/add_parameterised_test.c \
     example/suts/add.c               \
+    -o $TMP_DIR/test || exit
+$TMP_DIR/test        || exit
+
+echo " Running 'Separate mock files' example.."
+gcc example/separate_mock_files/dut_test.c \
+    example/separate_mock_files/mock.c     \
     -o $TMP_DIR/test || exit
 $TMP_DIR/test        || exit
 
