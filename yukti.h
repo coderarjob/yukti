@@ -1031,10 +1031,10 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
 
 #endif /* YUKTI_TEST_IMPLEMENTATION */
 
-/* When YUKTI_STRIP_PREFIX is defined, the all public interfaces (expect yt_reset & YT_INIT) will
+/* When YUKTI_TEST_STRIP_PREFIX is defined, the all public interfaces (expect yt_reset & YT_INIT) will
  * have another variant without the 'YT_' prefix.
  */
-#ifdef YUKTI_STRIP_PREFIX
+#ifdef YUKTI_TEST_STRIP_PREFIX
     #define TEST                              YT_TEST
     #define END                               YT_END
     #define V                                 YT_V
@@ -1073,7 +1073,7 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define ARG_8                             YT_ARG_8
     #define ARG_9                             YT_ARG_9
     #define RETURN_WITH_REPORT                YT_RETURN_WITH_REPORT
-#endif /* YUKTI_STRIP_PREFIX */
+#endif /* YUKTI_TEST_STRIP_PREFIX */
 
 #pragma GCC diagnostic pop
 #endif // YUKTI_TEST_H
