@@ -1,41 +1,40 @@
-[0;103m [1;100m mock:must_never_call                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Called, when should be never called: func_extern_3()
-	At: ./tests/mocking_interaction_validation_failures.c:24
-  [0;31mSome test expectations failed [1 of 1 failed][0m
-[0;103m [1;100m mock:must_never_call_with_arguments                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Called, when should be never called: func_extern_2( 1,0)
-	At: ./tests/mocking_interaction_validation_failures.c:34
-  [0;31m** FAIL ** [0m: Expectation not met : Called, when should be never called: func_extern_2( 0,1)
-	At: ./tests/mocking_interaction_validation_failures.c:33
-  [0;31mSome test expectations failed [2 of 2 failed][0m
-[0;103m [1;100m mock:must_call_in_order                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Never called/called out of order: func_extern_2( 1,0)
-	At ./tests/mocking_interaction_validation_failures.c:43
-  [0;31mSome test expectations failed [1 of 2 failed][0m
-[0;103m [1;100m mock:must_call_any_order                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Never called: func_extern_2( !,2)
-	At: ./tests/mocking_interaction_validation_failures.c:52
-  [0;31m** FAIL ** [0m: Expectation not met : Never called: func_extern_2( 2,0)
-	At: ./tests/mocking_interaction_validation_failures.c:53
-  [0;31mSome test expectations failed [2 of 2 failed][0m
-[0;103m [1;100m mock:must_call_any_order_at_least_times                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Never called: func_extern_2( !,!)
-	At: ./tests/mocking_interaction_validation_failures.c:62
-  [0;31mSome test expectations failed [1 of 3 failed][0m
-[0;103m [1;100m mock:must_call_in_order_at_least_times                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Never called/called out of order: func_extern_2( !,!)
-	At ./tests/mocking_interaction_validation_failures.c:72
-  [0;31m** FAIL ** [0m: Expectation not met : Never called/called out of order: func_extern_3()
-	At ./tests/mocking_interaction_validation_failures.c:74
-  [0;31m** FAIL ** [0m: Expectation not met : Never called/called out of order: func_extern_3()
-	At ./tests/mocking_interaction_validation_failures.c:74
-  [0;31mSome test expectations failed [3 of 5 failed][0m
+[0m[1;44m [0m[1;97m mock:must_never_call [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Called, when should be never called: func_extern_3()
+  At: ./tests/mocking_interaction_validation_failures.c:24[0m
+  [0m[0;31m1 of 1 failed[0m
+[0m[1;44m [0m[1;97m mock:must_never_call_with_arguments [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Called, when should be never called: func_extern_2( 1,0)
+  At: ./tests/mocking_interaction_validation_failures.c:34[0m
+  [0m[0;31mFAILED[0m  Expectation not met : Called, when should be never called: func_extern_2( 0,1)
+  At: ./tests/mocking_interaction_validation_failures.c:33[0m
+  [0m[0;31m2 of 2 failed[0m
+[0m[1;44m [0m[1;97m mock:must_call_in_order [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called/called out of order: func_extern_2( 1,0)
+  At ./tests/mocking_interaction_validation_failures.c:43[0m
+  [0m[0;31m1 of 2 failed[0m
+[0m[1;44m [0m[1;97m mock:must_call_any_order [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called: func_extern_2( !,2)
+  At: ./tests/mocking_interaction_validation_failures.c:52[0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called: func_extern_2( 2,0)
+  At: ./tests/mocking_interaction_validation_failures.c:53[0m
+  [0m[0;31m2 of 2 failed[0m
+[0m[1;44m [0m[1;97m mock:must_call_any_order_at_least_times [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called: func_extern_2( !,!)
+  At: ./tests/mocking_interaction_validation_failures.c:62[0m
+  [0m[0;31m1 of 3 failed[0m
+[0m[1;44m [0m[1;97m mock:must_call_in_order_at_least_times [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called/called out of order: func_extern_2( !,!)
+  At ./tests/mocking_interaction_validation_failures.c:72[0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called/called out of order: func_extern_3()
+  At ./tests/mocking_interaction_validation_failures.c:74[0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called/called out of order: func_extern_3()
+  At ./tests/mocking_interaction_validation_failures.c:74[0m
+  [0m[0;31m3 of 5 failed[0m
 
-[1;104m Tests Summary                [0m
-[0;31mNot all tests passed [6 of 6 failed][0m
-    [0;31m* 'must_never_call [1/1]' test failed[0m
-    [0;31m* 'must_never_call_with_arguments [1/1]' test failed[0m
-    [0;31m* 'must_call_in_order [1/1]' test failed[0m
-    [0;31m* 'must_call_any_order [1/1]' test failed[0m
-    [0;31m* 'must_call_any_order_at_least_times [1/1]' test failed[0m
-    [0;31m* 'must_call_in_order_at_least_times [1/1]' test failed[0m
+[0m[0;31mNot all tests passed [6 of 6 failed][0m
+    [0m[0;31m* 'must_never_call [1/1]' test failed[0m
+    [0m[0;31m* 'must_never_call_with_arguments [1/1]' test failed[0m
+    [0m[0;31m* 'must_call_in_order [1/1]' test failed[0m
+    [0m[0;31m* 'must_call_any_order [1/1]' test failed[0m
+    [0m[0;31m* 'must_call_any_order_at_least_times [1/1]' test failed[0m
+    [0m[0;31m* 'must_call_in_order_at_least_times [1/1]' test failed[0m

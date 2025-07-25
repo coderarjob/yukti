@@ -104,21 +104,22 @@ static inline void acl_list_remove (ACL_ListNode* item)
 // ----------------------------------------------------------------------------
 // Color template for printing
 // ----------------------------------------------------------------------------
-#define YT__COL_RED                 "\x1b[0;31m"
-#define YT__COL_GREEN               "\x1b[0;32m"
-#define YT__COL_GRAY_HIGHLIGHT      "\x1b[0;100m"
-#define YT__COL_BOLD_GRAY_HIGHLIGHT "\x1b[1;100m"
-#define YT__COL_BLUE_HIGHLIGHT      "\x1b[1;104m"
-#define YT__COL_YELLOW_HIGHLIGHT    "\x1b[0;103m"
+#define YT__COL_YELLOW              "\x1b[0m\x1b[1;33m"
+#define YT__COL_RED                 "\x1b[0m\x1b[0;31m"
+#define YT__COL_GREEN               "\x1b[0m\x1b[0;32m"
+#define YT__COL_BOLD_WHITE          "\x1b[0m\x1b[1;97m"
+#define YT__COL_WHITE               "\x1b[0m\x1b[0;97m"
+#define YT__COL_BLUE_HIGHLIGHT      "\x1b[0m\x1b[1;104m"
+#define YT__COL_BLUE_HIGHLIGHT_DARK "\x1b[0m\x1b[1;44m"
 #define YT__COL_RESET               "\x1b[0m"
 
 #define YT__PASSED(t) printf ("\n  %sPass%s: %-20s", YT__COL_GREEN, YT__COL_RESET, #t)
 
-#define YT__FAILED(t, fnt, ...)                                                  \
-    do {                                                                         \
-        YT__current_testrecord->failed_exp_count++;                              \
-        printf ("\n  %s** FAIL ** %s: %-20s: ", YT__COL_RED, YT__COL_RESET, #t); \
-        printf (fnt, ##__VA_ARGS__);                                             \
+#define YT__FAILED(t, fnt, ...)                                                                  \
+    do {                                                                                         \
+        YT__current_testrecord->failed_exp_count++;                                              \
+        printf ("\n  %sFAILED%s  %s : " fnt "%s", YT__COL_RED, YT__COL_RESET, #t, ##__VA_ARGS__, \
+                YT__COL_RESET);                                                                  \
     } while (0)
 
 #define YT__PANIC(str)                                               \
@@ -427,9 +428,8 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
 
     #define YT_RETURN_WITH_REPORT()                                                    \
         do {                                                                           \
-            printf ("\n%s Tests Summary%20s", YT__COL_BLUE_HIGHLIGHT, YT__COL_RESET);  \
             if (YT__failed_test_count == 0) {                                          \
-                printf ("\n  %sAll tests passed [0 of %d failed]%s\n", YT__COL_GREEN,  \
+                printf ("\n%sAll tests passed [0 of %d failed]%s\n", YT__COL_GREEN,    \
                         YT__total_test_count, YT__COL_RESET);                          \
             } else {                                                                   \
                 printf ("\n%sNot all tests passed [%d of %d failed]%s", YT__COL_RED,   \
@@ -699,7 +699,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
             // Never call List must contain only call records of never call expectations
             assert (item->type == YT__CALLRECORD_TYPE_NEVER_CALL_EXPECTATION);
 
-            YT__FAILED (Expectation not met, "Called, when should be never called: %s\n\tAt: %s:%d",
+            YT__FAILED (Expectation not met, "Called, when should be never called: %s\n  At: %s:%d",
                         item->callString, item->sourceFileName, item->sourceLineNumber);
         }
     }
@@ -712,7 +712,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
             // Global List must contain only call records of global/unordered call expectations
             assert (item->type == YT__CALLRECORD_TYPE_GLOBAL_EXPECTATION);
 
-            YT__FAILED (Expectation not met, "Never called: %s\n\tAt: %s:%d", item->callString,
+            YT__FAILED (Expectation not met, "Never called: %s\n  At: %s:%d", item->callString,
                         item->sourceFileName, item->sourceLineNumber);
         }
     }
@@ -724,7 +724,7 @@ void YT__print_unmet_expectations (ACL_ListNode* neverCallExpectationFailedListH
             // Ordered List must contain only call records of Ordered call expectations
             assert (item->type == YT__CALLRECORD_TYPE_ORDERED_EXPECTATION);
 
-            YT__FAILED (Expectation not met, "Never called/called out of order: %s\n\tAt %s:%d",
+            YT__FAILED (Expectation not met, "Never called/called out of order: %s\n  At %s:%d",
                         item->callString, item->sourceFileName, item->sourceLineNumber);
         }
     }
@@ -852,14 +852,10 @@ static int YT__equal_string (const char* a, const char* b, int* i);
             AUTOTYPE ut_b = (b);                                         \
             YT__current_testrecord->total_exp_count++;                   \
             if (ut_a > ut_b) {                                           \
-                if (ut_a - ut_b o (e))                                   \
-                    YT__PASSED (a o b);                                  \
-                else                                                     \
+                if (!(ut_a - ut_b o (e)))                                \
                     YT__FAILED (a op b, "[%f !" #op " %f]", ut_a, ut_b); \
             } else {                                                     \
-                if (ut_b - ut_a o (e))                                   \
-                    YT__PASSED (a op b);                                 \
-                else                                                     \
+                if (!(ut_b - ut_a o (e)))                                \
                     YT__FAILED (a op b, "[%f !" #op " %f]", ut_a, ut_b); \
             }                                                            \
         } while (0)
@@ -869,9 +865,7 @@ static int YT__equal_string (const char* a, const char* b, int* i);
             AUTOTYPE ut_a = (a);                                                             \
             AUTOTYPE ut_b = (b);                                                             \
             YT__current_testrecord->total_exp_count++;                                       \
-            if (ut_a o ut_b)                                                                 \
-                YT__PASSED (a o b);                                                          \
-            else                                                                             \
+            if (!(ut_a o ut_b))                                                              \
                 YT__FAILED (a o b, "[%lld !" #o " %lld]", (long long)ut_a, (long long)ut_b); \
         } while (0)
 
@@ -881,9 +875,7 @@ static int YT__equal_string (const char* a, const char* b, int* i);
             AUTOTYPE ut_b = (b);                                                         \
             YT__current_testrecord->total_exp_count++;                                   \
             int i;                                                                       \
-            if (YT__equal_mem (ut_a, ut_b, sz, &i) o 1)                                  \
-                YT__PASSED (a o b);                                                      \
-            else                                                                         \
+            if (!(YT__equal_mem (ut_a, ut_b, sz, &i) o 1))                               \
                 YT__FAILED (a o b, "[Idx: %d, 0x%X !" #o " 0x%X]", i, ut_a[i], ut_b[i]); \
         } while (0)
 
@@ -893,9 +885,7 @@ static int YT__equal_string (const char* a, const char* b, int* i);
             AUTOTYPE ut_b = (b);                                                         \
             YT__current_testrecord->total_exp_count++;                                   \
             int i;                                                                       \
-            if (YT__equal_string (ut_a, ut_b, &i) o 1)                                   \
-                YT__PASSED (a o b);                                                      \
-            else                                                                         \
+            if (!(YT__equal_string (ut_a, ut_b, &i) o 1))                                \
                 YT__FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
         } while (0)
 
@@ -982,21 +972,21 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define YT__TESTP_DECLARE_TEST_FUNC(fn, ...) \
         static void YT__##fn##_test (size_t, size_t, __VA_ARGS__)
 
-    #define YT__TESTP_DEFINE_TEST_FUNC(tf, fn, ...)                                            \
-        static void YT__##fn##_test (size_t count, size_t tn, YT__FUNC_PARAMS_X (__VA_ARGS__)) \
-        {                                                                                      \
-            printf ("%s %s [%lu/%lu] %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT,                    \
-                    YT__COL_GRAY_HIGHLIGHT, tn, count, #tf, #fn, YT__COL_RESET);               \
+    #define YT__TESTP_DEFINE_TEST_FUNC(tf, fn, ...)                                             \
+        static void YT__##fn##_test (size_t count, size_t tn, YT__FUNC_PARAMS_X (__VA_ARGS__))  \
+        {                                                                                       \
+            printf ("%s %s [%lu/%lu] %s:%s %s", YT__COL_BLUE_HIGHLIGHT_DARK, YT__COL_WHITE, tn, \
+                    count, #tf, #fn, YT__COL_RESET);                                            \
             YT__TEST_IMPL_BODY (tf, fn, count, tn)
 
-    #define YT__TESTP_DEFINE_TEST_WRAPPER_FUNC(tf, fn, ...)                              \
-        static void fn (size_t count, YT__FUNC_PARAMS_ARRAY_X (__VA_ARGS__))             \
-        {                                                                                \
-            printf ("%s %s %s:%s [%lu tests] %s\n", YT__COL_BLUE_HIGHLIGHT,              \
-                    YT__COL_BOLD_GRAY_HIGHLIGHT, #tf, #fn, count, YT__COL_RESET);        \
-            for (unsigned i = 0; i < count; i++) {                                       \
-                YT__##fn##_test (count, i + 1, YT__FCALL_ARGS_ARRAY_X (i, __VA_ARGS__)); \
-            }                                                                            \
+    #define YT__TESTP_DEFINE_TEST_WRAPPER_FUNC(tf, fn, ...)                                        \
+        static void fn (size_t count, YT__FUNC_PARAMS_ARRAY_X (__VA_ARGS__))                       \
+        {                                                                                          \
+            printf ("%s %s %s:%s %s [%lu tests] %s\n", YT__COL_BLUE_HIGHLIGHT, YT__COL_BOLD_WHITE, \
+                    #tf, #fn, YT__COL_YELLOW, count, YT__COL_RESET);                               \
+            for (unsigned i = 0; i < count; i++) {                                                 \
+                YT__##fn##_test (count, i + 1, YT__FCALL_ARGS_ARRAY_X (i, __VA_ARGS__));           \
+            }                                                                                      \
         }
 
     #define YT_TESTP(tf, fn, ...)                                \
@@ -1004,11 +994,11 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
         YT__TESTP_DEFINE_TEST_WRAPPER_FUNC (tf, fn, __VA_ARGS__) \
         YT__TESTP_DEFINE_TEST_FUNC (tf, fn, __VA_ARGS__)
 
-    #define YT_TEST(tf, fn)                                                                    \
-        static void fn()                                                                       \
-        {                                                                                      \
-            printf ("%s %s %s:%s %20s", YT__COL_YELLOW_HIGHLIGHT, YT__COL_BOLD_GRAY_HIGHLIGHT, \
-                    #tf, #fn, YT__COL_RESET);                                                  \
+    #define YT_TEST(tf, fn)                                                                      \
+        static void fn()                                                                         \
+        {                                                                                        \
+            printf ("%s %s %s:%s %s", YT__COL_BLUE_HIGHLIGHT_DARK, YT__COL_BOLD_WHITE, #tf, #fn, \
+                    YT__COL_RESET);                                                              \
             YT__TEST_IMPL_BODY (tf, fn, 1, 1)
 
     #ifndef YT__TESTING
@@ -1024,32 +1014,31 @@ static double yt__test_elapsed_time_ms()
             1000.0);
 }
 
-        #define YT__PRINT_SUCCESS_MESSAGE()                                                 \
-            do {                                                                            \
-                printf ("\n  %sAll test expectations passed [0 of %d failed] [%1.4f ms]%s", \
-                        YT__COL_GREEN, YT__current_testrecord->total_exp_count,             \
-                        yt__test_elapsed_time_ms(), YT__COL_RESET);                         \
+        #define YT__PRINT_SUCCESS_MESSAGE()                                              \
+            do {                                                                         \
+                printf (" %sOK [%1.4f ms]%s", YT__COL_GREEN, yt__test_elapsed_time_ms(), \
+                        YT__COL_RESET);                                                  \
             } while (0)
 
-        #define YT__PRINT_FAILURE_MESSAGE()                                                   \
-            do {                                                                              \
-                printf ("\n  %sSome test expectations failed [%d of %d failed] [%1.4f ms]%s", \
-                        YT__COL_RED, YT__current_testrecord->failed_exp_count,                \
-                        YT__current_testrecord->total_exp_count, yt__test_elapsed_time_ms(),  \
-                        YT__COL_RESET);                                                       \
+        #define YT__PRINT_FAILURE_MESSAGE()                                                  \
+            do {                                                                             \
+                printf ("\n  %s%d of %d failed [%1.4f ms]%s", YT__COL_RED,                   \
+                        YT__current_testrecord->failed_exp_count,                            \
+                        YT__current_testrecord->total_exp_count, yt__test_elapsed_time_ms(), \
+                        YT__COL_RESET);                                                      \
             } while (0)
     #else
-        #define YT__PRINT_SUCCESS_MESSAGE()                                                     \
-            do {                                                                                \
-                printf ("\n  %sAll test expectations passed [0 of %d failed]%s", YT__COL_GREEN, \
-                        YT__current_testrecord->total_exp_count, YT__COL_RESET);                \
+        #define YT__PRINT_SUCCESS_MESSAGE()                                      \
+            do {                                                                 \
+                printf ("  %sOK [0 of %d failed]%s", YT__COL_GREEN,              \
+                        YT__current_testrecord->total_exp_count, YT__COL_RESET); \
             } while (0)
 
-        #define YT__PRINT_FAILURE_MESSAGE()                                                     \
-            do {                                                                                \
-                printf ("\n  %sSome test expectations failed [%d of %d failed]%s", YT__COL_RED, \
-                        YT__current_testrecord->failed_exp_count,                               \
-                        YT__current_testrecord->total_exp_count, YT__COL_RESET);                \
+        #define YT__PRINT_FAILURE_MESSAGE()                                      \
+            do {                                                                 \
+                printf ("\n  %s%d of %d failed%s", YT__COL_RED,                  \
+                        YT__current_testrecord->failed_exp_count,                \
+                        YT__current_testrecord->total_exp_count, YT__COL_RESET); \
             } while (0)
     #endif /* YT__TESTING */
 

@@ -1,14 +1,13 @@
-[0;103m [1;100m mock:must_call_in_order                 [0m
-  [0;31m** FAIL ** [0m: Expectation not met : Never called/called out of order: func_extern_1()
-	At ./tests/mocking_interaction_validation_failures_2.c:22
-  [0;31m** FAIL ** [0m: Expectation not met : Never called/called out of order: func_extern_2( 1,!)
-	At ./tests/mocking_interaction_validation_failures_2.c:23
+[0m[1;44m [0m[1;97m mock:must_call_in_order [0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called/called out of order: func_extern_1()
+  At ./tests/mocking_interaction_validation_failures_2.c:22[0m
+  [0m[0;31mFAILED[0m  Expectation not met : Never called/called out of order: func_extern_2( 1,!)
+  At ./tests/mocking_interaction_validation_failures_2.c:23[0m
   Actual order of functions calls was the following:
     * func_extern_2( 0,0)
     * func_extern_1( 0,0)
 
-  [0;31mSome test expectations failed [2 of 2 failed][0m
+  [0m[0;31m2 of 2 failed[0m
 
-[1;104m Tests Summary                [0m
-[0;31mNot all tests passed [1 of 1 failed][0m
-    [0;31m* 'must_call_in_order [1/1]' test failed[0m
+[0m[0;31mNot all tests passed [1 of 1 failed][0m
+    [0m[0;31m* 'must_call_in_order [1/1]' test failed[0m
