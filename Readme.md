@@ -41,10 +41,11 @@ header library.
     - [X] Report line numbers and source file of failed expectations
     - [X] Report list of all the tests which failed
     - [X] Tests executables exit with non-zero code if any of its tests fails
+    - [X] Time taken to run each test
 
 ## Screenshots
 
-| Reporting test failure. Shows source file location and summary mentions failing tests | All test are passing                                                     |
+| Some test are failing. Shows source file location and summary lists the failing tests | All test are passing. Shows elapsed time for each test.                  |
 |---------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | [![Failure](./docs/images/failure_thumb.png)](./docs/images/failure.png)              | [![Passing](./docs/images/passing_thumb.png)](./docs/images/passing.png) |
 
