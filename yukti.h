@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
+#include <sys/time.h>
 
 /*
  * ========================================================================================
@@ -377,6 +378,7 @@ void yt_reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
 
 typedef struct YT__TestRecord {
     char test_function_name[YT__MAX_TEST_FUNCTION_NAME_LENGTH];
+    struct timeval start_time; /* Time when the test started.*/
     uint32_t total_exp_count;
     uint32_t failed_exp_count;
     size_t parameterised_test_number; /* Parameterised Test number (starts from 1) */
@@ -971,6 +973,10 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
          * in the previous test's YT_END. */                                        \
         assert (YT__current_testrecord == NULL);                                    \
         YT__current_testrecord = YT__create_testRecord (#fn, count, tn);            \
+        if (gettimeofday (&YT__current_testrecord->start_time, NULL)) {             \
+            perror ("gettimeofday");                                                \
+            YT__PANIC (NULL);                                                       \
+        }                                                                           \
         do
 
     #define YT__TESTP_DECLARE_TEST_FUNC(fn, ...) \
@@ -1005,22 +1011,60 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
                     #tf, #fn, YT__COL_RESET);                                                  \
             YT__TEST_IMPL_BODY (tf, fn, 1, 1)
 
+    #ifndef YT__TESTING
+static double yt__test_elapsed_time_ms()
+{
+    struct timeval end_time, start_time = YT__current_testrecord->start_time;
+    if (gettimeofday (&end_time, NULL)) {
+        perror ("gettimeofday");
+        YT__PANIC (NULL);
+    }
+    return (((end_time.tv_sec - start_time.tv_sec) +
+             (end_time.tv_usec - start_time.tv_usec) / 1e6) *
+            1000.0);
+}
+
+        #define YT__PRINT_SUCCESS_MESSAGE()                                                 \
+            do {                                                                            \
+                printf ("\n  %sAll test expectations passed [0 of %d failed] [%1.4f ms]%s", \
+                        YT__COL_GREEN, YT__current_testrecord->total_exp_count,             \
+                        yt__test_elapsed_time_ms(), YT__COL_RESET);                         \
+            } while (0)
+
+        #define YT__PRINT_FAILURE_MESSAGE()                                                   \
+            do {                                                                              \
+                printf ("\n  %sSome test expectations failed [%d of %d failed] [%1.4f ms]%s", \
+                        YT__COL_RED, YT__current_testrecord->failed_exp_count,                \
+                        YT__current_testrecord->total_exp_count, yt__test_elapsed_time_ms(),  \
+                        YT__COL_RESET);                                                       \
+            } while (0)
+    #else
+        #define YT__PRINT_SUCCESS_MESSAGE()                                                     \
+            do {                                                                                \
+                printf ("\n  %sAll test expectations passed [0 of %d failed]%s", YT__COL_GREEN, \
+                        YT__current_testrecord->total_exp_count, YT__COL_RESET);                \
+            } while (0)
+
+        #define YT__PRINT_FAILURE_MESSAGE()                                                     \
+            do {                                                                                \
+                printf ("\n  %sSome test expectations failed [%d of %d failed]%s", YT__COL_RED, \
+                        YT__current_testrecord->failed_exp_count,                               \
+                        YT__current_testrecord->total_exp_count, YT__COL_RESET);                \
+            } while (0)
+    #endif /* YT__TESTING */
+
     // clang-format off
     #define YT_END()                                                           \
         YT__validate_expectations();                                           \
         YT__teardown();                                                        \
         if (YT__current_testrecord->failed_exp_count != 0) {                   \
-            /* Add test to failed test list */                                 \
-            printf ("\n  %sSome test expectations failed [%d of %d failed]%s", \
-                    YT__COL_RED, YT__current_testrecord->failed_exp_count,     \
-                    YT__current_testrecord->total_exp_count, YT__COL_RESET);   \
+            YT__PRINT_FAILURE_MESSAGE();                                       \
             YT__failed_test_count++;                                           \
+            /* Add test to failed test list */                                 \
             acl_list_add_before (&YT__failedTestsListHead,                     \
                                  &YT__current_testrecord->failedTestListNode); \
         } else {                                                               \
-            printf ("\n  %sAll test expectations passed [0 of %d failed]%s",   \
-                    YT__COL_GREEN, YT__current_testrecord->total_exp_count,    \
-                    YT__COL_RESET);                                            \
+            YT__PRINT_SUCCESS_MESSAGE();                                       \
             YT__free_testRecord (YT__current_testrecord);                      \
         }                                                                      \
         YT__current_testrecord = NULL;                                         \
@@ -1031,7 +1075,7 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
 
 #endif /* YUKTI_TEST_IMPLEMENTATION */
 
-/* When YUKTI_TEST_STRIP_PREFIX is defined, the all public interfaces (expect yt_reset & YT_INIT) will
+/* When YUKTI_TEST_STRIP_PREFIX is defined all public interfaces (expect yt_reset & YT_INIT) will
  * have another variant without the 'YT_' prefix.
  */
 #ifdef YUKTI_TEST_STRIP_PREFIX
