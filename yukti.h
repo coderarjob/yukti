@@ -1036,15 +1036,17 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
  */
 #ifdef YUKTI_TEST_STRIP_PREFIX
     #define TEST                              YT_TEST
+    #define TESTP                             YT_TESTP
     #define END                               YT_END
     #define V                                 YT_V
     #define DEFINE_FUNC_VOID                  YT_DEFINE_FUNC_VOID
     #define DEFINE_FUNC                       YT_DEFINE_FUNC
     #define DECLARE_FUNC_VOID                 YT_DECLARE_FUNC_VOID
     #define DECLARE_FUNC                      YT_DECLARE_FUNC
-    #define RESET_MOCK                        YT__RESET_MOCK
+    #define RESET_MOCK                        YT_RESET_MOCK
     #define IN_SEQUENCE                       YT_IN_SEQUENCE
     #define MUST_CALL_IN_ORDER                YT_MUST_CALL_IN_ORDER
+    #define MUST_NEVER_CALL                   YT_MUST_NEVER_CALL
     #define MUST_CALL_IN_ORDER_ATLEAST_TIMES  YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES
     #define MUST_CALL_ANY_ORDER               YT_MUST_CALL_ANY_ORDER
     #define MUST_CALL_ANY_ORDER_ATLEAST_TIMES YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES
