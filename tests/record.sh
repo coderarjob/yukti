@@ -16,7 +16,7 @@ for fn in $DIR/*.c; do
     exp_file=$EXP_DIR/$fname.exp    # Expectation file for test
 
     echo "Compiling test '$fn'"
-    gcc -Wall -Wextra $fn -o $bin_file || exit
+    gcc -Wall -Wextra -DYT__TESTING $fn -o $bin_file || exit
 
     echo "Running and recording output into '$exp_file'"
     $bin_file > $exp_file
