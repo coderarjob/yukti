@@ -1,0 +1,20 @@
+[1;104m [1;100m add:add_numbers [5 tests] [0m
+[0;103m [0;100m [1/5] add:add_numbers                 [0m
+  [0;32mPass[0m: add (n1, n2) == exp 
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+[0;103m [0;100m [2/5] add:add_numbers                 [0m
+  [0;32mPass[0m: add (n1, n2) == exp 
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+[0;103m [0;100m [3/5] add:add_numbers                 [0m
+  [0;32mPass[0m: add (n1, n2) == exp 
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+[0;103m [0;100m [4/5] add:add_numbers                 [0m
+  [0;32mPass[0m: add (n1, n2) == exp 
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+[0;103m [0;100m [5/5] add:add_numbers                 [0m
+  [0;32mPass[0m: add (n1, n2) == exp 
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+
+[1;104m Tests Summary                [0m
+  [0;32mAll tests passed [0 of 5 failed][0m
+

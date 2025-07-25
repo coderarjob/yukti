@@ -1,0 +1,16 @@
+[0;103m [1;100m mock:must_never_call                 [0m
+  [0;32mAll test expectations passed [0 of 1 failed][0m
+[0;103m [1;100m mock:must_never_call_with_arguments                 [0m
+  [0;32mAll test expectations passed [0 of 2 failed][0m
+[0;103m [1;100m mock:must_call_in_order                 [0m
+  [0;32mAll test expectations passed [0 of 2 failed][0m
+[0;103m [1;100m mock:must_call_any_order                 [0m
+  [0;32mAll test expectations passed [0 of 2 failed][0m
+[0;103m [1;100m mock:must_call_any_order_at_least_times                 [0m
+  [0;32mAll test expectations passed [0 of 3 failed][0m
+[0;103m [1;100m mock:must_call_in_order_at_least_times                 [0m
+  [0;32mAll test expectations passed [0 of 3 failed][0m
+
+[1;104m Tests Summary                [0m
+  [0;32mAll tests passed [0 of 6 failed][0m
+
