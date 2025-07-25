@@ -20,4 +20,4 @@ export CFLAGS="-Wall -Wextra"
 echo "Test 2/2: Running tests with C++ Compiler ($CC)"
 bash $TESTS_DIR/test.sh || exit
 
-echo "[ALl tests passed]"
+echo "[All tests passed]"
