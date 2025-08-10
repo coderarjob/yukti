@@ -18,6 +18,7 @@ header library.
     * [Assertion macros](#assertion-macros)
     * [Interaction/behaviour validation macros](#interaction-or-behaviour-validation-macros)
     * [Mock or Fake function creation macros](#mock-or-fake-function-declaration)
+* [Breaking changes - Upgrade guide](#upgrade-guide)
 * [Testing yukti.h](#running-tests)
 * [Versioning](#versioning)
 * [Feedback](#feedback)
@@ -56,7 +57,6 @@ Different examples are placed in the [example](./example) folder.
 ## Documentation
 
 ### Test macros
-
 
 `YT_TEST` & `YT_TESTP` macros are used to create a non-parameterised test and a parameterised
 test respectively. Tests functions are identified by their name, that is the 2nd argument in these
@@ -98,13 +98,13 @@ these macros.
 | `YT_EQ_DOUBLE_REL(a, b, e)`  | Approx match a == b. Passes if `mod(a - b) <= max(a,b)*e` |
 | `YT_NEQ_DOUBLE_REL(a, b, e)` | Approx match a != b. Passes if `mod(a - b) > max(a,b)*e`  |
 
-`YT_EQ_DOUBLE_REL(a, b, e)` passes if the difference of a & b is less or equal to e% of the largest
-of the two floating point numbers. For example, `YT_EQ_DOUBLE_REL(1.1234, 1.12, 0.01)` passes
-because their difference of 0.0034 is < 1% of 1.1234.
+`YT_EQ_DOUBLE_REL(a, b, e)` passes if `abs(a - b)` is `<=` than `e`% of the larger floating point
+number. For example, `YT_EQ_DOUBLE_REL(1.1234, 1.12, 0.01)` passes because their difference of
+0.0034 is < 1% of 1.1234.
 
 See [Basic tests](./example/basic_tests.c) example
 
-#### Interaction or behaviour validation macros
+### Interaction or behaviour validation macros
 
 More complex files work in conjunction with mocked functions. They help in validating interaction
 between SUT and external functions. They help in determining if these external functions were called
@@ -138,6 +138,12 @@ validations and one can modify the behaviour of these fake functions in various 
 | `YT_RESET_MOCK(f)`             | Resets internal state of a fake function previously defined using `YT_DEFINE_FUNC*`.                  |
 
 See [Mocking and faking](./example/sensor_test.c) example
+
+## Upgrade guide
+
+* Old `YT_EQ_DOUBLE` was equivalent to `YT_EQ_DOUBLE_ABS`, so the former can be replaced with the
+  later.
+* When comparing large floating point numbers, the newer `YT_EQ_DOUBLE_REL` works better.
 
 ## Running tests
 
