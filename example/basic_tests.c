@@ -11,6 +11,9 @@ YT_TEST (basic, scaler_tests_floats)
     YT_EQ_DOUBLE_ABS (1.1234, 1.12, 0.01); // Passes because 1.1234 - 1.12 <= 0.01
     YT_EQ_DOUBLE_ABS (0.0, 0.0, 0.001);    // Passes because 0.0 == 0.0
 
+    YT_EQ_DOUBLE_REL (1.1234, 1.12, 0.01);   // Passed as 1.1234 - 1.12 <= 1% of 1.1234
+    YT_NEQ_DOUBLE_REL (1.1234, 1.12, 0.001); // Passes as 1.1234 - 1.12 > 0.01 % of 1.1234
+
     YT_END();
 }
 
