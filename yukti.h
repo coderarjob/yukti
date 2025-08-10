@@ -36,6 +36,8 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <sys/time.h>
+#include <float.h>
+#include <math.h>
 
 /*
  * ========================================================================================
@@ -846,18 +848,27 @@ static int YT__equal_string (const char* a, const char* b, int* i);
         #define AUTOTYPE __auto_type
     #endif /* __cplusplus */
 
-    #define YT__TEST_DOUBLE(e, a, o, b, op)                              \
-        do {                                                             \
-            AUTOTYPE ut_a = (a);                                         \
-            AUTOTYPE ut_b = (b);                                         \
-            YT__current_testrecord->total_exp_count++;                   \
-            if (ut_a > ut_b) {                                           \
-                if (!(ut_a - ut_b o (e)))                                \
-                    YT__FAILED (a op b, "[%f !" #op " %f]", ut_a, ut_b); \
-            } else {                                                     \
-                if (!(ut_b - ut_a o (e)))                                \
-                    YT__FAILED (a op b, "[%f !" #op " %f]", ut_a, ut_b); \
-            }                                                            \
+static bool yt__approxeq (double a, double b, double epsilon)
+{
+    double ut_a = fabs (a);
+    double ut_b = fabs (b);
+
+    if ((isfinite (a) && isfinite (b)) || (ut_a == 0.0 && ut_b == 0.0) || (isnan (a) && isnan (b)))
+        return true;
+    if ((isfinite (a) && !isfinite (b)) || (!isfinite (a) && isfinite (b)))
+        return false;
+
+    // Source: https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+    double ut_diff    = fabs (a - b);
+    double ut_largest = (ut_a > ut_b) ? ut_a : ut_b;
+    return (ut_diff <= ut_largest * epsilon);
+}
+
+    #define YT__TEST_DOUBLE(e, a, o, b)                      \
+        do {                                                 \
+            if (!(yt__approxeq (a, b, e) o true)) {          \
+                YT__FAILED (a o b, "[%f !" #o " %f]", a, b); \
+            }                                                \
         } while (0)
 
     #define YT__TEST_SCALAR(a, o, b)                                                         \
@@ -889,8 +900,8 @@ static int YT__equal_string (const char* a, const char* b, int* i);
                 YT__FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
         } while (0)
 
-    #define YT_EQ_DOUBLE(a, b, e)  YT__TEST_DOUBLE (e, a, <=, b, ==)
-    #define YT_NEQ_DOUBLE(a, b, e) YT__TEST_DOUBLE (e, a, >, b, !=)
+    #define YT_EQ_DOUBLE(a, b, e)  YT__TEST_DOUBLE (e, a, ==, b)
+    #define YT_NEQ_DOUBLE(a, b, e) YT__TEST_DOUBLE (e, a, !=, b)
     #define YT_EQ_SCALAR(a, b)     YT__TEST_SCALAR (a, ==, b)
     #define YT_NEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, !=, b)
     #define YT_GEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, >=, b)
