@@ -882,49 +882,53 @@ static bool yt__approxeq (bool is_abs, double a, double b, double epsilon)
     }
 }
 
-    #define YT__TEST_DOUBLE_REL(e, a, o, b)                  \
-        do {                                                 \
-            YT__current_testrecord->total_exp_count++;       \
-            if (!(yt__approxeq (false, a, b, e) o true)) {   \
-                YT__FAILED (a o b, "[%f !" #o " %f]", a, b); \
-            }                                                \
+    #define YT__ASSERT_FAILED(t, fmt, ...) \
+        YT__FAILED (t, fmt "\n  At %s:%d", ##__VA_ARGS__, __FILE__, __LINE__)
+
+    #define YT__TEST_DOUBLE_REL(e, a, o, b)                         \
+        do {                                                        \
+            YT__current_testrecord->total_exp_count++;              \
+            if (!(yt__approxeq (false, a, b, e) o true)) {          \
+                YT__ASSERT_FAILED (a o b, "[%f !" #o " %f]", a, b); \
+            }                                                       \
         } while (0)
 
-    #define YT__TEST_DOUBLE_ABS(e, a, o, b)                  \
-        do {                                                 \
-            YT__current_testrecord->total_exp_count++;       \
-            if (!(yt__approxeq (true, a, b, e) o true)) {    \
-                YT__FAILED (a o b, "[%f !" #o " %f]", a, b); \
-            }                                                \
+    #define YT__TEST_DOUBLE_ABS(e, a, o, b)                         \
+        do {                                                        \
+            YT__current_testrecord->total_exp_count++;              \
+            if (!(yt__approxeq (true, a, b, e) o true)) {           \
+                YT__ASSERT_FAILED (a o b, "[%f !" #o " %f]", a, b); \
+            }                                                       \
         } while (0)
 
-    #define YT__TEST_SCALAR(a, o, b)                                                         \
-        do {                                                                                 \
-            AUTOTYPE ut_a = (a);                                                             \
-            AUTOTYPE ut_b = (b);                                                             \
-            YT__current_testrecord->total_exp_count++;                                       \
-            if (!(ut_a o ut_b))                                                              \
-                YT__FAILED (a o b, "[%lld !" #o " %lld]", (long long)ut_a, (long long)ut_b); \
+    #define YT__TEST_SCALAR(a, o, b)                                              \
+        do {                                                                      \
+            AUTOTYPE ut_a = (a);                                                  \
+            AUTOTYPE ut_b = (b);                                                  \
+            YT__current_testrecord->total_exp_count++;                            \
+            if (!(ut_a o ut_b))                                                   \
+                YT__ASSERT_FAILED (a o b, "[%lld !" #o " %lld]", (long long)ut_a, \
+                                   (long long)ut_b);                              \
         } while (0)
 
-    #define YT__TEST_MEM(a, o, b, sz)                                                    \
-        do {                                                                             \
-            AUTOTYPE ut_a = (a);                                                         \
-            AUTOTYPE ut_b = (b);                                                         \
-            YT__current_testrecord->total_exp_count++;                                   \
-            int i;                                                                       \
-            if (!(YT__equal_mem (ut_a, ut_b, sz, &i) o 1))                               \
-                YT__FAILED (a o b, "[Idx: %d, 0x%X !" #o " 0x%X]", i, ut_a[i], ut_b[i]); \
+    #define YT__TEST_MEM(a, o, b, sz)                                                           \
+        do {                                                                                    \
+            AUTOTYPE ut_a = (a);                                                                \
+            AUTOTYPE ut_b = (b);                                                                \
+            YT__current_testrecord->total_exp_count++;                                          \
+            int i;                                                                              \
+            if (!(YT__equal_mem (ut_a, ut_b, sz, &i) o 1))                                      \
+                YT__ASSERT_FAILED (a o b, "[Idx: %d, 0x%X !" #o " 0x%X]", i, ut_a[i], ut_b[i]); \
         } while (0)
 
-    #define YT__TEST_STRING(a, o, b)                                                     \
-        do {                                                                             \
-            AUTOTYPE ut_a = (a);                                                         \
-            AUTOTYPE ut_b = (b);                                                         \
-            YT__current_testrecord->total_exp_count++;                                   \
-            int i;                                                                       \
-            if (!(YT__equal_string (ut_a, ut_b, &i) o 1))                                \
-                YT__FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
+    #define YT__TEST_STRING(a, o, b)                                                            \
+        do {                                                                                    \
+            AUTOTYPE ut_a = (a);                                                                \
+            AUTOTYPE ut_b = (b);                                                                \
+            YT__current_testrecord->total_exp_count++;                                          \
+            int i;                                                                              \
+            if (!(YT__equal_string (ut_a, ut_b, &i) o 1))                                       \
+                YT__ASSERT_FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
         } while (0)
 
     #define YT_EQ_DOUBLE_REL(a, b, e)  YT__TEST_DOUBLE_REL (e, a, ==, b)
