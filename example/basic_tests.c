@@ -5,11 +5,11 @@
 
 YT_TEST (basic, scaler_tests_floats)
 {
-    YT_NEQ_DOUBLE (1.0, 2.0, 0.01);      // Passes because 1.0 != 2.0
-    YT_NEQ_DOUBLE (1.1234, 1.12, 0.001); // Passes because 1.1234 - 1.12 > 0.001
+    YT_NEQ_DOUBLE_ABS (1.0, 2.0, 0.01);      // Passes because 1.0 != 2.0
+    YT_NEQ_DOUBLE_ABS (1.1234, 1.12, 0.001); // Passes because 1.1234 - 1.12 > 0.001
 
-    YT_EQ_DOUBLE (1.1234, 1.12, 0.01); // Passes because 1.1234 - 1.12 <= 0.01
-    YT_EQ_DOUBLE (0.0, 0.0, 0.001);    // Passes because 0.0 == 0.0
+    YT_EQ_DOUBLE_ABS (1.1234, 1.12, 0.01); // Passes because 1.1234 - 1.12 <= 0.01
+    YT_EQ_DOUBLE_ABS (0.0, 0.0, 0.001);    // Passes because 0.0 == 0.0
 
     YT_END();
 }

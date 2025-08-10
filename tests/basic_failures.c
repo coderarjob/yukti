@@ -3,13 +3,14 @@
 
 YT_TEST (basic, scaler_tests_floats)
 {
-    YT_NEQ_DOUBLE (1.0, 1.0, 0.01);     // Fails because 1.0 == 1.0
-    YT_NEQ_DOUBLE (1.1234, 1.12, 0.01); // Fails because 1.1234 - 1.12 <= 0.01. Meaning the two are
-                                        // treated as equal.
+    YT_NEQ_DOUBLE_ABS (1.0, 1.0, 0.01);     // Fails because 1.0 == 1.0
+    YT_NEQ_DOUBLE_ABS (1.1234, 1.12, 0.01); // Fails because 1.1234 - 1.12 <= 0.01. Meaning the two
+                                            // are treated as equal.
 
-    YT_EQ_DOUBLE (1.1234, 1.12, 0.001); // Fails because 1.1234 - 1.12 > 0.001
-    YT_EQ_DOUBLE (0.0, 1.0, 0.001);     // Fails because 0.0 != 1.0
+    YT_EQ_DOUBLE_ABS (1.1234, 1.12, 0.001); // Fails because 1.1234 - 1.12 > 0.001
+    YT_EQ_DOUBLE_ABS (0.0, 1.0, 0.001);     // Fails because 0.0 != 1.0
 
+    YT_EQ_DOUBLE_REL (1.1234, 1.12, 0.001); // Fails as 1.1234 - 1.12 > 0.01 % of 1.1234
     YT_END();
 }
 

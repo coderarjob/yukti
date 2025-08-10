@@ -3,11 +3,13 @@
 
 YT_TEST (basic, scaler_tests_floats)
 {
-    YT_NEQ_DOUBLE (1.0, 2.0, 0.01);      // Passed because 1.0 != 2.0
-    YT_NEQ_DOUBLE (1.1234, 1.12, 0.001); // Passed because 1.1234 - 1.12 > 0.001
+    YT_NEQ_DOUBLE_ABS (1.0, 2.0, 0.01);      // Passed because 1.0 != 2.0
+    YT_NEQ_DOUBLE_ABS (1.1234, 1.12, 0.001); // Passed because 1.1234 - 1.12 > 0.001
 
-    YT_EQ_DOUBLE (1.1234, 1.12, 0.01); // Passed because 1.1234 - 1.12 <= 0.01
-    YT_EQ_DOUBLE (0.0, 0.0, 0.001);    // Passed because 1.0 != 2.0
+    YT_EQ_DOUBLE_ABS (1.1234, 1.12, 0.01); // Passed because 1.1234 - 1.12 <= 0.01
+    YT_EQ_DOUBLE_ABS (0.0, 0.0, 0.001);    // Passed because 1.0 != 2.0
+
+    YT_EQ_DOUBLE_REL (1.1234, 1.12, 0.01); // Passed as 1.1234 - 1.12 <= 1% of 1.1234
 
     YT_END();
 }

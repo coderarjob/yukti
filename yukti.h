@@ -250,11 +250,7 @@ typedef struct YT__Arg {
         {                                         \
             .isOpt = false, .val = (uintptr_t)(v) \
         }
-    #define _                       \
-        (YT__Arg)                   \
-        {                           \
-            .isOpt = true, .val = 0 \
-        }
+    #define _ (YT__Arg){ .isOpt = true, .val = 0 }
 
     #define YT__RECORD_CALL(n, f, ...)                                              \
         do {                                                                        \
@@ -848,25 +844,56 @@ static int YT__equal_string (const char* a, const char* b, int* i);
         #define AUTOTYPE __auto_type
     #endif /* __cplusplus */
 
-static bool yt__approxeq (double a, double b, double epsilon)
+/* Performs either relative or absolute comparison on floating point numbers.
+ * Relative comparison: Checks if the difference is smaller than some percentage than the of the two
+ * largest number.
+ * Absolute comparison: Checks if the difference is smaller than an absolute number. The problem is
+ * the floating point accuracy changes depending on how big or small the number is, so the epsilon
+ * that works for smaller numbers will not work for larger ones.
+ */
+static bool yt__approxeq (bool is_abs, double a, double b, double epsilon)
 {
-    double ut_a = fabs (a);
-    double ut_b = fabs (b);
+    double ut_a    = fabs (a);
+    double ut_b    = fabs (b);
+    double ut_diff = fabs (a - b);
 
-    if ((isfinite (a) && isfinite (b)) || (ut_a == 0.0 && ut_b == 0.0) || (isnan (a) && isnan (b)))
-        return true;
-    if ((isfinite (a) && !isfinite (b)) || (!isfinite (a) && isfinite (b)))
+    // NanS are not numbers, so any compare with numbers must fail
+    if (isnan (a) || isnan (b))
         return false;
 
-    // Source: https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-    double ut_diff    = fabs (a - b);
-    double ut_largest = (ut_a > ut_b) ? ut_a : ut_b;
-    return (ut_diff <= ut_largest * epsilon);
+    // Zero comparison does work well for relative checks, so this takes care of that, also handles
+    // the trivial case.
+    if ((a == b) || (ut_a == 0.0 && ut_b == 0))
+        return true;
+
+    // Infinities are treated as valid, but no comparison is done, instead test matches if both are
+    // same, otherwise fails if only one is infinity and the other is not
+    if (isinf (ut_a) && isinf (ut_b))
+        return true;
+
+    if ((!isinf (ut_a) && isinf (ut_b)) || (isinf (ut_a) && !isinf (ut_b)))
+        return false;
+
+    if (is_abs) {
+        return (ut_diff <= epsilon);
+    } else {
+        double ut_largest = (ut_a > ut_b) ? ut_a : ut_b;
+        return (ut_diff <= ut_largest * epsilon);
+    }
 }
 
-    #define YT__TEST_DOUBLE(e, a, o, b)                      \
+    #define YT__TEST_DOUBLE_REL(e, a, o, b)                  \
         do {                                                 \
-            if (!(yt__approxeq (a, b, e) o true)) {          \
+            YT__current_testrecord->total_exp_count++;       \
+            if (!(yt__approxeq (false, a, b, e) o true)) {   \
+                YT__FAILED (a o b, "[%f !" #o " %f]", a, b); \
+            }                                                \
+        } while (0)
+
+    #define YT__TEST_DOUBLE_ABS(e, a, o, b)                  \
+        do {                                                 \
+            YT__current_testrecord->total_exp_count++;       \
+            if (!(yt__approxeq (true, a, b, e) o true)) {    \
                 YT__FAILED (a o b, "[%f !" #o " %f]", a, b); \
             }                                                \
         } while (0)
@@ -900,14 +927,16 @@ static bool yt__approxeq (double a, double b, double epsilon)
                 YT__FAILED (a o b, "[Idx: %d, '%c' !" #o " '%c']", i, ut_a[i], ut_b[i]); \
         } while (0)
 
-    #define YT_EQ_DOUBLE(a, b, e)  YT__TEST_DOUBLE (e, a, ==, b)
-    #define YT_NEQ_DOUBLE(a, b, e) YT__TEST_DOUBLE (e, a, !=, b)
-    #define YT_EQ_SCALAR(a, b)     YT__TEST_SCALAR (a, ==, b)
-    #define YT_NEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, !=, b)
-    #define YT_GEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, >=, b)
-    #define YT_LEQ_SCALAR(a, b)    YT__TEST_SCALAR (a, <=, b)
-    #define YT_LES_SCALAR(a, b)    YT__TEST_SCALAR (a, <, b)
-    #define YT_GRT_SCALAR(a, b)    YT__TEST_SCALAR (a, >, b)
+    #define YT_EQ_DOUBLE_REL(a, b, e)  YT__TEST_DOUBLE_REL (e, a, ==, b)
+    #define YT_NEQ_DOUBLE_REL(a, b, e) YT__TEST_DOUBLE_REL (e, a, !=, b)
+    #define YT_EQ_DOUBLE_ABS(a, b, e)  YT__TEST_DOUBLE_ABS (e, a, ==, b)
+    #define YT_NEQ_DOUBLE_ABS(a, b, e) YT__TEST_DOUBLE_ABS (e, a, !=, b)
+    #define YT_EQ_SCALAR(a, b)         YT__TEST_SCALAR (a, ==, b)
+    #define YT_NEQ_SCALAR(a, b)        YT__TEST_SCALAR (a, !=, b)
+    #define YT_GEQ_SCALAR(a, b)        YT__TEST_SCALAR (a, >=, b)
+    #define YT_LEQ_SCALAR(a, b)        YT__TEST_SCALAR (a, <=, b)
+    #define YT_LES_SCALAR(a, b)        YT__TEST_SCALAR (a, <, b)
+    #define YT_GRT_SCALAR(a, b)        YT__TEST_SCALAR (a, >, b)
 
     #define YT_EQ_MEM(a, b, sz)  YT__TEST_MEM (a, ==, b, sz)
     #define YT_NEQ_MEM(a, b, sz) YT__TEST_MEM (a, !=, b, sz)

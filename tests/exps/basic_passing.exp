@@ -1,5 +1,5 @@
 [0m[1;44m [0m[1;97m basic:scaler_tests_ints [0m  [0m[0;32mOK [0 of 8 failed][0m
-[0m[1;44m [0m[1;97m basic:scaler_tests_floats [0m  [0m[0;32mOK [0 of 4 failed][0m
+[0m[1;44m [0m[1;97m basic:scaler_tests_floats [0m  [0m[0;32mOK [0 of 5 failed][0m
 [0m[1;44m [0m[1;97m basic:string_tests [0m  [0m[0;32mOK [0 of 3 failed][0m
 [0m[1;44m [0m[1;97m basic:memory_tests [0m  [0m[0;32mOK [0 of 2 failed][0m
 
