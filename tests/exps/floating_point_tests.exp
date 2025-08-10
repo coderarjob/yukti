@@ -1,0 +1,13 @@
+[0m[1;44m [0m[1;97m fp:zero_equals [0m  [0m[0;32mOK [0 of 10 failed][0m
+[0m[1;44m [0m[1;97m fp:infinities [0m  [0m[0;32mOK [0 of 4 failed][0m
+[0m[1;44m [0m[1;97m fp:nans [0m  [0m[0;32mOK [0 of 6 failed][0m
+[0m[1;104m [0m[1;97m fp:comparisons [0m[1;33m [6 tests] [0m
+[0m[1;44m [0m[0;97m [1/6] fp:comparisons [0m  [0m[0;32mOK [0 of 1 failed][0m
+[0m[1;44m [0m[0;97m [2/6] fp:comparisons [0m  [0m[0;32mOK [0 of 1 failed][0m
+[0m[1;44m [0m[0;97m [3/6] fp:comparisons [0m  [0m[0;32mOK [0 of 1 failed][0m
+[0m[1;44m [0m[0;97m [4/6] fp:comparisons [0m  [0m[0;32mOK [0 of 1 failed][0m
+[0m[1;44m [0m[0;97m [5/6] fp:comparisons [0m  [0m[0;32mOK [0 of 1 failed][0m
+[0m[1;44m [0m[0;97m [6/6] fp:comparisons [0m  [0m[0;32mOK [0 of 1 failed][0m
+
+[0m[0;32mAll tests passed [0 of 9 failed][0m
+
