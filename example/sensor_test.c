@@ -33,7 +33,11 @@ YT_TESTP (sensor, read_temperature_test, uint16_t, double)
     // readADC() called by read_temperature() SUT function should return the adc value we expect.
     readADC_fake.ret = adc_value;
 
-    //YT_EQ_DOUBLE_ABS (read_temperature(), temperature_exp, 0.00999);
+    // Absolute floating point comparisons. Passes if actual & expectation differs less or equal to
+    // 0.00999.
+    YT_EQ_DOUBLE_ABS (read_temperature(), temperature_exp, 0.00999);
+    // Relative floating point comparisons. Passes if the difference (of actual & expectation)
+    // differs less than or equal to 0.1% of the largest value.
     YT_EQ_DOUBLE_REL (read_temperature(), temperature_exp, 0.001);
     YT_END();
 }
