@@ -1000,8 +1000,8 @@ static int YT__equal_mem (const void* a, const void* b, unsigned long size, int*
     #define YT_ARG_9() _j
 
     #define YT__TEST_IMPL_BODY(tf, fn, count, tn, ...)                              \
-        yt_reset();                                                                 \
         YT__ec_init();                                                              \
+        yt_reset();                                                                 \
         YT__total_test_count++;                                                     \
         /* Following assert ensures we are not overriding it. It was taken cared of \
          * in the previous test's YT_END. */                                        \
