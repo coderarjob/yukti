@@ -1,6 +1,8 @@
 #define YUKTI_TEST_IMPLEMENTATION
 #include "../yukti.h"
 
+#define ARRAY_LEN(b) sizeof (b) / sizeof (b[0])
+
 YT_TEST (basic, scaler_tests_floats)
 {
     YT_NEQ_DOUBLE_ABS (1.0, 2.0, 0.01);      // Passed because 1.0 != 2.0
@@ -44,14 +46,26 @@ YT_TEST (basic, string_tests)
 
 YT_TEST (basic, memory_tests)
 {
-#define ARRAY_LEN(b) sizeof (b) / sizeof (b[0])
-
     char buffer1[] = { 0, 1, 2, 3 };
     char buffer2[] = { 0, 1, 2, 3 };
     char buffer3[] = { 0, 1, 2, 4 };
 
     YT_EQ_MEM (buffer1, buffer2, ARRAY_LEN (buffer1));  // Passes because buffer1 == buffer2.
     YT_NEQ_MEM (buffer1, buffer3, ARRAY_LEN (buffer1)); // Passes because buffer1 != buffer3.
+
+    YT_END();
+}
+
+YT_TEST (basic, memory_tests_complex_type)
+{
+    typedef struct Person { int id; } Person;
+
+    Person buffer1[] = { (Person) {.id = 0}, (Person) {.id = 1}, (Person) {.id = 2}, (Person) {.id = 3 }};
+    Person buffer2[] = { (Person) {.id = 0}, (Person) {.id = 1}, (Person) {.id = 2}, (Person) {.id = 3 }};
+    Person buffer3[] = { (Person) {.id = 0}, (Person) {.id = 1}, (Person) {.id = 2}, (Person) {.id = 4 }};
+
+    YT_EQ_MEM (buffer1, buffer2, sizeof(Person) * ARRAY_LEN (buffer1));  // Passes because buffer1 == buffer2.
+    YT_NEQ_MEM (buffer1, buffer3, sizeof(Person) * ARRAY_LEN (buffer1)); // Passes because buffer1 != buffer3.
 
     YT_END();
 }
@@ -67,5 +81,6 @@ int main (void)
     scaler_tests_floats();
     string_tests();
     memory_tests();
+    memory_tests_complex_type();
     YT_RETURN_WITH_REPORT();
 }
