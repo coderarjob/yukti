@@ -8,7 +8,7 @@ TESTS_DIR=`dirname $0`
 export CC=gcc
 export CFLAGS="-Wall -Wextra -std=c99 -DYT__TESTING"
 
-echo "Test 1/2: Running tests with C Compiler ($CC) (Native)"
+echo "Test 1/3: Running tests with C Compiler ($CC) (Native)"
 bash $TESTS_DIR/test.sh || exit
 
 #######################################################################

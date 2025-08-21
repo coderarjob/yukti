@@ -5,7 +5,7 @@ TMP_DIR=/tmp
 #######################################################################
 # Running recorded tests
 #######################################################################
-echo "Test 1/2: Running recorded tests ($CC)"
+echo "Sub-test 1/2: Running recorded tests ($CC)"
 
 TESTS_DIR=`dirname $0`
 EXP_DIR="$TESTS_DIR/exps"
@@ -33,7 +33,7 @@ done
 #######################################################################
 # Compiling and running examples
 #######################################################################
-echo "Test 2/2: Running examples ($CC)"
+echo "Sub-test 2/2: Running examples ($CC)"
 
 echo " Running 'Sensor' example.."
 $CC $CFLAGS example/sensor_test.c \
