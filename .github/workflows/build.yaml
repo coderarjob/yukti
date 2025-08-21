@@ -1,4 +1,4 @@
-name: Integrations & unitests
+name: Integration & unit tests
 
 on: [push]
 
