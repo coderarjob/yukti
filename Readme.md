@@ -117,7 +117,7 @@ in what order and which what parameters.
 | `YT_MUST_CALL_ANY_ORDER(f, ...)`                  | Function `f` is called with the given arguments at least once in no particular order      |
 | `YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...)` | Function `f` is called with the given arguments at least `n` times in no particular order |
 | `YT_MUST_NEVER_CALL(f, ...)`                      | Function `f` with the given arguments is never called                                     |
-| `YT_IN_SEQUENCE(n)` | Repeats expectations `n` number of times. Used to put expectations for a loop. |
+| `YT_IN_SEQUENCE(n)`                               | Repeats expectations `n` number of times. Used to put expectations for a loop.            |
 
 See these examples
 * [printer_fail](./example/sensor_test.c) example
@@ -129,13 +129,20 @@ When unittesting it might be required to provide a fake definitions of external 
 where these macros come in. These fake functions also enable the above mentioned interaction
 validations and one can modify the behaviour of these fake functions in various ways.
 
-| Macro name                     | Validates                                                                                             |
-|--------------------------------|-------------------------------------------------------------------------------------------------------|
-| `YT_DECLARE_FUNC(rt, f, ...)`  | Declaration for fake function `f` which takes any number of arguments returns some non void type `rt` |
-| `YT_DECLARE_FUNC_VOID(f, ...)` | Declaration for fake function `f` which takes any number of arguments returns void                    |
-| `YT_DEFINE_FUNC(rt, f, ...)`   | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC`.                         |
-| `YT_DEFINE_FUNC_void(f, ...)`  | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC_VOID`.                    |
-| `YT_RESET_MOCK(f)`             | Resets internal state of a fake function previously defined using `YT_DEFINE_FUNC*`.                  |
+| Macro name                             | Validates                                                                                                                                    |
+|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `YT_DECLARE_FUNC(rt, f, ...)`          | Declaration for fake function `f` which takes any number of arguments returns some non void type `rt`                                        |
+| `YT_DECLARE_FUNC_VOID(f, ...)`         | Declaration for fake function `f` which takes any number of arguments returns void                                                           |
+| `YT_DEFINE_FUNC(rt, f, ...)`           | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC`.                                                                |
+| `YT_DEFINE_FUNC_VOID(f, ...)`          | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC_VOID`.                                                           |
+| `YT_DEFINE_FUNC_FALLBACK(rt, f, ...)`  | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC`. `MUST_CALL*`/`NEVER_CALL*` macros cannot be used on them.      |
+| `YT_DEFINE_FUNC_VOID_FALLBACK(f, ...)` | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC_VOID`. `MUST_CALL*`/`NEVER_CALL*` macros cannot be used on them. |
+| `YT_RESET_MOCK(f)`                     | Resets internal state of a mock/fake function previously defined using `YT_DEFINE_FUNC*`.                                                    |
+
+`YT_DEFINE_FUNC_FALLBACK` and `YT_DEFINE_FUNC_VOID_FALLBACK` should be used for functions with non
+integer arguments (floating point or `structs` passed by-value etc) as such arguments do not work
+with `MUST_CALL*`/`NEVER_CALL*` macros at this time. These provide just the fake definitions without
+extra data needed by interaction testing macros.
 
 See [Mocking and faking](./example/sensor_test.c) example
 

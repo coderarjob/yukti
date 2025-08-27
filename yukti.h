@@ -285,10 +285,18 @@ void yt_reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
     YT__DEFINE_FUNC_STRUCT (f);     \
     YT__DEFINE_FUNC_BODY_VOID (YT__COUNT_ARGS (__VA_ARGS__), f, __VA_ARGS__)
 
+#define YT_DEFINE_FUNC_VOID_FALLBACK(f, ...) \
+    YT__DEFINE_FUNC_STRUCT (f);              \
+    YT__DEFINE_FUNC_BODY_VOID_FALLBACK (YT__COUNT_ARGS (__VA_ARGS__), f, __VA_ARGS__)
+
 // ----
 #define YT_DEFINE_FUNC(rt, f, ...) \
     YT__DEFINE_FUNC_STRUCT (f);    \
     YT__DEFINE_FUNC_BODY (YT__COUNT_ARGS (__VA_ARGS__), rt, f, __VA_ARGS__)
+
+#define YT_DEFINE_FUNC_FALLBACK(rt, f, ...) \
+    YT__DEFINE_FUNC_STRUCT (f);             \
+    YT__DEFINE_FUNC_BODY_FALLBACK (YT__COUNT_ARGS (__VA_ARGS__), rt, f, __VA_ARGS__)
 
 // ----
 
@@ -310,12 +318,26 @@ void yt_reset(); // MUST BE DEFINED BY THE USER OF THIS HEADER FILE.
         YT__RETURN_VOID (f, __VA_ARGS__);    \
     }
 
+#define YT__DEFINE_FUNC_BODY_VOID_FALLBACK(n, f, ...) \
+    void f (YT__FUNC_PARAMS_X (__VA_ARGS__))          \
+    {                                                 \
+        YT__STRUCT_VAR (f).invokeCount++;             \
+        YT__RETURN_VOID (f, __VA_ARGS__);             \
+    }
+
 #define YT__DEFINE_FUNC_BODY(n, rt, f, ...)  \
     rt f (YT__FUNC_PARAMS_X (__VA_ARGS__))   \
     {                                        \
         YT__RECORD_CALL (n, f, __VA_ARGS__); \
         YT__STRUCT_VAR (f).invokeCount++;    \
         YT__RETURN (f, __VA_ARGS__);         \
+    }
+
+#define YT__DEFINE_FUNC_BODY_FALLBACK(n, rt, f, ...) \
+    rt f (YT__FUNC_PARAMS_X (__VA_ARGS__))           \
+    {                                                \
+        YT__STRUCT_VAR (f).invokeCount++;            \
+        YT__RETURN (f, __VA_ARGS__);                 \
     }
 
 #define YT__RETURN_VOID(f, ...)                                      \
@@ -1122,7 +1144,9 @@ static double yt__test_elapsed_time_ms()
     #define END                               YT_END
     #define V                                 YT_V
     #define DEFINE_FUNC_VOID                  YT_DEFINE_FUNC_VOID
+    #define DEFINE_FUNC_VOID_FALLBACK         YT_DEFINE_FUNC_VOID_FALLBACK
     #define DEFINE_FUNC                       YT_DEFINE_FUNC
+    #define DEFINE_FUNC_FALLBACK              YT_DEFINE_FUNC_FALLBACK
     #define DECLARE_FUNC_VOID                 YT_DECLARE_FUNC_VOID
     #define DECLARE_FUNC                      YT_DECLARE_FUNC
     #define RESET_MOCK                        YT_RESET_MOCK
