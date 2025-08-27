@@ -243,6 +243,8 @@ typedef struct YT__Arg {
     uintptr_t val; // A type large enough to hold both integers & addresses
 } YT__Arg;
 
+    #define YT__ARG_FIELDS_COUNT 2
+
     #define YT__RECORD_CALL_X(...) YT__FCALL_WRAP_ARGS_X (YT_V, ##__VA_ARGS__)
 
     #define YT_V(v)                               \
@@ -469,18 +471,20 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
     #else
         #define YT_IN_SEQUENCE(n) for (int i = 0; i < (n); i++)
 
-        #define YT_MUST_NEVER_CALL(f, ...)                                                  \
-            do {                                                                            \
-                YT__current_testrecord->total_exp_count++;                                  \
-                YT__add_callrecord (&YT__neverCallExceptationsListHead, __LINE__, __FILE__, \
-                                    YT__COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__);   \
+        #define YT_MUST_NEVER_CALL(f, ...)                                                   \
+            do {                                                                             \
+                YT__current_testrecord->total_exp_count++;                                   \
+                YT__add_callrecord (&YT__neverCallExceptationsListHead, __LINE__, __FILE__,  \
+                                    YT__COUNT_ARGS (__VA_ARGS__) / YT__ARG_FIELDS_COUNT, #f, \
+                                    ##__VA_ARGS__);                                          \
             } while (0)
 
-        #define YT_MUST_CALL_IN_ORDER(f, ...)                                             \
-            do {                                                                          \
-                YT__current_testrecord->total_exp_count++;                                \
-                YT__add_callrecord (&YT__orderedExceptationListHead, __LINE__, __FILE__,  \
-                                    YT__COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
+        #define YT_MUST_CALL_IN_ORDER(f, ...)                                                \
+            do {                                                                             \
+                YT__current_testrecord->total_exp_count++;                                   \
+                YT__add_callrecord (&YT__orderedExceptationListHead, __LINE__, __FILE__,     \
+                                    YT__COUNT_ARGS (__VA_ARGS__) / YT__ARG_FIELDS_COUNT, #f, \
+                                    ##__VA_ARGS__);                                          \
             } while (0)
 
         #define YT_MUST_CALL_IN_ORDER_ATLEAST_TIMES(n, f, ...) \
@@ -488,11 +492,12 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
                 YT_MUST_CALL_IN_ORDER (f, ##__VA_ARGS__);      \
             }
 
-        #define YT_MUST_CALL_ANY_ORDER(f, ...)                                            \
-            do {                                                                          \
-                YT__current_testrecord->total_exp_count++;                                \
-                YT__add_callrecord (&YT__globalExceptationListHead, __LINE__, __FILE__,   \
-                                    YT__COUNT_ARGS (__VA_ARGS__) / 2, #f, ##__VA_ARGS__); \
+        #define YT_MUST_CALL_ANY_ORDER(f, ...)                                               \
+            do {                                                                             \
+                YT__current_testrecord->total_exp_count++;                                   \
+                YT__add_callrecord (&YT__globalExceptationListHead, __LINE__, __FILE__,      \
+                                    YT__COUNT_ARGS (__VA_ARGS__) / YT__ARG_FIELDS_COUNT, #f, \
+                                    ##__VA_ARGS__);                                          \
             } while (0)
 
         #define YT_MUST_CALL_ANY_ORDER_ATLEAST_TIMES(n, f, ...) \
