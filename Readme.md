@@ -6,7 +6,7 @@
 ## About
 
 Yukti is a single header testing library for C/C++ projects. It has no 3rd party dependencies and is
-fully contained within one single header file.
+fully contained within a single header file.
 
 It provides most of the features available in other popular testing library but in a small single
 header library.
@@ -30,7 +30,6 @@ header library.
     - [X] Continuous data like array, string assertion macros
     - [X] YT_EQ_DOUBLE macro for approx matching of values
 - [X] **Parameterised testing macros**
-    - [ ] Floating point parameter with approx matching of values.
 - [X] **Faking/Mocking external functions**
     - [X] Macros to fake external functions
     - [X] Behaviour modification of faked functions using custom Handler functions
@@ -38,6 +37,7 @@ header library.
     - [X] Assert if an external function was called with expected arguments
     - [X] Assert if an external function was called with optional arguments
     - [X] Assert if an external function was never called
+    - [ ] Assert if an external function was called with floating point or structures passed by-value in parameters.
 - [X] **Reporting**
     - [X] Report line numbers and source file of failed expectations
     - [X] Report list of all the tests which failed
@@ -46,9 +46,9 @@ header library.
 
 ## Screenshots
 
-| Some test are failing. Shows source file location and summary lists the failing tests | All test are passing. Shows elapsed time for each test.                  |
-|---------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| [![Failure](./docs/images/failure_thumb.png)](./docs/images/failure.png)              | [![Passing](./docs/images/passing_thumb.png)](./docs/images/passing.png) |
+| Case: Some test are failing. Shows source file location and summary lists the failing tests | Case: All test are passing. Shows elapsed time for each test.            |
+|---------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [![Failure](./docs/images/failure_thumb.png)](./docs/images/failure.png)                    | [![Passing](./docs/images/passing_thumb.png)](./docs/images/passing.png) |
 
 ## Examples
 
