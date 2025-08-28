@@ -139,10 +139,12 @@ validations and one can modify the behaviour of these fake functions in various 
 | `YT_DEFINE_FUNC_VOID_FALLBACK(f, ...)` | Definition for fake function `f` previously declared using `YT_DECLARE_FUNC_VOID`. `MUST_CALL*`/`NEVER_CALL*` macros cannot be used on them. |
 | `YT_RESET_MOCK(f)`                     | Resets internal state of a mock/fake function previously defined using `YT_DEFINE_FUNC*`.                                                    |
 
-`YT_DEFINE_FUNC_FALLBACK` and `YT_DEFINE_FUNC_VOID_FALLBACK` should be used for functions with non
-integer arguments (floating point or `structs` passed by-value etc) as such arguments do not work
-with `MUST_CALL*`/`NEVER_CALL*` macros at this time. These provide just the fake definitions without
-extra data needed by interaction testing macros.
+`YT_DEFINE_FUNC_FALLBACK` and `YT_DEFINE_FUNC_VOID_FALLBACK` should be used to define functions with
+one or more non integer arguments (floating point or `structs` passed by-value etc) as such
+arguments do not work with `MUST_CALL*`/`NEVER_CALL*` macros at this time. Expectations set on them
+using `MUST_CALL*` can never be met and those with `NEVER_CALL*` will always pass - thus giving
+wrong impression of what's actually happening. But if used correctly, there will be no way to form
+an expectation because `YT_V` construct will fail.
 
 See [Mocking and faking](./example/sensor_test.c) example
 
