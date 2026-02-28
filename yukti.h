@@ -1094,6 +1094,7 @@ static double yt__test_elapsed_time_ms()
 
     // clang-format off
     #define YT_END()                                                           \
+        /* the following '}' is for closing YT_TEST's do loop */               \
         } while (0);                                                           \
         YT__validate_expectations();                                           \
         YT__teardown();                                                        \
@@ -1108,7 +1109,6 @@ static double yt__test_elapsed_time_ms()
             YT__free_testRecord (YT__current_testrecord);                      \
         }                                                                      \
         YT__current_testrecord = NULL;                                         \
-        /* following '}' is for closing YT_TEST's do loop */                   \
         printf ("\n");
     // clang-format on
 
