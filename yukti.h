@@ -440,6 +440,7 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
     #define YT_INIT()                                 \
         do {                                          \
             acl_list_init (&YT__failedTestsListHead); \
+            acl_list_init (&YT__actualCallListHead);  \
             YT__total_test_count = 0;                 \
         } while (0)
 
@@ -822,7 +823,6 @@ static void YT__teardown()
     YT__free_call_list (&YT__neverCallExceptationsListHead);
     YT__free_call_list (&YT__globalExceptationListHead);
     YT__free_call_list (&YT__orderedExceptationListHead);
-    YT__free_call_list (&YT__actualCallListHead);
 }
 
 static void YT__ec_init()
@@ -830,7 +830,7 @@ static void YT__ec_init()
     acl_list_init (&YT__neverCallExceptationsListHead);
     acl_list_init (&YT__globalExceptationListHead);
     acl_list_init (&YT__orderedExceptationListHead);
-    acl_list_init (&YT__actualCallListHead);
+    YT__free_call_list (&YT__actualCallListHead); // Free up the 'Acutal Call' list for new tests
 }
 #endif /* YUKTI_TEST_IMPLEMENTATION */
 

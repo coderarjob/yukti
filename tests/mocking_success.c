@@ -51,6 +51,11 @@ YT_TEST (mock, mock_handler_resource_passing)
     YT_END();
 }
 
+void mock_call_outside_test()
+{
+    sut_func (0, 0);
+}
+
 void yt_reset()
 {
     YT_RESET_MOCK (func_extern_1);
@@ -59,6 +64,7 @@ void yt_reset()
 int main (void)
 {
     YT_INIT();
+    mock_call_outside_test();
     mock_return_value();
     mock_handler();
     mock_handler_resource_passing();
