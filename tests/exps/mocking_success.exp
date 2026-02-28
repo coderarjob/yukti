@@ -1,6 +1,6 @@
-[0m[1;44m [0m[1;97m mock:mock_return_value [0m  [0m[0;32mOK [0 of 1 failed][0m
-[0m[1;44m [0m[1;97m mock:mock_handler [0m  [0m[0;32mOK [0 of 3 failed][0m
-[0m[1;44m [0m[1;97m mock:mock_handler_resource_passing [0m  [0m[0;32mOK [0 of 2 failed][0m
+[0m[1;44m [0m[1;97m mock:mock_return_value [0m  [0m[0;32mOK[0m
+[0m[1;44m [0m[1;97m mock:mock_handler [0m  [0m[0;32mOK[0m
+[0m[1;44m [0m[1;97m mock:mock_handler_resource_passing [0m  [0m[0;32mOK[0m
 
 [0m[0;32mAll tests passed [0 of 3 failed][0m
 

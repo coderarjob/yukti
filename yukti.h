@@ -1079,10 +1079,9 @@ static double yt__test_elapsed_time_ms()
                         YT__COL_RESET);                                                      \
             } while (0)
     #else
-        #define YT__PRINT_SUCCESS_MESSAGE()                                      \
-            do {                                                                 \
-                printf ("  %sOK [0 of %d failed]%s", YT__COL_GREEN,              \
-                        YT__current_testrecord->total_exp_count, YT__COL_RESET); \
+        #define YT__PRINT_SUCCESS_MESSAGE()                        \
+            do {                                                   \
+                printf ("  %sOK%s", YT__COL_GREEN, YT__COL_RESET); \
             } while (0)
 
         #define YT__PRINT_FAILURE_MESSAGE()                                      \
