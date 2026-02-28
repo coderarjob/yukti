@@ -7,7 +7,7 @@
     * func_extern_2( 0,0)
     * func_extern_1( 0,0)
 
-  [0m[0;31m2 of 2 failed[0m
+  [0m[0;31m2/2 expectations failed[0m
 
-[0m[0;31mNot all tests passed [1 of 1 failed][0m
+[0m[0;31mNot all tests passed [1/1 failed][0m
     [0m[0;31m* 'must_call_in_order [1/1]' test failed[0m

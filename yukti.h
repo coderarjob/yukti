@@ -446,10 +446,10 @@ static void YT__free_testRecord (YT__TestRecord* trecord)
     #define YT_RETURN_WITH_REPORT()                                                    \
         do {                                                                           \
             if (YT__failed_test_count == 0) {                                          \
-                printf ("\n%sAll tests passed [0 of %d failed]%s\n", YT__COL_GREEN,    \
+                printf ("\n%sAll tests passed [0/%d failed]%s\n", YT__COL_GREEN,       \
                         YT__total_test_count, YT__COL_RESET);                          \
             } else {                                                                   \
-                printf ("\n%sNot all tests passed [%d of %d failed]%s", YT__COL_RED,   \
+                printf ("\n%sNot all tests passed [%d/%d failed]%s", YT__COL_RED,      \
                         YT__failed_test_count, YT__total_test_count, YT__COL_RESET);   \
                 ACL_ListNode* node;                                                    \
                 acl_list_for_each (&YT__failedTestsListHead, node)                     \
@@ -1073,7 +1073,7 @@ static double yt__test_elapsed_time_ms()
 
         #define YT__PRINT_FAILURE_MESSAGE()                                                  \
             do {                                                                             \
-                printf ("\n  %s%d of %d failed [%1.4f ms]%s", YT__COL_RED,                   \
+                printf ("\n  %s%d/%d expectations failed [%1.4f ms]%s", YT__COL_RED,         \
                         YT__current_testrecord->failed_exp_count,                            \
                         YT__current_testrecord->total_exp_count, yt__test_elapsed_time_ms(), \
                         YT__COL_RESET);                                                      \
@@ -1086,7 +1086,7 @@ static double yt__test_elapsed_time_ms()
 
         #define YT__PRINT_FAILURE_MESSAGE()                                      \
             do {                                                                 \
-                printf ("\n  %s%d of %d failed%s", YT__COL_RED,                  \
+                printf ("\n  %s%d/%d expectations failed%s", YT__COL_RED,        \
                         YT__current_testrecord->failed_exp_count,                \
                         YT__current_testrecord->total_exp_count, YT__COL_RESET); \
             } while (0)

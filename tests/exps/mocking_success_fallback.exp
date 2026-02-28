@@ -2,5 +2,5 @@
 [0m[1;44m [0m[1;97m mock:mock_handler [0m  [0m[0;32mOK[0m
 [0m[1;44m [0m[1;97m mock:mock_handler_resource_passing [0m  [0m[0;32mOK[0m
 
-[0m[0;32mAll tests passed [0 of 3 failed][0m
+[0m[0;32mAll tests passed [0/3 failed][0m
 

@@ -5,5 +5,5 @@
 [0m[1;44m [0m[1;97m mock:must_call_any_order_at_least_times [0m  [0m[0;32mOK[0m
 [0m[1;44m [0m[1;97m mock:must_call_in_order_at_least_times [0m  [0m[0;32mOK[0m
 
-[0m[0;32mAll tests passed [0 of 6 failed][0m
+[0m[0;32mAll tests passed [0/6 failed][0m
 
